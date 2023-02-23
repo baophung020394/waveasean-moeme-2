@@ -6,8 +6,11 @@
   "scripts": {
     "dev": "webpack serve",
     "build": "webpack --mode production --progress --hide-modules",
-    "tscheck": "tsc"
+    "tscheck": "tsc",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
+  "homepage": "https://baophung020394.github.io",
   "devDependencies": {
     "@babel/core": "^7.21.0",
     "@babel/preset-env": "^7.20.2",
@@ -32,6 +35,7 @@
     "css-loader": "^6.7.3",
     "emoji-picker-react": "^4.4.7",
     "firebase": "^9.17.1",
+    "gh-pages": "^5.0.0",
     "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.2",
