@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "webpack serve",
-    "build": "webpack --mode production --progress --hide-modules",
+    "build": "webpack --mode production --progress",
     "tscheck": "tsc",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
