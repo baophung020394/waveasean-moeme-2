@@ -1,0 +1,213 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+$white: #fff !default;
+$gray-100: #f8f9fc !default;
+$gray-200: #f4f4f4 !default;
+$gray-300: #dddfeb !default;
+$gray-400: #d1d3e2 !default;
+$gray-500: #b7b9cc !default;
+$gray-600: #858796 !default;
+$gray-700: #6e707e !default;
+$gray-800: #5a5c69 !default;
+$gray-900: #3a3b45 !default;
+$black: #000 !default;
+
+$blue: #4e73df !default;
+$indigo: #6610f2 !default;
+$purple: #6f42c1 !default;
+$pink: #e83e8c !default;
+$red: #e74a3b !default;
+$orange: #fd7e14 !default;
+$yellow: #f6c23e !default;
+$green: #1cc88a !default;
+$teal: #20c9a6 !default;
+$cyan: #36b9cc !default;
+
+// Custom Colors
+$brand-google: #ea4335 !default;
+$brand-facebook: #3b5998 !default;
+
+html,
+body {
+  height: 100%;
+}
+
+ul,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+
+.content-page {
+  width: 100%;
+  height: 100%;
+  padding-top: 56px;
+}
+
+#app {
+  height: 100%;
+}
+
+.iconTag {
+  width: 8px;
+  height: auto;
+  margin-right: 6px;
+}
+
+.icon24 {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.icon40 {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.icon60 {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.avatar {
+  border-radius: 100%;
+  margin-right: 6px;
+  object-fit: cover;
+}
+
+.content-wrap {
+  padding: 20px;
+}
+
+.image-chat {
+  max-width: 300px;
+  width: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+}
+.btn-hover {
+  border: none;
+  background: none;
+
+  &:hover {
+    .img-hover {
+      display: inline-block;
+    }
+
+    .img-show {
+      display: none;
+    }
+  }
+
+  .img-hover {
+    display: none;
+  }
+}
+.loading-screen {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 990;
+
+  .loading-view {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+
+    &-container {
+      z-index: 9999;
+      background-color: $gray-200;
+      width: 480px;
+      padding: 32px;
+      font-size: 18px;
+      -webkit-box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2);
+      box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    @media (max-width: 830px) {
+      .loading-view-container {
+        max-width: 480px;
+      }
+    }
+  }
+}
+
+/*
+Css for Modals
+*/
+.create--channel-modal {
+  .modal-content {
+    background-color: transparent;
+    border: none;
+  }
+  .modal-body {
+    padding: 0;
+  }
+
+  .modal-header {
+    border-bottom: none;
+  }
+}
+
+.copied {
+  border-radius: 4px;
+  background: #000;
+  color: #fff;
+  padding: 4px 12px;
+  font-weight: bold;
+}
+
+.channel-detail-modal {
+  .modal-footer {
+    button.secondary {
+      background: #eee;
+      border: 1px solid #eee;
+    }
+  }
+  .modal-body {
+    button {
+      margin-right: 8px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+
+    .carousel {
+      .carousel-control-next {
+        width: auto;
+        right: -21px;
+        background: #eee;
+      }
+      .carousel-control-prev {
+        width: auto;
+        left: -21px;
+        background: #eee;
+      }
+    }
+  }
+  .carousel-indicators {
+    display: none;
+  }
+}

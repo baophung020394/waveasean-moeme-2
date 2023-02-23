@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "umd",
+    "lib": ["ESNext", "dom"],
+    "jsx": "react",
+    "noEmit": true,
+    "sourceMap": true,
+    /* Strict Type-Checking Options */
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+
+    /* Module Resolution Options */
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "baseUrl": "./src",
+    "paths": {
+      "components/*": ["./components/*"],
+      "features/*": ["./features/*"],
+      "stores": ["./stores/index.ts"],
+      "models": ["./models/*"],
+      "layouts": ["./layouts/*"],
+      "actions": ["./actions/*"],
+      "reducers": ["./reducers/*"],
+      "api": ["./api/*"],
+      "store": ["./store/*"],
+      "utils": ["./utils/*"],
+      "constants": ["./constants/*"],
+      "services": ["./services/*"],
+      "hooks": ["./hooks/*"],
+      "assets": ["./assets/*"],
+      "mocks": ["./mocks/*"],
+      "db": ["./db/*"]
+    }
+  }
+}

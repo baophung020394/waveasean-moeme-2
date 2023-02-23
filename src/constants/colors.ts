@@ -1,0 +1,18 @@
+export enum COLORS {
+  BLUE = "blue",
+  WHITE = "#fff",
+  BACKGROUND_DISABLED = "rgb(227 227 227)",
+  COLOR_DISABLED = "rgb(112 112 112)",
+  ERROR = "#FF1B1B",
+  SUCCESS = "#00b74a",
+  DANGER = "#d9534f",
+  INFO = "#0070f3",
+  WARNING = "#ff9700",
+  ICON_BACKGROUND = "#6c8599",
+  BORDER_FIELD = "#d8d8d8",
+  PRIMARY = "#050505",
+  BORDER_IMAGE = "#d3d3d3",
+  FONT_COLOR = "#181818",
+  PENDING = "#F29339",
+  PAYMENT_FEE_COLOR = "#e4edf4",
+}
