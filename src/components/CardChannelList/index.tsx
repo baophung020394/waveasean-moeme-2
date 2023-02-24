@@ -82,7 +82,7 @@ function CardChannelList({
 
     // askForConfirmtionNewChannel(channel);
     if (currentChannel) {
-      console.log('tada')
+      console.log("tada");
       setLastVisited(user, currentChannel);
       setLastVisited(user, channel);
       dispatch(setCurrentChannel(channel));

@@ -322,7 +322,7 @@ function Messanger({
               setValue("");
             }}
           >
-            {value?.length > 0 && channel?.enableWriteMsg === "1" ? (
+            {(value?.length > 0 && channel?.enableWriteMsg === "1" ) || value?.lenght > 0 ? (
               <Icon name="send" size="large" />
             ) : (
               // <img className="icon24 img-hover" src={IconChatBlue} alt="" />

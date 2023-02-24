@@ -6,7 +6,7 @@ import { styled } from "utils/styled-component";
 import { COLORS } from "constants/colors";
 
 type ButtonType = {
-  name: string | React.ReactNode;
+  name?: string | React.ReactNode;
   onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
   className?: string;
   inputColor: string;

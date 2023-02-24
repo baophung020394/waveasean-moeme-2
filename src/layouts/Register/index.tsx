@@ -115,9 +115,7 @@ function Register({}: RegisterProps) {
               name="Register"
               className="btn-login"
               inputColor={isChecking ? "" : "primary"}
-            >
-              Register
-            </Button>
+            ></Button>
           </div>
         </form>
 
