@@ -121,7 +121,7 @@ function ChatMessageList({
     >
       <ul ref={messagesRef} className="chat-box chatContainerScroll">
         {messages.map((message: any, idx: number) => {
-          // console.log({ message });
+          console.log({ message });
           if (message?.stocks) {
             return (
               <li
@@ -129,7 +129,7 @@ function ChatMessageList({
                 key={`${message?.id}-${idx}`}
               >
                 <div className="chat-avatar">
-                  <Image src={message?.user.user.photoURL} avatar />
+                  <Image src={message?.user.photoURL} avatar />
                   {/* <object
                     className="icon40 avatar"
                     data={`http://moa.aveapp.com:21405/file/api/down_proc.jsp?type=12&userid=${message?.stocks?.user.userId}&roomid=${message?.stocks.user?.roomId}`}
@@ -163,7 +163,7 @@ function ChatMessageList({
                 key={`${message?.ID}-${idx}`}
               >
                 <div className="chat-avatar">
-                  <Image src={message?.user.user.photoURL} avatar />
+                  <Image src={message?.user.photoURL} avatar />
                   {/* <object
                     className="icon40 avatar"
                     data={`http://moa.aveapp.com:21405/file/api/down_proc.jsp?type=12&userid=${message?.user.userId}&roomid=${message?.user?.roomId}`}
@@ -223,7 +223,7 @@ function ChatMessageList({
                       className="icon40 avatar"
                     />
                   </object> */}
-                  <Image src={message?.user.user.photoURL} avatar />
+                  <Image src={message?.user.photoURL} avatar />
                   <div className="chat-name">
                     {message?.author?.username}
                     <div className="chat-hour">
@@ -279,7 +279,7 @@ function ChatMessageList({
                       className="icon40 avatar"
                     />
                   </object> */}
-                  <Image src={message?.user.user.photoURL} avatar />
+                  <Image src={message?.user.photoURL} avatar />
                   <div className="chat-name">
                     {message?.author?.username}
                     <div className="chat-hour">
@@ -326,7 +326,7 @@ function ChatMessageList({
                       className="icon40 avatar"
                     />
                   </object> */}
-                  <Image src={message?.user.user.photoURL} avatar />
+                  <Image src={message?.user.photoURL} avatar />
                   <div className="chat-name">
                     {message?.author?.username}
                     <div className="chat-hour">
