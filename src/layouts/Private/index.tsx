@@ -12,13 +12,14 @@ function Private() {
   const [usersState, setUsersState] = useState([]);
   const [userState, setUserState] = useState({});
   const [connectedUserState, setConnectedUserState] = useState([]);
-  const userRedux = useSelector(({ auth }) => auth.user);
+  const userRedux = useSelector(({ auth }: any) => auth.user);
   const usersRef = firebase.database().ref("users");
   const connectedRef = firebase.database().ref(".info/connected");
   const statusRef = firebase.database().ref("status");
-  const currentChannel = useSelector(({ channel }) => channel.currentChannel);
+  const currentChannel = useSelector(
+    ({ channel }: any) => channel.currentChannel
+  );
 
-  const profile = JSON.parse(localStorage.getItem("_profile"));
   const dispatch: any = useDispatch();
 
   const selectUser = (user: any) => {
@@ -147,11 +148,11 @@ function Private() {
 
   useEffect(() => {
     if (usersState?.length > 0) {
-      console.log('? vo day chi')
       setUserState(usersState.filter((us: any) => us.id !== userRedux.uid)[0]);
       selectUser(usersState.filter((us: any) => us.id !== userRedux.uid)[0]);
     }
-  }, [!currentChannel ? usersState : null]);
+  }, [usersState?.length]);
+  // }, [!currentChannel ? usersState : null]);
 
   return (
     <ChannelStyled className="private-container">

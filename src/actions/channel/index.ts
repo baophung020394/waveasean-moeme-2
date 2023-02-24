@@ -252,7 +252,9 @@ export const setCurrentChannel =
   (channel: any) => (dispatch: any, getState: any) => {
     const { user } = getState().auth;
     // dispatch(joinChannel(channel, user));
-    api.joinChannel(user, channel?.id);
+    if (channel?.id) {
+      api.joinChannel(user, channel?.id);
+    }
     return dispatch({ type: "SET_CHANNEL_CURRENT", channel });
   };
 

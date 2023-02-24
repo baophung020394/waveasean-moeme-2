@@ -14,6 +14,7 @@ function Channel() {
       <div className="channel-container__list">
         <ChannelList />
       </div>
+      <NewChannels />
     </ChannelStyled>
   );
 }

@@ -33,8 +33,8 @@ export const AuthRoute = ({ children, ...rest }: any) => {
       {...rest}
       render={(props: any) => {
         if (
-          props?.match.params.id
-          //   localStorage.getItem("urlCopy")?.length > 0
+          props?.match.params.id &&
+          localStorage.getItem("urlCopy")?.length > 0
         ) {
           return React.cloneElement(onlyChild, { ...rest, ...props });
         } else {

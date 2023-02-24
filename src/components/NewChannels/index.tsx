@@ -1,4 +1,9 @@
-import { createChannel, createChannel2, getChannelList, joinChannel } from "actions/channel";
+import {
+  createChannel,
+  createChannel2,
+  getChannelList,
+  joinChannel,
+} from "actions/channel";
 import CardChannel from "components/CardChannel";
 import CustomModal from "components/CustomModal";
 import React, { useEffect, useState } from "react";
@@ -12,9 +17,9 @@ import Modal from "react-bootstrap/Modal";
 import Error from "components/Error";
 
 interface NewChannelsProps {
-  availableChannels: any;
-  joinedChannels: any;
-  channels: any;
+  availableChannels?: any;
+  joinedChannels?: any;
+  channels?: any;
 }
 
 function NewChannels({
@@ -30,14 +35,14 @@ function NewChannels({
   const isChecking = useSelector(({ channel }) => channel.isLoading);
   const error = useSelector(({ channel }) => channel?.isLoading.error);
 
-  let ids = new Set(joinedChannels.map((room: any) => room?.roomId));
-  let idsChannels = new Set(
-    availableChannels?.map(({ roomId }: any) => roomId)
-  );
+  // let ids = new Set(joinedChannels.map((room: any) => room?.roomId));
+  // let idsChannels = new Set(
+  //   availableChannels?.map(({ roomId }: any) => roomId)
+  // );
 
   const onCreateChannel = (data: any) => {
-    if (data?.room_name === '') return;
-    
+    if (data?.room_name === "") return;
+
     // dispatch({ type: "CHANNELS_CREATE_INIT" });
     dispatch(createChannel2(data));
     setOpen(false);
@@ -83,7 +88,7 @@ function NewChannels({
           <Error error={error} />
         </CustomModal>
       </div>
-      <div className="availables container-fluid mt-3">
+      {/* <div className="availables container-fluid mt-3">
         {false && (
           <div className="availables--null">
             <div className="alert alert-warning">No channels to join :(</div>
@@ -91,11 +96,13 @@ function NewChannels({
         )}
 
         <div className="available--created ">
-          {/* <h1 className="mb-3">Channels Available</h1> */}
           <div className="container-fluid">
             {availableChannels?.length > 0 &&
               availableChannels.map((channel: any, idx: number) => (
-                <div className="available mb-4" key={`${channel?.room_name}-${idx}`}>
+                <div
+                  className="available mb-4"
+                  key={`${channel?.room_name}-${idx}`}
+                >
                   <CardChannel
                     channel={channel}
                     key={`${channel?.room_name}-${idx}`}
@@ -108,7 +115,6 @@ function NewChannels({
         </div>
 
         <div className="available--exists">
-          <h1 className="mb-3">Channels Exists</h1>
           <div className="container-fluid">
             {channels?.length > 0 &&
               channels
@@ -122,7 +128,7 @@ function NewChannels({
                 )
                 .map((channel: any, idx: number) => (
                   <div
-                  key={`${channel?.room_name}-${idx}`}
+                    key={`${channel?.room_name}-${idx}`}
                     className="available mb-4"
                     onClick={() => setIsGoChannel("CREATE_CHANNEL")}
                   >
@@ -136,7 +142,7 @@ function NewChannels({
                 ))}
           </div>
         </div>
-      </div>
+      </div> */}
     </AvailableChatsStyled>
   );
 }

@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import IconFileGrey from "assets/images/chat/send_file_grey.png";
-import IconFileHover from "assets/images/chat/send_file_blue.png";
-import IconScreenShotGrey from "assets/images/chat/screenshot_grey.png";
-import IconScreenShotHover from "assets/images/chat/screenshot_hover.png";
-import IconChatGrey from "assets/images/chat/chat_enter_grey.png";
-import IconChatBlue from "assets/images/chat/chat_enter_blue.png";
+// import IconFileGrey from "assets/images/chat/send_file_grey.png";
+// import IconFileHover from "assets/images/chat/send_file_blue.png";
+// import IconScreenShotGrey from "assets/images/chat/screenshot_grey.png";
+// import IconScreenShotHover from "assets/images/chat/screenshot_hover.png";
+// import IconChatGrey from "assets/images/chat/chat_enter_grey.png";
+// import IconChatBlue from "assets/images/chat/chat_enter_blue.png";
 import EmojiPicker, {
   EmojiStyle,
   SkinTones,
@@ -23,6 +23,7 @@ import { convertFiles } from "utils/handleFiles";
 import firebase from "db/firestore";
 import { MentionsInput, Mention } from "react-mentions";
 import MentionsInputStyle from "./MentionsInputStyle";
+import { Icon } from "semantic-ui-react";
 interface MessangerProps {
   joinedUsersState?: any;
   channel: any;
@@ -39,10 +40,9 @@ function Messanger({
   uploadFileProp,
 }: MessangerProps) {
   const [value, setValue] = useState<any>("");
-  const [listUserJoined, setListUserJoined] = useState<any>([]);
+
   const [isOpenEmoj, setIsOpenEmoj] = useState<boolean>(false);
   const textareaRef = useRef<any>(null);
-  const usersJoinedRef = useRef<any>(null);
   const user = JSON.parse(localStorage.getItem("_profile"));
   const userRedux = useSelector(({ auth }) => auth.user);
 
@@ -249,8 +249,14 @@ function Messanger({
           <button className="btn-hover mr-3">
             <div id="fileUpload">
               <label htmlFor="file-input">
-                <img className="icon24 img-show" src={IconFileGrey} alt="" />
-                <img className="icon24 img-hover" src={IconFileHover} alt="" />
+                <span className="icon24 img-hover">
+                  <Icon name="file" size="large" color="brown" />
+                </span>
+                <span className="icon24 img-show">
+                  <Icon name="file" size="large" color="grey" />
+                </span>
+                {/* <img className="icon24 img-show" src={IconFileGrey} alt="" />
+                <img className="icon24 img-hover" src={IconFileHover} alt="" /> */}
               </label>
               <input
                 className="file-input"
@@ -264,12 +270,19 @@ function Messanger({
             </div>
           </button>
           <button className="btn-hover" onClick={capture}>
-            <img className="icon24 img-show" src={IconScreenShotGrey} alt="" />
+            <span className="icon24 img-hover">
+              <Icon name="photo" size="large" color="brown" />
+            </span>
+            <span className="icon24 img-show">
+              <Icon name="photo" size="large" color="grey" />
+            </span>
+
+            {/* <img className="icon24 img-show" src={IconScreenShotGrey} alt="" />
             <img
               className="icon24 img-hover"
               src={IconScreenShotHover}
               alt=""
-            />
+            /> */}
           </button>
           <div className="ml-3 chat--emoj">
             <button
@@ -310,9 +323,11 @@ function Messanger({
             }}
           >
             {value?.length > 0 && channel?.enableWriteMsg === "1" ? (
-              <img className="icon24 img-hover" src={IconChatBlue} alt="" />
+              <Icon name="send" size="large" />
             ) : (
-              <img className="icon24 img-show" src={IconChatGrey} alt="" />
+              // <img className="icon24 img-hover" src={IconChatBlue} alt="" />
+              <Icon name="send" size="large" disabled />
+              // <img className="icon24 img-show" src={IconChatGrey} alt="" />
             )}
           </button>
         </div>
