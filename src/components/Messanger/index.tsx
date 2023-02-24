@@ -24,6 +24,7 @@ import firebase from "db/firestore";
 import { MentionsInput, Mention } from "react-mentions";
 import MentionsInputStyle from "./MentionsInputStyle";
 import { Icon } from "semantic-ui-react";
+import MentionStyle from "./MentionStyle";
 interface MessangerProps {
   joinedUsersState?: any;
   channel: any;
@@ -207,11 +208,11 @@ function Messanger({
   /**
    * Check auto height of Textarea
    */
-  useEffect(() => {
-    textareaRef.current.style.height = "0px";
-    const scrollHeight = textareaRef.current.scrollHeight;
-    textareaRef.current.style.height = scrollHeight + "px";
-  }, [value]);
+  // useEffect(() => {
+  //   textareaRef.current.style.height = "0px";
+  //   const scrollHeight = textareaRef.current.scrollHeight;
+  //   textareaRef.current.style.height = scrollHeight + "px";
+  // }, [value]);
 
   return (
     <MessangerStyled
@@ -220,6 +221,7 @@ function Messanger({
       } chat-input form-group mt-3 mb-0`}
     >
       <MentionsInput
+        style={MentionsInputStyle}
         id="text-area"
         inputRef={textareaRef}
         onKeyPress={onKeyPress}
@@ -228,19 +230,20 @@ function Messanger({
         onDragLeave={dragLeaveHandler}
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        className="form-control mentions-input"
+        className="mentions-input"
         placeholder={`${
           channel?.enableWriteMsg === "0"
             ? "Chat is disabled"
             : "Type your message here..."
         } `}
-        style={MentionsInputStyle}
       >
         <Mention
           data={joinedUsersState}
           trigger="@"
-          markup="@__display__"
-          style={{ background: "#cee4e5" }}
+          markup="@[__display__]"
+          // markup="@__display__"
+          style={MentionStyle}
+          className="mention-name"
         />
       </MentionsInput>
 
@@ -322,7 +325,8 @@ function Messanger({
               setValue("");
             }}
           >
-            {(value?.length > 0 && channel?.enableWriteMsg === "1" ) || value?.lenght > 0 ? (
+            {(value?.length > 0 && channel?.enableWriteMsg === "1") ||
+            value?.lenght > 0 ? (
               <Icon name="send" size="large" />
             ) : (
               // <img className="icon24 img-hover" src={IconChatBlue} alt="" />
@@ -356,72 +360,57 @@ const MessangerStyled = styled.div`
       z-index: 99;
     }
 
-    .mentions-input {
-      .form-control__control {
-        color: #ccc;
-        font-size: 14px;
-        position: relative;
-
-        &::placeholder {
-          color: #ccc;
-          font-size: 14px;
-        }
-      }
-    }
+    // .mentions-input {
+    //   textarea {
+    //     &::placeholder {
+    //       color: #ccc;
+    //       font-size: 14px;
+    //     }
+    //   }
+    // }
   }
 
   .mentions-input {
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    max-height: 350px;
-    height: auto;
-    border: none;
-    border-bottom: 1px solid #e2e2e2;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    overflow: auto;
-    min-height: 60px;
-    overflow-y: hidden !important;
-
-    .form-control__control {
-      min-height: unset;
-      .form-control__highlighter {
-        overflow-wrap: unset !important;
-        // overflow: unset !important;
-        word-break: break-word;
-        white-space: unset !important;
-        max-height: 350px;
-      }
-    }
-    .form-control__input {
-      border: none;
-      padding: 0;
-      resize: none;
-      padding: 16px;
-      border-bottom: 1px solid #e2e2e2;
+    textarea {
       overflow-y: auto !important;
-      border-radius: 0;
-      border-top-left-radius: 8px;
-      border-top-right-radius: 8px;
-      max-height: 350px;
-      padding: 16px;
-      border: none;
-      height: 100% !important;
-
-      &::placeholder {
-        color: #e2e2e2;
-      }
-
-      &:focus {
-        border-bottom: 1px solid #e2e2e2;
-        box-shadow: none;
-      }
-
-      &::-webkit-scrollbar {
-        // display: none;
-      }
     }
+
+    strong.mention-name {
+      background-color: #cee4e5;
+    }
+    // .mentions-input__highlighter__substring {
+    //   background-color: #cee4e5;
+    //   visibility: visible !important;
+    // }
   }
+
+  // .mentions-input {
+  //   border-top-left-radius: 8px;
+  //   border-top-right-radius: 8px;
+  //   max-height: 350px;
+  //   height: auto;
+  //   border: none;
+  //   border-bottom: 1px solid #e2e2e2;
+  //   border-bottom-left-radius: 0;
+  //   border-bottom-right-radius: 0;
+  //   overflow: auto;
+  //   min-height: 60px;
+  //   overflow-y: hidden !important;
+
+  // &::placeholder {
+  //   color: #e2e2e2;
+  // }
+
+  //     &:focus {
+  //       border-bottom: 1px solid #e2e2e2;
+  //       box-shadow: none;
+  //     }
+
+  //     &::-webkit-scrollbar {
+  //       // display: none;
+  //     }
+  //   }
+  // }
 
   .chat-input__options {
     padding: 16px;

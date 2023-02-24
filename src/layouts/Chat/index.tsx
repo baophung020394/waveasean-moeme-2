@@ -18,10 +18,9 @@ import {
   subscribeToProfile,
   uploadFiles,
 } from "actions/channel";
-import LoadingView from "components/Spinner/LoadingView";
 import ChannelList from "components/ChannelList";
 import { withBaseLayout } from "layouts/Base";
-import firebase from "db/firestore";
+import firebase, { requestForToken } from "db/firestore";
 
 interface ChatProps {}
 
@@ -148,19 +147,19 @@ function Chat({}: ChatProps) {
     return messages;
   };
 
-  // useEffect(() => {
-  //   if (id) {
-  //     let list: any = [];
-  //     userJoinedRef
-  //       .child(id)
-  //       .child("joinedUsers")
-  //       .on("child_added", (snap) => {
-  //         console.log("snap.val()", snap.val());
-  //         list.push(snap.val());
-  //       });
-  //     setJoinedUsersState(list);
-  //   }
-  // }, [id]);
+  useEffect(() => {
+    if (id) {
+      let list: any = [];
+      userJoinedRef
+        .child(id)
+        .child("joinedUsers")
+        .on("child_added", (snap) => {
+          console.log("snap.val()", snap.val());
+          list.push(snap.val());
+        });
+      setJoinedUsersState(list);
+    }
+  }, [id]);
 
   // if (!currentChannel?.id) {
   //   return <LoadingView message="Loading Chat..." />;

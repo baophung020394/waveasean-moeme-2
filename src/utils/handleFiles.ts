@@ -1,7 +1,3 @@
-import { sendChannelMessage2 } from "actions/channel";
-import firebase from "db/firestore";
-import { useDispatch } from "react-redux";
-
 export const convertFiles = (type: any) => {
   const afterDot = type.name.substr(type.name.lastIndexOf(".") + 1);
   const metadata = {

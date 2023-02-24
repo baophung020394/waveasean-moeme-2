@@ -17,12 +17,19 @@ const createRegisterReducer = () =>
     error: createErrorReducer("AUTH_REGISTER"),
   });
 
+const updateUserProfile = () =>
+  combineReducers({
+    isChecking: createIsFetchingReducer("AUTH_UPDATE_PROFILE"),
+    error: createErrorReducer("AUTH_UPDATE_PROFILE"),
+  });
+
 function createAuthReducer() {
   const user = (state: any = null, action: any) => {
     switch (action.type) {
       case "AUTH_ON_ERROR":
       case "AUTH_ON_INIT":
         return null;
+      case "AUTH_UPDATE_PROFILE_SUCCESS":
       case "AUTH_LOGIN_FIREBASE_SUCCESS":
       case "AUTH_LOGIN_SUCCESS":
       case "AUTH_REGISTER_SUCCESS":
@@ -50,6 +57,7 @@ function createAuthReducer() {
     isChecking: createIsFetchingReducer("AUTH_ON"),
     login: createLoginReducer(),
     register: createRegisterReducer(),
+    update: updateUserProfile(),
   });
 }
 

@@ -24,12 +24,12 @@ function Register({}: RegisterProps) {
       createdUser.user
         .updateProfile({
           displayName: getValues("username"),
-          photoURL: `http://gravatar.com/avatar/${createdUser.user.uid}?d=identicon`,
+          photoURL: `http://gravatar.com/avatar/${createdUser.user.uid}?s=32&d=identicon&r=PG`,
         })
         .then(() => {
           const profile = {
             displayName: getValues("username"),
-            photoURL: `http://gravatar.com/avatar/${createdUser.user.uid}?d=identicon`,
+            photoURL: `http://gravatar.com/avatar/${createdUser.user.uid}?s=32&d=identicon&r=PG`,
             uid: createdUser.user.uid,
             username: getValues("username"),
             userId: getValues("userId"),

@@ -11,6 +11,7 @@ import { createTimestamp } from "utils/time";
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import Form from "react-bootstrap/Form";
+import { Checkbox } from "semantic-ui-react";
 
 interface CreateChannelProps {
   submitForm?: (data: any) => void;
@@ -39,7 +40,7 @@ function CreateChannel({
     data.room_reg_date = createTimestamp();
     data.user_reg_date = createTimestamp();
     data.enableWriteMsg = data.enableWriteMsg ? "0" : "1";
-    data.device = "web"
+    data.device = "web";
     submitForm(data);
   };
 
@@ -141,12 +142,13 @@ function CreateChannel({
           <div className="form--inputs__input">
             <div className="mb-3 switches">
               <h4>Only admin can write</h4>
-              <Form.Check
+              <Checkbox {...register("enableWriteMsg")} toggle />
+              {/* <Form.Check
                 type="switch"
                 id="custom-switch"
                 label=""
                 {...register("enableWriteMsg")}
-              />
+              /> */}
             </div>
           </div>
           <div className="form--inputs__input">
@@ -326,7 +328,7 @@ const CreateChannelStyled = styled.div<{
           width: 100%;
 
           h4 {
-            padding-top: 12px;
+            // padding-top: 12px;
           }
 
           .custom-switch {

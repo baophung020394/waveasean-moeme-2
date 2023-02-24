@@ -22,13 +22,16 @@ function Private() {
 
   const dispatch: any = useDispatch();
 
-  const selectUser = (user: any) => {
-    let userTemp = { ...user };
-    userTemp.id = generateChannelId(user?.id);
-    setUserState(userTemp);
-    setLastVisited(userRedux, currentChannel);
-    setLastVisited(userRedux, userTemp);
-    dispatch(setCurrentChannel(userTemp));
+  const selectUser = (user: any, isClicked: boolean) => {
+    console.log({ user });
+    if (user) {
+      let userTemp = { ...user };
+      userTemp.id = generateChannelId(user?.id);
+      setUserState(userTemp);
+      setLastVisited(userRedux, currentChannel);
+      setLastVisited(userRedux, userTemp);
+      dispatch(setCurrentChannel(userTemp, isClicked));
+    }
   };
 
   const generateChannelId = (userId: string) => {
@@ -99,7 +102,7 @@ function Private() {
             key={u.uid}
             onClick={(e) => {
               e.preventDefault();
-              selectUser(u);
+              selectUser(u, true);
             }}
           >
             <div className="infor-user">
@@ -149,7 +152,7 @@ function Private() {
   useEffect(() => {
     if (usersState?.length > 0) {
       setUserState(usersState.filter((us: any) => us.id !== userRedux.uid)[0]);
-      selectUser(usersState.filter((us: any) => us.id !== userRedux.uid)[0]);
+      selectUser(usersState.filter((us: any) => us.id !== userRedux.uid)[0], false);
     }
   }, [usersState?.length]);
   // }, [!currentChannel ? usersState : null]);

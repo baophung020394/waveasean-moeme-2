@@ -22,7 +22,7 @@ const PushNotification = () => {
     }
   }, [notification]);
 
-  requestForToken();
+  // requestForToken();
 
   onMessageListener()
     .then((payload: any) => {

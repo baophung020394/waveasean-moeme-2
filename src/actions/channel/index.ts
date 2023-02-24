@@ -249,10 +249,11 @@ export const registerMessageSubscription = (
 });
 
 export const setCurrentChannel =
-  (channel: any) => (dispatch: any, getState: any) => {
+  (channel: any, isClicked: boolean) => (dispatch: any, getState: any) => {
     const { user } = getState().auth;
     // dispatch(joinChannel(channel, user));
-    if (channel?.id) {
+    // console.log({ channel });
+    if (channel?.id && isClicked) {
       api.joinChannel(user, channel?.id);
     }
     return dispatch({ type: "SET_CHANNEL_CURRENT", channel });
@@ -322,6 +323,7 @@ export const uploadFiles =
     let perCentUpload: any;
     const filePath = `chat/files/${newData.idMessage}.${newData.metadata.type}`;
 
+    console.log({ newData });
     return storageRef
       .child(filePath)
       .put(newData.files, { contentType: newData.fileType })

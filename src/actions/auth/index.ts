@@ -88,3 +88,10 @@ export const listenToAuthChanges = () => (dispatch: any) => {
     }
   });
 };
+
+export const updateProfileUser = (user: any) => (dispatch: any) => {
+  console.log("user acion", user);
+  return api.updateProfileUser(user).then(() => {
+    dispatch({ type: "AUTH_UPDATE_PROFILE_SUCCESS", user });
+  });
+};

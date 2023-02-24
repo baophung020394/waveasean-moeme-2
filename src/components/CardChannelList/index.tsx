@@ -16,6 +16,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import firebase from "db/firestore";
 import { createTimestamp } from "utils/time";
+import { Image } from "semantic-ui-react";
 
 interface CardChannelListProps {
   channel: Channel;
@@ -77,15 +78,11 @@ function CardChannelList({
     }
   };
 
-  const onChooseChannel = async (channel: any) => {
-    setChannel(channel);
-
-    // askForConfirmtionNewChannel(channel);
+  const onChooseChannel = (channel: any, isClicked: boolean) => {
     if (currentChannel) {
-      console.log("tada");
       setLastVisited(user, currentChannel);
       setLastVisited(user, channel);
-      dispatch(setCurrentChannel(channel));
+      dispatch(setCurrentChannel(channel, isClicked));
     }
     history.push(`/channel-detail/${channel?.id}`);
   };
@@ -116,8 +113,7 @@ function CardChannelList({
       <div
         className="card"
         onClick={() => {
-          onChooseChannel(channel);
-          // selectChannel(channel);
+          onChooseChannel(channel, true);
         }}
         key={`${channel?.room_name}-${channel?.id}`}
       >
@@ -158,7 +154,8 @@ function CardChannelList({
         </div>
         <div className="card--bottom">
           <div className="card--bottom__person">
-            <object
+            <Image src={`${channel?.createdBy.photoURL}`} avatar />
+            {/* <object
               className="icon24 avatar"
               data={`http://moa.aveapp.com:21405/file/api/down_proc.jsp?type=12&userid=${channel?.ownerId}&roomid=${channel?.roomId}`}
               type="image/png"
@@ -168,7 +165,7 @@ function CardChannelList({
                 alt="avatar"
                 className="icon24 avatar"
               />
-            </object>
+            </object> */}
 
             <span className="card--bottom__person__name">
               {channel?.owner_name}

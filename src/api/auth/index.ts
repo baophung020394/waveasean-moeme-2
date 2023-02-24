@@ -57,7 +57,7 @@ export const createUser = (userProfileRegister: any, profile: any) => {
     displayName: profile.displayName,
     photoURL: profile.photoURL,
     uid: profile.uid,
-    id: profile.uid,
+    id: profile.username,
     display: profile.username,
     username: profile?.username,
     userId: profile.userId,
@@ -65,11 +65,10 @@ export const createUser = (userProfileRegister: any, profile: any) => {
     atk: profile.atk,
     avatar: "",
   });
-  // return db
-  //   .database()
-  //   .ref("users")
-  //   .child(userProfileRegister.uid)
-  //   .set(userProfileRegister)
-  //   .then((user) => console.log("saved user", user))
-  //   .catch((err) => console.log("err", err));
+};
+
+export const updateProfileUser = (user) => {
+  console.log("user api", user);
+  const userRef = db.database().ref("users").child(user.uid);
+  return userRef.update(user);
 };

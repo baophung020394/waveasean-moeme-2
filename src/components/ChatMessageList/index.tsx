@@ -10,6 +10,7 @@ import ProgressBar from "react-bootstrap/ProgressBar";
 import { v4 as uuidv4 } from "uuid";
 import { convertFiles } from "utils/handleFiles";
 import { createTimestamp } from "utils/time";
+import { Image } from "semantic-ui-react";
 
 interface ChatMessageListProps {
   messages: any;
@@ -128,7 +129,8 @@ function ChatMessageList({
                 key={`${message?.id}-${idx}`}
               >
                 <div className="chat-avatar">
-                  <object
+                  <Image src={message?.user.user.photoURL} avatar />
+                  {/* <object
                     className="icon40 avatar"
                     data={`http://moa.aveapp.com:21405/file/api/down_proc.jsp?type=12&userid=${message?.stocks?.user.userId}&roomid=${message?.stocks.user?.roomId}`}
                     type="image/png"
@@ -138,7 +140,7 @@ function ChatMessageList({
                       alt="avatar"
                       className="icon40 avatar"
                     />
-                  </object>
+                  </object> */}
                   <div className="chat-name">
                     {message?.author?.username}
                     <div className="chat-hour">
@@ -161,7 +163,8 @@ function ChatMessageList({
                 key={`${message?.ID}-${idx}`}
               >
                 <div className="chat-avatar">
-                  <object
+                  <Image src={message?.user.user.photoURL} avatar />
+                  {/* <object
                     className="icon40 avatar"
                     data={`http://moa.aveapp.com:21405/file/api/down_proc.jsp?type=12&userid=${message?.user.userId}&roomid=${message?.user?.roomId}`}
                     type="image/png"
@@ -171,7 +174,7 @@ function ChatMessageList({
                       alt="avatar"
                       className="icon40 avatar"
                     />
-                  </object>
+                  </object> */}
                   <div className="chat-name">
                     {message?.author?.username}
                     <div className="chat-hour">
@@ -209,7 +212,7 @@ function ChatMessageList({
                 key={`${message?.ID}-${idx}`}
               >
                 <div className="chat-avatar">
-                  <object
+                  {/* <object
                     className="icon40 avatar"
                     data={`http://moa.aveapp.com:21405/file/api/down_proc.jsp?type=12&userid=${message?.user.userId}&roomid=${message?.user?.roomId}`}
                     type="image/png"
@@ -219,7 +222,8 @@ function ChatMessageList({
                       alt="avatar"
                       className="icon40 avatar"
                     />
-                  </object>
+                  </object> */}
+                  <Image src={message?.user.user.photoURL} avatar />
                   <div className="chat-name">
                     {message?.author?.username}
                     <div className="chat-hour">
@@ -264,7 +268,7 @@ function ChatMessageList({
                 key={`${message?.id}-${idx}`}
               >
                 <div className="chat-avatar">
-                  <object
+                  {/* <object
                     className="icon40 avatar"
                     data={`http://moa.aveapp.com:21405/file/api/down_proc.jsp?type=12&userid=${message?.user.userId}&roomid=${message?.roomId}`}
                     type="image/png"
@@ -274,8 +278,8 @@ function ChatMessageList({
                       alt="avatar"
                       className="icon40 avatar"
                     />
-                  </object>
-
+                  </object> */}
+                  <Image src={message?.user.user.photoURL} avatar />
                   <div className="chat-name">
                     {message?.author?.username}
                     <div className="chat-hour">
@@ -311,7 +315,7 @@ function ChatMessageList({
             return (
               <li className={isAuthorOf(message)} key={`${message?.id}-${idx}`}>
                 <div className="chat-avatar">
-                  <object
+                  {/* <object
                     className="icon40 avatar"
                     data={`http://moa.aveapp.com:21405/file/api/down_proc.jsp?type=12&userid=${message?.user.userId}&roomid=${message?.roomId}`}
                     type="image/png"
@@ -321,8 +325,8 @@ function ChatMessageList({
                       alt="avatar"
                       className="icon40 avatar"
                     />
-                  </object>
-
+                  </object> */}
+                  <Image src={message?.user.user.photoURL} avatar />
                   <div className="chat-name">
                     {message?.author?.username}
                     <div className="chat-hour">

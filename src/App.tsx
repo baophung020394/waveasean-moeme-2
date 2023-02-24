@@ -21,7 +21,7 @@ import {
 import StoreProvider from "store/StoreProvider";
 import styled from "styled-components";
 import Header from "./components/common/Header";
-import PushNotification from "components/PushNotification";
+import { requestForToken } from "db/firestore";
 
 export const AuthRoute = ({ children, ...rest }: any) => {
   const user = useSelector(({ auth }: any) => auth.user);
@@ -57,6 +57,8 @@ function MoeMe() {
   const dispatch: any = useDispatch();
   const isOnline = useSelector(({ app }: any) => app.isOnline);
   const isChecking = useSelector(({ auth }: any) => auth.isChecking);
+  const user = useSelector(({ auth }: any) => auth.user);
+  // requestForToken();
 
   useEffect(() => {
     const unsubFromAuth = dispatch(listenToAuthChanges());
@@ -81,7 +83,6 @@ function MoeMe() {
   return (
     <Router>
       <Header />
-      <PushNotification />
       <ContentWrapper>
         <Switch>
           <Route path="/login">
@@ -106,7 +107,7 @@ function MoeMe() {
             <PrivateChat />
           </AuthRoute>
           <AuthRoute path="/profile">
-            <ProfileView />
+            <ProfileView user={user} />
           </AuthRoute>
           <AuthRoute path="/settings">
             <SettingsView />

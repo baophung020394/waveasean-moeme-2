@@ -16,37 +16,20 @@ import styled from "styled-components";
 import db, { Timestamp } from "db/firestore";
 
 import CardChannelList from "components/CardChannelList";
-import { createTimestamp } from "utils/time";
 import "firebase/compat/firestore";
 import firebase from "firebase/compat/app";
 import "firebase/database";
-import { Notification } from "components/Notifications";
 
 interface ChannelListProps {}
 
 function ChannelList({}: ChannelListProps) {
   const [channel, setChannel] = useState(null);
-  const [firstLoad, setFirstLoad] = useState(true);
   const dispatch: any = useDispatch();
   const isChecking = useSelector(({ channel }) => channel.isChecking);
   const user = useSelector(({ auth }) => auth.user);
   const currentChannel = useSelector(({ channel }) => channel.currentChannel);
 
-  const notificationsChnl = useSelector(({ channel }) => channel.notifications);
-  const messageSubsNotifications = useSelector(
-    ({ channel }) => channel.messageSubsNotifications
-  );
-
   const [channelsState, setChannelsState] = useState([]);
-
-  // const setFirstChannel = () => {
-  //   const firstChannel = joinedChannels[0];
-  //   if (firstLoad && joinedChannels.length > 0) {
-  //     setChannel(firstChannel);
-  //     dispatch(setCurrentChannel(firstChannel));
-  //   }
-  //   setFirstLoad(false);
-  // };
 
   const channelsRef = firebase.database().ref("channels");
 
@@ -62,10 +45,9 @@ function ChannelList({}: ChannelListProps) {
     return () => channelsRef.off();
   }, []);
 
-  console.log({ channelsState });
   useEffect(() => {
     if (channelsState.length > 0) {
-      dispatch(setCurrentChannel(channelsState[0]));
+      dispatch(setCurrentChannel(channelsState[0], false));
       // localStorage.setItem("urlCopy", "");
       // localStorage.setItem("selectedChannel", "");
     }
@@ -78,7 +60,10 @@ function ChannelList({}: ChannelListProps) {
       localStorage.getItem("selectedChannel")?.length > 0
     ) {
       dispatch(
-        setCurrentChannel(JSON.parse(localStorage.getItem("selectedChannel")))
+        setCurrentChannel(
+          JSON.parse(localStorage.getItem("selectedChannel")),
+          false
+        )
       );
       // localStorage.setItem("urlCopy", "");
       // localStorage.setItem("selectedChannel", "");
