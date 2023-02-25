@@ -1,7 +1,8 @@
 import { updateProfileUser } from "actions/auth";
 import { ImageUpload } from "components/ImageUpload";
+import firebase from "db/firestore";
 import { withBaseLayout } from "layouts/Base";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
@@ -21,8 +22,13 @@ interface ProfileProps {
 
 function Profile({ user }: ProfileProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [valueBio, setValueBio] = useState<string>("");
-  const [valueDes, setValueDes] = useState<string>("");
+  const [isChange, setIsChange] = useState<boolean>(false);
+  const [valueBio, setValueBio] = useState<string>(
+    user?.bio !== "" ? user?.bio : ""
+  );
+  const [valueDes, setValueDes] = useState<string>(
+    user?.description !== "" ? user?.description : ""
+  );
   const isChecking = useSelector(({ auth }) => auth.update.isChecking);
   const openUpload = () => setIsOpen(true);
   const closeUpload = () => setIsOpen(false);
@@ -33,7 +39,6 @@ function Profile({ user }: ProfileProps) {
 
   const handleClickBio = () => {
     bioRef.current.style.display = "block";
-    setValueBio(user?.bio);
   };
 
   const handleClickOutSideBio = () => {
@@ -43,7 +48,6 @@ function Profile({ user }: ProfileProps) {
 
   const handleClickDes = () => {
     desRef.current.style.display = "block";
-    setValueDes(user?.description);
   };
 
   const handleClickOutSideDes = () => {
@@ -52,29 +56,27 @@ function Profile({ user }: ProfileProps) {
   };
 
   const updateBio = () => {
-    console.log("bio");
-    if (valueBio === "") return;
+    if (!isChange) return;
     dispatch({ type: "AUTH_UPDATE_PROFILE_INIT" });
     const newUser = { ...user };
     newUser.bio = valueBio;
     dispatch(updateProfileUser(newUser));
-    setValueBio("");
+    setIsChange(false);
   };
 
   const updateDescription = () => {
-    console.log("description");
-    if (valueDes === "") return;
+    if (!isChange) return;
     dispatch({ type: "AUTH_UPDATE_PROFILE_INIT" });
     const newUser = { ...user };
     newUser.description = valueDes;
     dispatch(updateProfileUser(newUser));
-    setValueDes("");
+    setIsChange(false);
   };
 
   return (
     <ProfileStyled className="profile-container">
       <Grid>
-        <Grid.Column width={6}>
+        <Grid.Column width={9}>
           <Item.Group>
             <Item>
               {isChecking ? (
@@ -107,11 +109,12 @@ function Profile({ user }: ProfileProps) {
                       disabled={isChecking}
                       onClick={handleClickBio}
                       value={valueBio}
-                      placeholder={`${
-                        user?.bio !== "" ? user?.bio : "Input bio..."
-                      }`}
+                      placeholder="Input bio..."
                       className="input"
-                      onChange={(e) => setValueBio(e.target.value)}
+                      onChange={(e) => {
+                        setValueBio(e.target.value);
+                        setIsChange(true);
+                      }}
                     />
                     <div
                       className="layer"
@@ -132,12 +135,11 @@ function Profile({ user }: ProfileProps) {
                         disabled={isChecking}
                         onClick={handleClickDes}
                         value={valueDes}
-                        onChange={(e) => setValueDes(e.target.value)}
-                        placeholder={`${
-                          user?.description !== ""
-                            ? user?.description
-                            : "Input description..."
-                        }`}
+                        onChange={(e) => {
+                          setValueDes(e.target.value);
+                          setIsChange(true);
+                        }}
+                        placeholder="Input description..."
                         className="textarea"
                         style={{ minHeight: 100 }}
                       />

@@ -1,26 +1,18 @@
-import { sendChatMessage } from "actions/chat";
+import {
+  sendChannelMessage2, uploadFiles
+} from "actions/channel";
+import ChannelList from "components/ChannelList";
 import ChatBar from "components/ChatBar";
 import ChatMessageList from "components/ChatMessageList";
 import ChatOptions from "components/ChatOptions";
 import Messanger from "components/Messanger";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import firebase from "db/firestore";
+import { withBaseLayout } from "layouts/Base";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
-import {
-  clearNotifications,
-  registerMessageSubscription,
-  sendChannelMessage,
-  sendChannelMessage2,
-  subscribeToChannel,
-  subscribeToMessages,
-  subscribeToProfile,
-  uploadFiles,
-} from "actions/channel";
-import ChannelList from "components/ChannelList";
-import { withBaseLayout } from "layouts/Base";
-import firebase, { requestForToken } from "db/firestore";
 
 interface ChatProps {}
 

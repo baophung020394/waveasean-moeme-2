@@ -27,6 +27,8 @@ function Private() {
     if (user) {
       let userTemp = { ...user };
       userTemp.id = generateChannelId(user?.id);
+      console.log(userTemp.id)
+      
       setUserState(userTemp);
       setLastVisited(userRedux, currentChannel);
       setLastVisited(userRedux, userTemp);
@@ -152,7 +154,10 @@ function Private() {
   useEffect(() => {
     if (usersState?.length > 0) {
       setUserState(usersState.filter((us: any) => us.id !== userRedux.uid)[0]);
-      selectUser(usersState.filter((us: any) => us.id !== userRedux.uid)[0], false);
+      selectUser(
+        usersState.filter((us: any) => us.id !== userRedux.uid)[0],
+        false
+      );
     }
   }, [usersState?.length]);
   // }, [!currentChannel ? usersState : null]);

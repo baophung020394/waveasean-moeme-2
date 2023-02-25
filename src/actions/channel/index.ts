@@ -251,8 +251,7 @@ export const registerMessageSubscription = (
 export const setCurrentChannel =
   (channel: any, isClicked: boolean) => (dispatch: any, getState: any) => {
     const { user } = getState().auth;
-    // dispatch(joinChannel(channel, user));
-    // console.log({ channel });
+
     if (channel?.id && isClicked) {
       api.joinChannel(user, channel?.id);
     }
