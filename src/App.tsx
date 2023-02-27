@@ -120,7 +120,7 @@ function MoeMe() {
   }
 
   return (
-    <Router>
+    <Router basename="/waveasean-moeme-2">
       <Header />
       <ContentWrapper>
         <Switch>
