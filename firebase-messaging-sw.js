@@ -1,20 +1,16 @@
 // This a service worker file for receiving push notifitications.
 // See `Access registration token section` @ https://firebase.google.com/docs/cloud-messaging/js/client#retrieve-the-current-registration-token
-// if ("serviceWorker" in navigator) {
-//   navigator.serviceWorker
-//     .register("../firebase-messaging-sw.js")
-//     .then(function (registration) {
-//       console.log("Registration successful, scope is:", registration.scope);
-//     })
-//     .catch(function (err) {
-//       console.log("Service worker registration failed, error:", err);
-//     });
-// }
 
 // Scripts for firebase and firebase messaging
-// proper initialization
-importScripts("https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js");
-importScripts("https://www.gstatic.com/firebasejs/9.17.1/firebase-messaging-compat.js");
+
+importScripts(
+  "https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"
+);
+importScripts(
+  "https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js"
+);
+// importScripts("https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js");
+// importScripts("https://www.gstatic.com/firebasejs/8.2.0/firebase-messaging.js");
 
 // Initialize the Firebase app in the service worker by passing the generated config
 const firebaseConfig = {
@@ -31,15 +27,37 @@ firebase.initializeApp(firebaseConfig);
 
 // Retrieve firebase messaging
 const messaging = firebase.messaging();
-
 // Handle incoming messages while the app is not in focus (i.e in the background, hidden behind other tabs, or completely closed).
 messaging.onBackgroundMessage(function (payload) {
-  console.log("Received background message ", payload);
-
-  const notificationTitle = payload.notification.title;
+  console.log("Received background message ", payload.data.notification);
+  console.log("payload", JSON.parse(payload.data.notification).body);
+  const notificationTitle = JSON.parse(payload.data.notification).title;
   const notificationOptions = {
-    body: payload.notification.body,
+    title: JSON.parse(payload.data.notification).title,
+    body: JSON.parse(payload.data.notification).body,
+    // icon: '/firebase-logo.png'
   };
+
+  // const notificationTitle = payload.notification.title;
+  // const notificationOptions = {
+  //   body: payload.notification.body,
+  // };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
+
+// onBackgroundMessage(messaging, (payload) => {
+//   console.log(
+//     "[firebase-messaging-sw.js] Received background message ",
+//     payload
+//   );
+//   // Customize notification here
+//   const notificationTitle = "Background Message Title";
+//   const notificationOptions = {
+//     body: "Background Message body.",
+//     icon: "/firebase-logo.png",
+//   };
+
+//   self.registration.showNotification(notificationTitle, notificationOptions);
+// });
+// Open/focus link in a notification message.
