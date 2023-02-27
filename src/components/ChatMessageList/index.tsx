@@ -68,7 +68,7 @@ function ChatMessageList({
             content: ``,
             files: file,
             idMessage: myuuid,
-            user: profile,
+            user: user,
             timestamp: createTimestamp(),
             fileType: file.type,
             metadata: convertFiles(file),
@@ -128,7 +128,7 @@ function ChatMessageList({
                 key={`${message?.id}-${idx}`}
               >
                 <div className="chat-avatar">
-                  <Image src={message?.user.photoURL} avatar />
+                  <Image src={message?.user?.photoURL} avatar />
                   {/* <object
                     className="icon40 avatar"
                     data={`http://moa.aveapp.com:21405/file/api/down_proc.jsp?type=12&userid=${message?.stocks?.user.userId}&roomid=${message?.stocks.user?.roomId}`}

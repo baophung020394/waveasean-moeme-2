@@ -1,6 +1,4 @@
-import {
-  sendChannelMessage2, uploadFiles
-} from "actions/channel";
+import { sendChannelMessage2, uploadFiles } from "actions/channel";
 import ChannelList from "components/ChannelList";
 import ChatBar from "components/ChatBar";
 import ChatMessageList from "components/ChatMessageList";
@@ -12,7 +10,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-
 
 interface ChatProps {}
 

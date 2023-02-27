@@ -292,7 +292,6 @@ export const createChannel2 =
 export const sendChannelMessage2 =
   (message: any, channelId: string) => (dispatch: any, getState: any) => {
     const newMessage = { ...message };
-    const messagesRef = db.database().ref("messages");
     const { user } = getState().auth;
     delete newMessage.author;
 
@@ -320,11 +319,9 @@ export const uploadFiles =
   (dispatch: any) => {
     const storageRef = db.storage().ref();
     let newData = { ...data };
-
     let perCentUpload: any;
     const filePath = `chat/files/${newData.idMessage}.${newData.metadata.type}`;
 
-    console.log({ newData });
     return storageRef
       .child(filePath)
       .put(newData.files, { contentType: newData.fileType })
@@ -334,8 +331,7 @@ export const uploadFiles =
           perCentUpload = Math.round(
             (snap.bytesTransferred / snap.totalBytes) * 100
           );
-          // console.log("percentUpload", perCentUpload);
-          // console.log({ newList });
+
           perCentUploadFunc({
             percent: perCentUpload,
             status: "Uploading",
@@ -345,7 +341,7 @@ export const uploadFiles =
         },
         (err) => {
           console.log("err", err);
-          // console.log("perCentUpload err", perCentUpload);
+
           perCentUploadFunc({
             percent: 0,
             status: "Failed",

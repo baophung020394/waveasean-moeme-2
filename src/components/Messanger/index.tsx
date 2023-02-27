@@ -41,6 +41,7 @@ function Messanger({
   uploadFileProp,
 }: MessangerProps) {
   const [value, setValue] = useState<any>("");
+  const [ids, setIds] = useState<any>([]);
   const [isOpenEmoj, setIsOpenEmoj] = useState<boolean>(false);
   const textareaRef = useRef<any>(null);
   const user = JSON.parse(localStorage.getItem("_profile"));
@@ -73,7 +74,7 @@ function Messanger({
         content: ``,
         files: file,
         idMessage: myuuid,
-        user,
+        user: userRedux,
         timestamp: createTimestamp(),
         fileType: file.type,
         metadata: convertFiles(file),
@@ -132,23 +133,13 @@ function Messanger({
   };
 
   const handleAddUsersMention = (id: string, display: string) => {
-    console.log("id", id);
-    console.log("display", display);
-    let ids = [];
-
-    // const newIds = ids.reduce((acc, current) => {
-    //   console.log(id);
-    //   if (!acc.includes(id)) {
-    //     acc.push(id);
-    //   }
-    //   return acc;
-    // }, []);
-
-    // if (!ids.includes(id)) {
-    //   ids.push(id);
-    // }
-    // console.log({ newIds });
+    if (ids.includes(id)) {
+      console.log("trung");
+    } else {
+      setIds((prev: any) => [...prev, id]);
+    }
   };
+
   /**
    * Capture
    */
@@ -186,7 +177,7 @@ function Messanger({
             content: ``,
             files: file,
             idMessage: myuuid,
-            user,
+            user: userRedux,
             timestamp: createTimestamp(),
             fileType: file.type,
             metadata: convertFiles(file),
@@ -248,13 +239,12 @@ function Messanger({
         placeholder={`${
           channel?.enableWriteMsg === "0"
             ? "Chat is disabled"
-            : "Type your message here..."
+            : "Type your message here.../ Type '@' to mentions users in channel"
         } `}
       >
         <Mention
-          displayTransform={(id, display) => {
+          onAdd={(id, display, startPos, endPos) => {
             handleAddUsersMention(id, display);
-            return display;
           }}
           data={joinedUsersState}
           trigger="@"
