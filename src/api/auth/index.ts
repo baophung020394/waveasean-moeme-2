@@ -57,7 +57,7 @@ export const createUser = (userProfileRegister: any, profile: any) => {
     displayName: profile.displayName,
     photoURL: profile.photoURL,
     uid: profile.uid,
-    id: profile.username,
+    id: profile.uid,
     display: profile.username,
     username: profile?.username,
     userId: profile.userId,

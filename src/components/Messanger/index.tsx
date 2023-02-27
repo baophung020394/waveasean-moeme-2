@@ -131,7 +131,24 @@ function Messanger({
     onSubmit(messages);
   };
 
-  const handleAddUsersMention = (id: string, display: string) => {};
+  const handleAddUsersMention = (id: string, display: string) => {
+    console.log("id", id);
+    console.log("display", display);
+    let ids = [];
+
+    // const newIds = ids.reduce((acc, current) => {
+    //   console.log(id);
+    //   if (!acc.includes(id)) {
+    //     acc.push(id);
+    //   }
+    //   return acc;
+    // }, []);
+
+    // if (!ids.includes(id)) {
+    //   ids.push(id);
+    // }
+    // console.log({ newIds });
+  };
   /**
    * Capture
    */
@@ -236,15 +253,12 @@ function Messanger({
       >
         <Mention
           displayTransform={(id, display) => {
-            console.log("id", id);
-            console.log("display", display);
             handleAddUsersMention(id, display);
             return display;
           }}
           data={joinedUsersState}
           trigger="@"
           markup="@[__display__]"
-          // markup="@__display__"
           style={MentionStyle}
           className="mention-name"
         />

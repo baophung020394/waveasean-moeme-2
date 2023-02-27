@@ -252,7 +252,7 @@ export const setCurrentChannel =
   (channel: any, isClicked: boolean) => (dispatch: any, getState: any) => {
     const { user } = getState().auth;
     const newUser = { ...user };
-    newUser.id = user.username;
+    newUser.id = user.uid;
     newUser.display = user.username;
     if (channel?.id && isClicked) {
       api.joinChannel(newUser, channel?.id);
