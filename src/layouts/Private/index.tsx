@@ -14,7 +14,7 @@ interface PrivateProps {
   statusRef: any;
   connectedRef: any;
 }
-function Private({ usersRef,statusRef, connectedRef }: PrivateProps) {
+function Private({ usersRef, statusRef, connectedRef }: PrivateProps) {
   const [usersState, setUsersState] = useState([]);
   const [userState, setUserState] = useState({});
   const [connectedUserState, setConnectedUserState] = useState([]);
@@ -105,7 +105,6 @@ function Private({ usersRef,statusRef, connectedRef }: PrivateProps) {
       return usersState
         .filter((us: any) => us.id !== userRedux.uid && us.uid !== undefined)
         .map((u) => {
-          // console.log('chimbehuy', u.uid)
           return (
             <li
               key={u.id}
