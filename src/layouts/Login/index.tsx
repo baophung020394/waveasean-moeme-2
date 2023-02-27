@@ -53,11 +53,6 @@ function Login({}: LoginProps) {
             </div>
           </div>
 
-          {/* {user !== null && user?.result !== "success" && (
-            <div className="alert alert-danger small" style={{ marginTop: 48 }}>
-              {user?.result}
-            </div>
-          )} */}
           {error && (
             <div className="alert alert-danger small">{error.message}</div>
           )}
@@ -68,11 +63,13 @@ function Login({}: LoginProps) {
               name="Login"
               className="btn-login"
               inputColor={isChecking ? "" : "primary"}
-            >
-              Login
-            </Button>
+            ></Button>
           </div>
         </form>
+
+        <div className="forgot-options">
+          Did you haven't an account?<Link to="/register">Register</Link>
+        </div>
 
         <div className="forgot-options">
           <Link to="/register">userid searching</Link>

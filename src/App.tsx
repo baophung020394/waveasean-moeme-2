@@ -22,6 +22,7 @@ import StoreProvider from "store/StoreProvider";
 import styled from "styled-components";
 import Header from "./components/common/Header";
 import { requestForToken } from "db/firestore";
+import firebase from "db/firestore";
 
 export const AuthRoute = ({ children, ...rest }: any) => {
   const user = useSelector(({ auth }: any) => auth.user);
@@ -58,7 +59,27 @@ function MoeMe() {
   const isOnline = useSelector(({ app }: any) => app.isOnline);
   const isChecking = useSelector(({ auth }: any) => auth.isChecking);
   const user = useSelector(({ auth }: any) => auth.user);
+  const usersRef = firebase.database().ref("users");
+  const statusRef = firebase.database().ref("status");
+  const connectedRef = firebase.database().ref(".info/connected");
   // requestForToken();
+
+  useEffect(() => {
+    connectedRef.on("value", (snap) => {
+      if (user && user?.uid && snap.val()) {
+         console.log('user.uid', user.id)
+        const userStatusRef = statusRef.child(user.uid);
+        userStatusRef.set(true);
+
+        userStatusRef.onDisconnect().remove();
+      }
+    });
+
+    return () => {
+      usersRef.off();
+      connectedRef.off();
+    };
+  }, [user]);
 
   useEffect(() => {
     const unsubFromAuth = dispatch(listenToAuthChanges());
@@ -101,7 +122,7 @@ function MoeMe() {
             <ChatView />
           </AuthRoute>
           <AuthRoute path="/private">
-            <PrivateView />
+            <PrivateView usersRef={usersRef} connectedRef={connectedRef} statusRef={statusRef} />
           </AuthRoute>
           <AuthRoute path="/private-detail/:id">
             <PrivateChat />

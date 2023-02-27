@@ -47,7 +47,7 @@ function Messanger({
   const user = JSON.parse(localStorage.getItem("_profile"));
   const userRedux = useSelector(({ auth }) => auth.user);
 
-  console.log({userRedux})
+  // console.log({userRedux})
   let myuuid = uuidv4();
 
   /**

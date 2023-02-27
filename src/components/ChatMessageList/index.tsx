@@ -121,7 +121,6 @@ function ChatMessageList({
     >
       <ul ref={messagesRef} className="chat-box chatContainerScroll">
         {messages.map((message: any, idx: number) => {
-          console.log({ message });
           if (message?.stocks) {
             return (
               <li
@@ -195,9 +194,7 @@ function ChatMessageList({
                   />
                   {selectedFile?.timestamp === message?.timestamp &&
                     message.status === "Uploading" && (
-                      <>
-                        <ProgressBars progressBar={progressBar} />;
-                      </>
+                      <ProgressBars progressBar={progressBar} />
                     )}
                 </div>
               </li>

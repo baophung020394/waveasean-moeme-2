@@ -9,7 +9,7 @@ import firebase from "db/firestore";
 
 function Settings() {
   const dispatch: any = useDispatch();
-  const user = useSelector(({ auth }) => auth?.logout?.user);
+  const user = useSelector(({ auth }) => auth?.user);
   const history = useHistory();
   const [connectedUserState, setConnectedUserState] = useState([]);
   const [usersState, setUsersState] = useState([]);
@@ -27,61 +27,60 @@ function Settings() {
       }
     });
 
-    statusRef.on("child_removed", (snap) => {
-      console.log("removed");
-      setConnectedUserState((currentState) => {
-        let updatedState = [...currentState];
+    // statusRef.on("child_removed", (snap) => {
+    //   console.log("removed");
+    //   setConnectedUserState((currentState) => {
+    //     let updatedState = [...currentState];
 
-        let index = updatedState.indexOf(snap.key);
-        updatedState.splice(index, 1);
-        return updatedState;
-      });
-    });
+    //     let index = updatedState.indexOf(snap.key);
+    //     updatedState.splice(index, 1);
+    //     return updatedState;
+    //   });
+    // });
     dispatch(logout());
     history.push("/login");
   };
+  
 
-  useEffect(() => {
-    usersRef.on("child_added", (snap) => {
-      setUsersState((currentUser: any) => {
-        let updateState = [...currentUser];
+  // useEffect(() => {
+  //   usersRef.on("child_added", (snap) => {
+  //     setUsersState((currentUser: any) => {
+  //       let updateState = [...currentUser];
 
-        let user = snap.val();
-        user.username = user.username;
-        user.id = snap.key;
-        user.isPrivateChat = true;
-        updateState.push(user);
-        return updateState;
-      });
-    });
+  //       let user = snap.val();
+  //       user.username = user.username;
+  //       user.id = snap.key;
+  //       user.isPrivateChat = true;
+  //       updateState.push(user);
+  //       return updateState;
+  //     });
+  //   });
 
-    connectedRef.on("value", (snap) => {
-      if (user && snap.val()) {
-        const userStatusRef = statusRef.child(user.uid);
-        userStatusRef.set(true);
+  //   connectedRef.on("value", (snap) => {
+  //     if (user && snap.val()) {
+  //       const userStatusRef = statusRef.child(user.uid);
+  //       userStatusRef.set(true);
 
-        userStatusRef.onDisconnect().remove();
-      }
-    });
+  //       userStatusRef.onDisconnect().remove();
+  //     }
+  //   });
 
-    return () => {
-      usersRef.off();
-      connectedRef.off();
-    };
-  }, [user]);
+  //   return () => {
+  //     usersRef.off();
+  //     connectedRef.off();
+  //   };
+  // }, [user]);
 
   return (
     <SettingsStyled>
       <h1>Settings page</h1>
       <Button
         type="button"
-        name="logout"
+        name="Logout"
         className="btn-login"
         inputColor="primary"
         onClick={() => handleLogout()}
-      >
-        Logout
-      </Button>
+      ></Button>
     </SettingsStyled>
   );
 }

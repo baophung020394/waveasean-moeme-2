@@ -120,6 +120,9 @@ function Register({}: RegisterProps) {
         </form>
 
         <div className="forgot-options">
+          Did you have an account?<Link to="/login">Login</Link>
+        </div>
+        <div className="forgot-options">
           <Link to="/login">userid searching</Link>
           <Link to="/login">PW searching</Link>
         </div>

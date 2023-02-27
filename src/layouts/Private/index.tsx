@@ -5,17 +5,23 @@ import firebase from "db/firestore";
 import { withBaseLayout } from "layouts/Base";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Image } from "semantic-ui-react";
 import styled from "styled-components";
 import { createTimestamp } from "utils/time";
 
-function Private() {
+interface PrivateProps {
+  usersRef: any;
+  statusRef: any;
+  connectedRef: any;
+}
+function Private({ usersRef,statusRef, connectedRef }: PrivateProps) {
   const [usersState, setUsersState] = useState([]);
   const [userState, setUserState] = useState({});
   const [connectedUserState, setConnectedUserState] = useState([]);
   const userRedux = useSelector(({ auth }: any) => auth.user);
-  const usersRef = firebase.database().ref("users");
-  const connectedRef = firebase.database().ref(".info/connected");
-  const statusRef = firebase.database().ref("status");
+  // const usersRef = firebase.database().ref("users");
+  // const connectedRef = firebase.database().ref(".info/connected");
+  // const statusRef = firebase.database().ref("status");
   const currentChannel = useSelector(
     ({ channel }: any) => channel.currentChannel
   );
@@ -27,8 +33,8 @@ function Private() {
     if (user) {
       let userTemp = { ...user };
       userTemp.id = generateChannelId(user?.id);
-      console.log(userTemp.id)
-      
+      console.log(userTemp.id);
+
       setUserState(userTemp);
       setLastVisited(userRedux, currentChannel);
       setLastVisited(userRedux, userTemp);
@@ -48,7 +54,6 @@ function Private() {
     usersRef.on("child_added", (snap) => {
       setUsersState((currentUser: any) => {
         let updateState = [...currentUser];
-
         let user = snap.val();
         user.username = user.username;
         user.id = snap.key;
@@ -58,19 +63,19 @@ function Private() {
       });
     });
 
-    connectedRef.on("value", (snap) => {
-      if (userRedux && snap.val()) {
-        const userStatusRef = statusRef.child(userRedux.uid);
-        userStatusRef.set(true);
+    // connectedRef.on("value", (snap) => {
+    //   if (userRedux && snap.val()) {
+    //     const userStatusRef = statusRef.child(userRedux.uid);
+    //     userStatusRef.set(true);
 
-        userStatusRef.onDisconnect().remove();
-      }
-    });
+    //     userStatusRef.onDisconnect().remove();
+    //   }
+    // });
 
-    return () => {
-      usersRef.off();
-      connectedRef.off();
-    };
+    // return () => {
+    //   usersRef.off();
+    //   connectedRef.off();
+    // };
   }, [userRedux]);
 
   useEffect(() => {
@@ -98,46 +103,50 @@ function Private() {
   const displayUsers = () => {
     if (usersState?.length > 0) {
       return usersState
-        .filter((us: any) => us.id !== userRedux.uid)
-        .map((u) => (
-          <li
-            key={u.uid}
-            onClick={(e) => {
-              e.preventDefault();
-              selectUser(u, true);
-            }}
-          >
-            <div className="infor-user">
-              <object
-                className="icon40 avatar"
-                data={`http://moa.aveapp.com:21405/file/api/down_proc.jsp?type=12&userid=${u?.userId}`}
-                type="image/png"
-                onClick={(e) => e.preventDefault()}
-                style={{ pointerEvents: "none" }}
-              >
-                <img
-                  src="https://cdn-icons-png.flaticon.com/512/147/147144.png"
-                  alt="avatar"
+        .filter((us: any) => us.id !== userRedux.uid && us.uid !== undefined)
+        .map((u) => {
+          // console.log('chimbehuy', u.uid)
+          return (
+            <li
+              key={u.id}
+              onClick={(e) => {
+                e.preventDefault();
+                selectUser(u, true);
+              }}
+            >
+              <div className="infor-user">
+                <Image src={`${u?.photoURL}`} avatar />
+                {/* <object
                   className="icon40 avatar"
+                  data={`http://moa.aveapp.com:21405/file/api/down_proc.jsp?type=12&userid=${u?.userId}`}
+                  type="image/png"
+                  onClick={(e) => e.preventDefault()}
+                  style={{ pointerEvents: "none" }}
+                >
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/147/147144.png"
+                    alt="avatar"
+                    className="icon40 avatar"
+                  />
+                </object> */}
+                <span>{u?.username}</span>
+              </div>
+              <div className="status-user">
+                {connectedUserState.indexOf(u.id) !== -1 ? (
+                  <span className="status green"></span>
+                ) : (
+                  <span className="status red"></span>
+                )}
+                <Notification
+                  displayName={u.username}
+                  userProps={userRedux}
+                  notificationChannelId={generateChannelId(u.id)}
+                  channel={currentChannel}
                 />
-              </object>
-              <span>{u?.userId}</span>
-            </div>
-            <div className="status-user">
-              {connectedUserState.indexOf(u.id) !== -1 ? (
-                <span className="status green"></span>
-              ) : (
-                <span className="status red"></span>
-              )}
-              <Notification
-                displayName={u.username}
-                userProps={userRedux}
-                notificationChannelId={generateChannelId(u.id)}
-                channel={currentChannel}
-              />
-            </div>
-          </li>
-        ));
+              </div>
+            </li>
+          );
+        });
     }
   };
 
@@ -160,7 +169,6 @@ function Private() {
       );
     }
   }, [usersState?.length]);
-  // }, [!currentChannel ? usersState : null]);
 
   return (
     <ChannelStyled className="private-container">

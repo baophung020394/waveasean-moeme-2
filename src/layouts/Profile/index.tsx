@@ -73,6 +73,28 @@ function Profile({ user }: ProfileProps) {
     setIsChange(false);
   };
 
+  // useEffect(() => {
+  //   firebase
+  //     .database()
+  //     .ref("channels")
+  //     .on("value", (snap) => {
+  //       snap.forEach((sn) => {
+  //         console.log("sn", sn.val().id);
+  //         if (sn.val().id !== undefined) {
+  //           firebase
+  //             .database()
+  //             .ref("messages")
+  //             .child(sn.val().id)
+  //             .on("value", (snap) => {
+  //               console.log("mess", snap);
+  //               snap.forEach((sn) => {
+  //                 console.log("chimehuy", sn.val());
+  //               });
+  //             });
+  //         }
+  //       });
+  //     });
+  // }, []);
   return (
     <ProfileStyled className="profile-container">
       <Grid>
