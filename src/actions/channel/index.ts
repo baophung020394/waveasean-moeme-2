@@ -251,9 +251,11 @@ export const registerMessageSubscription = (
 export const setCurrentChannel =
   (channel: any, isClicked: boolean) => (dispatch: any, getState: any) => {
     const { user } = getState().auth;
-
+    const newUser = { ...user };
+    newUser.id = user.username;
+    newUser.display = user.username;
     if (channel?.id && isClicked) {
-      api.joinChannel(user, channel?.id);
+      api.joinChannel(newUser, channel?.id);
     }
     return dispatch({ type: "SET_CHANNEL_CURRENT", channel });
   };

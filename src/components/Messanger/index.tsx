@@ -41,13 +41,11 @@ function Messanger({
   uploadFileProp,
 }: MessangerProps) {
   const [value, setValue] = useState<any>("");
-
   const [isOpenEmoj, setIsOpenEmoj] = useState<boolean>(false);
   const textareaRef = useRef<any>(null);
   const user = JSON.parse(localStorage.getItem("_profile"));
   const userRedux = useSelector(({ auth }) => auth.user);
 
-  // console.log({userRedux})
   let myuuid = uuidv4();
 
   /**
@@ -68,10 +66,8 @@ function Messanger({
    *  This function will be triggered when the file field change
    * */
   const uploadChange = (e: any) => {
-    console.log(e.target.files);
     if (e.target.files) {
       const file = e.target.files[0];
-      console.log("upload manual", file);
 
       let newMessage = {
         content: ``,
@@ -125,8 +121,7 @@ function Messanger({
    */
   const sendMessage = async () => {
     if (value.trim() === "") return;
-    console.log({ value });
-    console.log("value", value.match(/[^(]+(?=\))/g));
+    // console.log({ value });
     const messages: any = {
       idMessage: myuuid,
       content: value.trim(),
@@ -136,6 +131,7 @@ function Messanger({
     onSubmit(messages);
   };
 
+  const handleAddUsersMention = (id: string, display: string) => {};
   /**
    * Capture
    */
@@ -239,6 +235,12 @@ function Messanger({
         } `}
       >
         <Mention
+          displayTransform={(id, display) => {
+            console.log("id", id);
+            console.log("display", display);
+            handleAddUsersMention(id, display);
+            return display;
+          }}
           data={joinedUsersState}
           trigger="@"
           markup="@[__display__]"

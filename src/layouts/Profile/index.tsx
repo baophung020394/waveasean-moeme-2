@@ -88,7 +88,7 @@ function Profile({ user }: ProfileProps) {
   //             .on("value", (snap) => {
   //               console.log("mess", snap);
   //               snap.forEach((sn) => {
-  //                 console.log("chimehuy", sn.val());
+  
   //               });
   //             });
   //         }
