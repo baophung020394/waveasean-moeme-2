@@ -71,7 +71,7 @@ function Chat({ tokenNotification }: ChatProps) {
         },
         config
       );
-
+      requestForToken();
       dispatch(sendChannelMessage2(message, id));
     },
     [id]

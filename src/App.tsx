@@ -33,18 +33,11 @@ export const AuthRoute = ({ children, ...rest }: any) => {
     <Route
       {...rest}
       render={(props: any) => {
-        if (
-          props?.match.params.id &&
-          localStorage.getItem("urlCopy")?.length > 0
-        ) {
-          return React.cloneElement(onlyChild, { ...rest, ...props });
-        } else {
-          return user ? (
-            React.cloneElement(onlyChild, { ...rest, ...props })
-          ) : (
-            <Redirect to="/login" />
-          );
-        }
+        return user ? (
+          React.cloneElement(onlyChild, { ...rest, ...props })
+        ) : (
+          <Redirect to="/login" />
+        );
       }}
     />
   );
