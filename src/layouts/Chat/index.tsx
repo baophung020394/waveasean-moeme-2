@@ -1,19 +1,23 @@
 import { sendChannelMessage2, uploadFiles } from "actions/channel";
+import axios from "axios";
 import ChannelList from "components/ChannelList";
 import ChatBar from "components/ChatBar";
 import ChatMessageList from "components/ChatMessageList";
 import ChatOptions from "components/ChatOptions";
 import Messanger from "components/Messanger";
-import firebase from "db/firestore";
+import firebase, { onMessageListener, requestForToken } from "db/firestore";
+import { getMessaging, onMessage } from "firebase/messaging";
 import { withBaseLayout } from "layouts/Base";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
-interface ChatProps {}
+interface ChatProps {
+  tokenNotification: string;
+}
 
-function Chat({}: ChatProps) {
+function Chat({ tokenNotification }: ChatProps) {
   const { id }: any = useParams();
   const dispatch: any = useDispatch();
   const [progressBar, setProgressBar] = useState<any>({});
@@ -27,12 +31,58 @@ function Chat({}: ChatProps) {
   const [joinedUsersState, setJoinedUsersState] = useState<any>([]);
   const currentChannel = useSelector(({ channel }) => channel?.currentChannel);
 
+  // async function registerWorker() {
+  //   console.log("Registering service worker");
+  //   const registration = await navigator.serviceWorker.register(
+  //     "/firebase-messaging-sw.js",
+  //     { scope: "/" }
+  //   );
+  //   console.log("Registered service worker");
+
+  //   const subscription = await registration.pushManager.subscribe({
+  //     userVisibleOnly: true,
+  //     applicationServerKey:
+  //       "BHQ0O7j9_SRP-uAwDv6p1_B0o-Thwt5SMhMD74sAbbVsfYmeCFZNzfhV6GikSsXhDacUz7arpskzaAqNRteoyJM",
+  //   });
+  // }
+  // if ("serviceWorker" in navigator) {
+  //   console.log("Registering service worker");
+  //   registerWorker().catch((error) => console.error(error));
+  // }
+
   const sendMessage = useCallback(
     (message) => {
+      let config = {
+        headers: {
+          Authorization:
+            "key=AAAAkYm1flQ:APA91bFvManQFeMOZJyonLN4E0CV6-nQZART0Hs53xp8Xpc81bwk44PD_sffCMSk2zTigEx6vYWAtla1PoSdOypoqHzvt05GmaKtTCrrOZnhtRb5foXT-qR0RqKnNjx3eO0Ctgaj7Tmb",
+        },
+      };
+
+      axios.post(
+        "https://fcm.googleapis.com/fcm/send",
+        {
+          data: {
+            title: "Manual test title",
+            body: "Manual test body",
+            click_action: "https://localhost:8080",
+          },
+          to: tokenNotification,
+        },
+        config
+      );
+
       dispatch(sendChannelMessage2(message, id));
     },
     [id]
   );
+
+  onMessageListener()
+    .then((payload: any) => {
+      requestForToken();
+      console.log({ payload });
+    })
+    .catch((err: any) => console.log("failed: ", err));
 
   /**
    * Check status and edit progress bar upload

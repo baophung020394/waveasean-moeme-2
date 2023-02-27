@@ -19,30 +19,30 @@ const firebaseConfig = {
 export const { Timestamp } = firebase.firestore;
 export default firebase.initializeApp(firebaseConfig);
 
-// navigator.serviceWorker.register(
-//   "/public/firebase-messaging-sw.js"
-// );
 const messaging = getMessaging();
 
 export const requestForToken = () => {
   return getToken(messaging, {
     vapidKey: `BHQ0O7j9_SRP-uAwDv6p1_B0o-Thwt5SMhMD74sAbbVsfYmeCFZNzfhV6GikSsXhDacUz7arpskzaAqNRteoyJM`,
-  })
-    .then((currentToken) => {
-      if (currentToken) {
-        console.log("current token for client: ", currentToken);
-        // Perform any other neccessary action with the token
-      } else {
-        // Show permission request UI
-        console.log(
-          "No registration token available. Request permission to generate one."
-        );
-      }
-    })
-    .catch((err) => {
-      console.log("An error occurred while retrieving token. ", err);
-    });
+  });
+  // .then((currentToken) => {
+  //   if (currentToken) {
+  //     getTokenMess(currentToken);
+  //     console.log("current token for client: ", currentToken);
+  //     // Perform any other neccessary action with the token
+  //   } else {
+  //     // Show permission request UI
+  //     console.log(
+  //       "No registration token available. Request permission to generate one."
+  //     );
+  //   }
+  // })
+  // .catch((err) => {
+  //   console.log("An error occurred while retrieving token. ", err);
+  // });
 };
+
+// Send a message to devices subscribed to the provided topic.
 
 // Handle incoming messages. Called when:
 // - a message is received while the app has focus
@@ -50,6 +50,7 @@ export const requestForToken = () => {
 export const onMessageListener = () =>
   new Promise((resolve) => {
     onMessage(messaging, (payload) => {
+      console.log({ payload });
       resolve(payload);
     });
   });

@@ -62,12 +62,30 @@ function MoeMe() {
   const usersRef = firebase.database().ref("users");
   const statusRef = firebase.database().ref("status");
   const connectedRef = firebase.database().ref(".info/connected");
-  // requestForToken();
+  const [tokenNotification, setTokenNotification] = useState("");
+  const tokenmess = requestForToken();
+
+  tokenmess
+    .then((currentToken) => {
+      if (currentToken) {
+        console.log("current token for client: ", currentToken);
+        setTokenNotification(currentToken);
+        // Perform any other neccessary action with the token
+      } else {
+        // Show permission request UI
+        console.log(
+          "No registration token available. Request permission to generate one."
+        );
+      }
+    })
+    .catch((err) => {
+      console.log("An error occurred while retrieving token. ", err);
+    });
 
   useEffect(() => {
     connectedRef.on("value", (snap) => {
       if (user && user?.uid && snap.val()) {
-         console.log('user.uid', user.id)
+        console.log("user.uid", user.id);
         const userStatusRef = statusRef.child(user.uid);
         userStatusRef.set(true);
 
@@ -119,10 +137,14 @@ function MoeMe() {
             <ChannelView />
           </AuthRoute>
           <AuthRoute path="/channel-detail/:id">
-            <ChatView />
+            <ChatView tokenNotification={tokenNotification} />
           </AuthRoute>
           <AuthRoute path="/private">
-            <PrivateView usersRef={usersRef} connectedRef={connectedRef} statusRef={statusRef} />
+            <PrivateView
+              usersRef={usersRef}
+              connectedRef={connectedRef}
+              statusRef={statusRef}
+            />
           </AuthRoute>
           <AuthRoute path="/private-detail/:id">
             <PrivateChat />
