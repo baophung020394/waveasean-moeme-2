@@ -12,6 +12,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import { createTimestamp } from "utils/time";
 
 interface ChatProps {
   tokenNotification: string;
@@ -31,27 +32,9 @@ function Chat({ tokenNotification }: ChatProps) {
   const [joinedUsersState, setJoinedUsersState] = useState<any>([]);
   const currentChannel = useSelector(({ channel }) => channel?.currentChannel);
 
-  // async function registerWorker() {
-  //   console.log("Registering service worker");
-  //   const registration = await navigator.serviceWorker.register(
-  //     "/firebase-messaging-sw.js",
-  //     { scope: "/" }
-  //   );
-  //   console.log("Registered service worker");
-
-  //   const subscription = await registration.pushManager.subscribe({
-  //     userVisibleOnly: true,
-  //     applicationServerKey:
-  //       "BHQ0O7j9_SRP-uAwDv6p1_B0o-Thwt5SMhMD74sAbbVsfYmeCFZNzfhV6GikSsXhDacUz7arpskzaAqNRteoyJM",
-  //   });
-  // }
-  // if ("serviceWorker" in navigator) {
-  //   console.log("Registering service worker");
-  //   registerWorker().catch((error) => console.error(error));
-  // }
-
   const sendMessage = useCallback(
     (message) => {
+      console.log("message", message);
       let config = {
         headers: {
           Authorization:
@@ -63,15 +46,18 @@ function Chat({ tokenNotification }: ChatProps) {
         "https://fcm.googleapis.com/fcm/send",
         {
           data: {
-            title: "Manual test title",
-            body: "Manual test body",
-            click_action: "https://localhost:8080",
+            notification: {
+              title:
+                `${userRedux.username} sent for you a message`,
+              body: "This is an FCM Message",
+              icon: "https://firebasestorage.googleapis.com/v0/b/moeme-chat-3.appspot.com/o/chat%2Fimages%2Fc2ff999f-2157-48e8-a9ce-d72142d3c748.jpg?alt=media&token=f43aa3ad-62e1-4cd9-8ec2-b5cb59fbaa2a",
+              click_action: "http://localhost:8080/",
+            },
           },
           to: tokenNotification,
         },
         config
       );
-      requestForToken();
       dispatch(sendChannelMessage2(message, id));
     },
     [id]
@@ -79,8 +65,14 @@ function Chat({ tokenNotification }: ChatProps) {
 
   onMessageListener()
     .then((payload: any) => {
-      requestForToken();
       console.log({ payload });
+      // const messages: any = {
+      //   idMessage: myuuid,
+      //   content: "",
+      //   user: userRedux,
+      //   timestamp: createTimestamp(),
+      // };
+      // sendMessage(messages);
     })
     .catch((err: any) => console.log("failed: ", err));
 
@@ -139,7 +131,9 @@ function Chat({ tokenNotification }: ChatProps) {
         });
       });
 
-      return () => messageRef.child(id).off();
+      return () => {
+        messageRef.child(id).off();
+      };
     }
   }, [id]);
 
@@ -200,6 +194,28 @@ function Chat({ tokenNotification }: ChatProps) {
     }
   }, [id]);
 
+  // useEffect(() => {
+  //   if (id) {
+  //     setTokenNotification("");
+  //     navigator.serviceWorker.getRegistrations().then((r) => {
+  //       console.log({ r });
+  //       return Promise.all(r.map((reg) => reg.unregister()));
+  //     });
+  //     return () => {
+  //       console.log("register lai");
+
+  //       if ("serviceWorker" in navigator) {
+  //         navigator.serviceWorker
+  //           .register("../firebase-messaging-sw.js")
+  //           .then(function (registration) {
+  //             console.log("Service Worker Registered");
+  //             // messaging.useServiceWorker(registration);
+  //           });
+  //       }
+
+  //     };
+  //   }
+  // }, [id]);
   // if (!currentChannel?.id) {
   //   return <LoadingView message="Loading Chat..." />;
   // }
