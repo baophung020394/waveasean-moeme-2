@@ -29,13 +29,17 @@ firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 // Handle incoming messages while the app is not in focus (i.e in the background, hidden behind other tabs, or completely closed).
 messaging.onBackgroundMessage(function (payload) {
-  console.log("Received background message ", payload.data.notification);
-  console.log("payload", JSON.parse(payload.data.notification).body);
+  console.log(
+    "Received background message ",
+    JSON.parse(payload.data.notification)
+  );
+
   const notificationTitle = JSON.parse(payload.data.notification).title;
   const notificationOptions = {
     title: JSON.parse(payload.data.notification).title,
     body: JSON.parse(payload.data.notification).body,
-    // icon: '/firebase-logo.png'
+    icon: JSON.parse(payload.data.notification).icon,
+    click_action: JSON.parse(payload.data.notification).click_action,
   };
 
   // const notificationTitle = payload.notification.title;
