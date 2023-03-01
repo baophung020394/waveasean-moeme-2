@@ -176,7 +176,7 @@ const ChatMessageListStyled = styled.div`
       left: 0;
       z-index: 1;
       width: 100%;
-      height: 2px;
+      height: 1px;
       background: #9a9a9a;
     }
 
