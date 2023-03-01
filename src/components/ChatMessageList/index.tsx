@@ -12,6 +12,8 @@ import { convertFiles } from "utils/handleFiles";
 import { createTimestamp } from "utils/time";
 import { Image } from "semantic-ui-react";
 import ItemMessage from "./ItemMessage";
+import generateItems from "utils/generateItems";
+import moment from "moment";
 
 interface ChatMessageListProps {
   messages: any;
@@ -104,6 +106,9 @@ function ChatMessageList({
     ev.preventDefault();
   };
 
+  const renderTimeMoment = (date: any) => {
+    return moment().startOf("days").toDate();
+  };
   useEffect(() => {
     messagesRef?.scrollIntoView();
   }, [messages]);
@@ -117,7 +122,15 @@ function ChatMessageList({
       ref={boxMessagesRef}
     >
       <ul ref={messagesRef} className="chat-box chatContainerScroll">
-        {messages.map((message: any, idx: number) => {
+        {generateItems(messages).map((message: any, idx: number) => {
+          if (message?.type === "day") {
+            console.log('message?.date.split(" ").slice(1)',message?.date.split(" ").slice(1)[0])
+            return (
+              <div className="chat-date">
+                <h1>{message?.date.split(" ").slice(1)[0]}</h1>
+              </div>
+            );
+          }
           return (
             <ItemMessage
               messages={messages}
@@ -149,6 +162,34 @@ const ChatMessageListStyled = styled.div`
   }
   &::-webkit-scrollbar-track {
     background: transparent;
+  }
+
+  .chat-date {
+    text-align: center;
+    margin: 30px 0;
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      z-index: 1;
+      width: 100%;
+      height: 2px;
+      background: #9a9a9a;
+    }
+
+    h1 {
+      position: relative;
+      z-index: 2;
+      border-radius: 20px;
+      background: #9a9a9a;
+      padding: 3px 10px;
+      font-size: 16px;
+      color: #fff;
+      display: inline-block;
+    }
   }
 
   ul {
