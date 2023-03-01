@@ -9,6 +9,7 @@ import IconStock from "assets/images/chat/stock.png";
 import CreateStock from "components/CreateStock";
 import { v4 as uuidv4 } from "uuid";
 import { createTimestamp } from "utils/time";
+import { useSelector } from "react-redux";
 
 interface ChatOptions {
   submitStock: (data: any) => void;
@@ -16,6 +17,7 @@ interface ChatOptions {
 
 function ChatOptions({ submitStock }: ChatOptions) {
   const [isOpenStock, setIsOpenStock] = useState(false);
+  const user = useSelector(({ auth }) => auth.user);
   const _messages = JSON.parse(localStorage.getItem("_messages"));
   let myuuid = uuidv4();
 
@@ -23,7 +25,7 @@ function ChatOptions({ submitStock }: ChatOptions) {
     let newMessage = {
       content: "",
       idMessage: myuuid,
-      user: data?.user,
+      user,
       stocks: data,
       timestamp: createTimestamp(),
     };

@@ -2,6 +2,7 @@ import React from "react";
 import { styled } from "utils/styled-component";
 import IconStockBlue from "assets/images/chat/stock-blue.png";
 import { currencyFormat } from "hooks/useFormatNumber";
+import { Image } from "semantic-ui-react";
 interface Stocks {
   stocks: any;
 }
@@ -23,7 +24,6 @@ function Stocks({ stocks }: Stocks) {
           <div className="cols price-buy">
             <span className="title">매수가</span>
             <span className="price">
-              {" "}
               {currencyFormat(Number(stocks?.priceBuy))}
             </span>
           </div>
@@ -42,7 +42,7 @@ function Stocks({ stocks }: Stocks) {
         </div>
         <div className="stocks--bot">
           <div className="stocks--bot__user">
-            <object
+            {/* <object
               className="icon24 avatar"
               data={`http://moa.aveapp.com:21405/file/api/down_proc.jsp?type=12&userid=${stocks?.user.params.userId}&roomid=${stocks?.user.params.roomId}`}
               type="image/png"
@@ -52,9 +52,12 @@ function Stocks({ stocks }: Stocks) {
                 alt="avatar"
                 className="icon24 avatar"
               />
-            </object>
+            </object> */}
+            <Image src={stocks?.user.user.photoURL} avatar />
             <span className="stocks--bot__user__position">방장</span>
-            <span className="stocks--bot__user__name">{stocks?.user.params.userName}</span>
+            <span className="stocks--bot__user__name">
+              {stocks?.user.user.username}
+            </span>
           </div>
           <div className="stocks--bot__time">
             <span>방장 </span>
@@ -97,7 +100,7 @@ const StocksStyled = styled.div`
       h4 {
         font-size: 18px;
       }
-      
+
       .btn-order {
         background-color: red;
         border-radius: 8px;

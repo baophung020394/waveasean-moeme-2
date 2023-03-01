@@ -6,12 +6,12 @@ module.exports = {
   entry: "./src/index.tsx", // Changed the entry file name
 
   output: {
-    path: path.resolve(__dirname, "./dist"),
+    path: path.resolve(__dirname, "./dist/"),
     filename: "bundle.js",
   },
   devServer: {
     static: {
-      directory: path.resolve(__dirname, "./dist"),
+      directory: path.resolve(__dirname, "./dist/"),
     },
   },
   module: {

@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from "uuid";
 import { convertFiles } from "utils/handleFiles";
 import { createTimestamp } from "utils/time";
 import { Image } from "semantic-ui-react";
+import ItemMessage from "./ItemMessage";
 
 interface ChatMessageListProps {
   messages: any;
@@ -25,13 +26,9 @@ function ChatMessageList({
   selectedFile,
   uploadFileProp,
 }: ChatMessageListProps) {
-  // console.log("messageState", messageState);
-  // console.log("progressBar", progressBar);
-  // console.log({ selectedFile });
-  // console.log({ messages });
   let myuuid = uuidv4();
   const user = useSelector(({ auth }) => auth.user);
-  const profile = JSON.parse(localStorage.getItem("_profile"));
+
   let messagesRef: any = useRef<any>();
   let boxMessagesRef: any = useRef<any>();
 
@@ -93,7 +90,7 @@ function ChatMessageList({
    */
   const dragOverHandler = (ev: any) => {
     console.log("File(s) in drop zone");
-    boxMessagesRef.current.style.border = "3px solid rgb(29 78 216)";
+    boxMessagesRef.current.style.border = "3px dashed rgb(29 78 216)";
     // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
   };
@@ -121,227 +118,17 @@ function ChatMessageList({
     >
       <ul ref={messagesRef} className="chat-box chatContainerScroll">
         {messages.map((message: any, idx: number) => {
-          if (message?.stocks) {
-            return (
-              <li
-                className={`${isAuthorOf(message)} chat-stocks`}
-                key={`${message?.id}-${idx}`}
-              >
-                <div className="chat-avatar">
-                  <Image src={message?.user?.photoURL} avatar />
-                  {/* <object
-                    className="icon40 avatar"
-                    data={`http://moa.aveapp.com:21405/file/api/down_proc.jsp?type=12&userid=${message?.stocks?.user.userId}&roomid=${message?.stocks.user?.roomId}`}
-                    type="image/png"
-                  >
-                    <img
-                      src="https://cdn-icons-png.flaticon.com/512/147/147144.png"
-                      alt="avatar"
-                      className="icon40 avatar"
-                    />
-                  </object> */}
-                  <div className="chat-name">
-                    {message?.author?.username}
-                    <div className="chat-hour">
-                      {formatTimeAgo(message.timestamp)}
-                    </div>
-                  </div>
-                </div>
-                <div className="chat-text-wrapper">
-                  <Stocks stocks={message?.stocks} />
-                </div>
-              </li>
-            );
-          } else if (
-            message?.fileType &&
-            ["image/jpeg", "image/png", "image/jpg"].includes(message?.fileType)
-          ) {
-            return (
-              <li
-                className={`${isAuthorOf(message)} chat-images`}
-                key={`${message?.ID}-${idx}`}
-              >
-                <div className="chat-avatar">
-                  <Image src={message?.user.photoURL} avatar />
-                  {/* <object
-                    className="icon40 avatar"
-                    data={`http://moa.aveapp.com:21405/file/api/down_proc.jsp?type=12&userid=${message?.user.userId}&roomid=${message?.user?.roomId}`}
-                    type="image/png"
-                  >
-                    <img
-                      src="https://cdn-icons-png.flaticon.com/512/147/147144.png"
-                      alt="avatar"
-                      className="icon40 avatar"
-                    />
-                  </object> */}
-                  <div className="chat-name">
-                    {message?.author?.username}
-                    <div className="chat-hour">
-                      {formatTimeAgo(message.timestamp)}
-                    </div>
-                  </div>
-                </div>
-                <div className="chat-text-wrapper">
-                  <img
-                    className="image-chat"
-                    src={
-                      message?.status === "Uploading"
-                        ? URL.createObjectURL(message?.files)
-                        : message.files
-                    }
-                    alt="Thumb"
-                    onLoad={imageLoaded}
-                  />
-                  {selectedFile?.timestamp === message?.timestamp &&
-                    message.status === "Uploading" && (
-                      <ProgressBars progressBar={progressBar} />
-                    )}
-                </div>
-              </li>
-            );
-          } else if (
-            message?.fileType &&
-            ["video/mp4", "video/mp3"].includes(message?.fileType)
-          ) {
-            return (
-              <li
-                className={`${isAuthorOf(message)} chat-videos`}
-                key={`${message?.ID}-${idx}`}
-              >
-                <div className="chat-avatar">
-                  {/* <object
-                    className="icon40 avatar"
-                    data={`http://moa.aveapp.com:21405/file/api/down_proc.jsp?type=12&userid=${message?.user.userId}&roomid=${message?.user?.roomId}`}
-                    type="image/png"
-                  >
-                    <img
-                      src="https://cdn-icons-png.flaticon.com/512/147/147144.png"
-                      alt="avatar"
-                      className="icon40 avatar"
-                    />
-                  </object> */}
-                  <Image src={message?.user.photoURL} avatar />
-                  <div className="chat-name">
-                    {message?.author?.username}
-                    <div className="chat-hour">
-                      {formatTimeAgo(message.timestamp)}
-                    </div>
-                  </div>
-                </div>
-                <div className="chat-text-wrapper">
-                  {selectedFile?.timestamp === message?.timestamp &&
-                    message.status === "Uploading" && (
-                      <>
-                        <ProgressBars progressBar={progressBar} />;
-                      </>
-                    )}
-                  <video
-                    onLoad={imageLoaded}
-                    controls
-                    src={
-                      message?.status === "Uploading"
-                        ? URL.createObjectURL(message?.files)
-                        : message.files
-                    }
-                  >
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-              </li>
-            );
-          } else if (
-            message?.fileType &&
-            ![
-              "video/mp4",
-              "video/mp3",
-              "image/jpeg",
-              "image/png",
-              "image/jpg",
-            ].includes(message?.fileType)
-          ) {
-            return (
-              <li
-                className={`${isAuthorOf(message)} other-file`}
-                key={`${message?.id}-${idx}`}
-              >
-                <div className="chat-avatar">
-                  {/* <object
-                    className="icon40 avatar"
-                    data={`http://moa.aveapp.com:21405/file/api/down_proc.jsp?type=12&userid=${message?.user.userId}&roomid=${message?.roomId}`}
-                    type="image/png"
-                  >
-                    <img
-                      src="https://cdn-icons-png.flaticon.com/512/147/147144.png"
-                      alt="avatar"
-                      className="icon40 avatar"
-                    />
-                  </object> */}
-                  <Image src={message?.user.photoURL} avatar />
-                  <div className="chat-name">
-                    {message?.author?.username}
-                    <div className="chat-hour">
-                      {formatTimeAgo(message.timestamp)}
-                    </div>
-                  </div>
-                </div>
-                <div className={`chat-text-wrapper `}>
-                  <button
-                    className="chat-text"
-                    type="submit"
-                    onClick={() => `${window.open(`${message.files}`)}`}
-                    disabled={message.status === "Uploading"}
-                  >
-                    {message?.metadata.name}
-                  </button>
-                  {selectedFile?.timestamp === message?.timestamp &&
-                    message.status === "Uploading" && (
-                      <>
-                        <ProgressBar
-                          animated
-                          now={progressBar?.percent}
-                          label={`${progressBar?.percent}%`}
-                        />
-                      </>
-                    )}
-
-                  {/* <span className="chat-spacer"></span> */}
-                </div>
-              </li>
-            );
-          } else {
-            return (
-              <li className={isAuthorOf(message)} key={`${message?.id}-${idx}`}>
-                <div className="chat-avatar">
-                  {/* <object
-                    className="icon40 avatar"
-                    data={`http://moa.aveapp.com:21405/file/api/down_proc.jsp?type=12&userid=${message?.user.userId}&roomid=${message?.roomId}`}
-                    type="image/png"
-                  >
-                    <img
-                      src="https://cdn-icons-png.flaticon.com/512/147/147144.png"
-                      alt="avatar"
-                      className="icon40 avatar"
-                    />
-                  </object> */}
-                  <Image src={message?.user.photoURL} avatar />
-                  <div className="chat-name">
-                    {message?.author?.username}
-                    <div className="chat-hour">
-                      {formatTimeAgo(message.timestamp)}
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className={`chat-text-wrapper ${
-                    isEmojisOnly(message?.content) ? "hasEmoj" : ""
-                  }`}
-                >
-                  <span className="chat-text">{message?.content}</span>
-                  {/* <span className="chat-spacer"></span> */}
-                </div>
-              </li>
-            );
-          }
+          return (
+            <ItemMessage
+              messages={messages}
+              message={message}
+              index={idx}
+              key={`${message?.id}-${idx}`}
+              progressBar={progressBar}
+              selectedFile={selectedFile}
+              imageLoaded={imageLoaded}
+            />
+          );
         })}
         <div ref={(currentEl) => (messagesRef = currentEl)}></div>
       </ul>

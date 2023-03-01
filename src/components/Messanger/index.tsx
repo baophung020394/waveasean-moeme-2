@@ -20,7 +20,7 @@ import { v4 as uuidv4 } from "uuid";
 import { createTimestamp } from "utils/time";
 import { useSelector } from "react-redux";
 import { convertFiles } from "utils/handleFiles";
-import firebase from "db/firestore";
+
 import { MentionsInput, Mention } from "react-mentions";
 import MentionsInputStyle from "./MentionsInputStyle";
 import { Icon } from "semantic-ui-react";
@@ -184,21 +184,21 @@ function Messanger({
           };
 
           uploadFileProp(newMessage);
-          textareaRef.current.style.border = "1px solid #e2e2e2";
+          textareaRef.current.style.border = "1px dashed #e2e2e2";
         }
       });
     } else {
       // Use DataTransfer interface to access the file(s)
       [...ev.dataTransfer.files].forEach((file, i) => {
         console.log(`… file[${i}].name = ${file.name}`);
-        textareaRef.current.style.border = "1px solid #e2e2e2";
+        textareaRef.current.style.border = "1px dashed #e2e2e2";
       });
     }
   };
 
   const dragOverHandler = (ev: any) => {
     console.log("File(s) in drop zone");
-    textareaRef.current.style.border = "3px solid rgb(29 78 216)";
+    textareaRef.current.style.border = "3px dashed rgb(29 78 216)";
     // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
   };
@@ -243,7 +243,7 @@ function Messanger({
         } `}
       >
         <Mention
-          onAdd={(id, display, startPos, endPos) => {
+          onAdd={(id, display) => {
             handleAddUsersMention(id, display);
           }}
           data={joinedUsersState}

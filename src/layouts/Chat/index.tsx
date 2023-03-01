@@ -12,6 +12,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import { v4 as uuidv4 } from "uuid";
 import { createTimestamp } from "utils/time";
 
 interface ChatProps {
@@ -29,35 +30,16 @@ function Chat({ tokenNotification }: ChatProps) {
   const messageRef = firebase.database().ref("messages");
   const [messagesState, setMessagesState] = useState([]);
   const [searchTermState, setSearchTermState] = useState("");
+  const [sendtMess, setSendtMess] = useState("");
   const [joinedUsersState, setJoinedUsersState] = useState<any>([]);
   const currentChannel = useSelector(({ channel }) => channel?.currentChannel);
+
+  let myuuid = uuidv4();
 
   const sendMessage = useCallback(
     (message) => {
       console.log("message", message);
-      let config = {
-        headers: {
-          Authorization:
-            "key=AAAAkYm1flQ:APA91bFvManQFeMOZJyonLN4E0CV6-nQZART0Hs53xp8Xpc81bwk44PD_sffCMSk2zTigEx6vYWAtla1PoSdOypoqHzvt05GmaKtTCrrOZnhtRb5foXT-qR0RqKnNjx3eO0Ctgaj7Tmb",
-        },
-      };
 
-      axios.post(
-        "https://fcm.googleapis.com/fcm/send",
-        {
-          data: {
-            notification: {
-              title:
-                `${userRedux.username} sent for you a message`,
-              body: "This is an FCM Message",
-              icon: "https://firebasestorage.googleapis.com/v0/b/moeme-chat-3.appspot.com/o/chat%2Fimages%2Fc2ff999f-2157-48e8-a9ce-d72142d3c748.jpg?alt=media&token=f43aa3ad-62e1-4cd9-8ec2-b5cb59fbaa2a",
-              click_action: "http://localhost:8080/",
-            },
-          },
-          to: tokenNotification,
-        },
-        config
-      );
       dispatch(sendChannelMessage2(message, id));
     },
     [id]
@@ -66,13 +48,6 @@ function Chat({ tokenNotification }: ChatProps) {
   onMessageListener()
     .then((payload: any) => {
       console.log({ payload });
-      // const messages: any = {
-      //   idMessage: myuuid,
-      //   content: "",
-      //   user: userRedux,
-      //   timestamp: createTimestamp(),
-      // };
-      // sendMessage(messages);
     })
     .catch((err: any) => console.log("failed: ", err));
 
@@ -124,6 +99,28 @@ function Chat({ tokenNotification }: ChatProps) {
     if (id) {
       setMessagesState([]);
       messageRef.child(id).on("child_added", (snap) => {
+        // let config = {
+        //   headers: {
+        //     Authorization:
+        //       "key=AAAAkYm1flQ:APA91bFvManQFeMOZJyonLN4E0CV6-nQZART0Hs53xp8Xpc81bwk44PD_sffCMSk2zTigEx6vYWAtla1PoSdOypoqHzvt05GmaKtTCrrOZnhtRb5foXT-qR0RqKnNjx3eO0Ctgaj7Tmb",
+        //   },
+        // };
+        // axios.post(
+        //   "https://fcm.googleapis.com/fcm/send",
+        //   {
+        //     data: {
+        //       notification: {
+        //         title: `${snap.val().user.username} sent for you a message`,
+        //         body: `${snap.val().content}`,
+        //         icon: "https://firebasestorage.googleapis.com/v0/b/moeme-chat-3.appspot.com/o/chat%2Fimages%2Fc2ff999f-2157-48e8-a9ce-d72142d3c748.jpg?alt=media&token=f43aa3ad-62e1-4cd9-8ec2-b5cb59fbaa2a",
+        //         click_action: "http://localhost:8080/",
+        //       },
+        //     },
+        //     to: tokenNotification,
+        //   },
+        //   config
+        // );
+
         setMessagesState((currentState: any) => {
           let updateState = [...currentState];
           updateState.push(snap.val());
@@ -216,6 +213,7 @@ function Chat({ tokenNotification }: ChatProps) {
   //     };
   //   }
   // }, [id]);
+
   // if (!currentChannel?.id) {
   //   return <LoadingView message="Loading Chat..." />;
   // }

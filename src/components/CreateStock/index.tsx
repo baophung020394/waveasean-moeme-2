@@ -14,7 +14,7 @@ function CreateStock({ closeFunc, submitForm }: CreateStockProps) {
 
   const onSubmit = (data: any) => {
     data.user = user;
-    console.log(data)
+    console.log(data);
     submitForm(data);
   };
 
@@ -53,18 +53,14 @@ function CreateStock({ closeFunc, submitForm }: CreateStockProps) {
             name="전송"
             className="btn-submit"
             inputColor="primary"
-          >
-            전송
-          </Button>
+          ></Button>
           <Button
             type="button"
             name="취소"
             className="btn-cancel"
             inputColor="secondary"
             onClick={() => closeFunc(false)}
-          >
-            취소
-          </Button>
+          ></Button>
         </div>
       </form>
     </CreateStockStyled>

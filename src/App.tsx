@@ -23,6 +23,7 @@ import styled from "styled-components";
 import Header from "./components/common/Header";
 import { requestForToken } from "db/firestore";
 import firebase from "db/firestore";
+import axios from "axios";
 
 export const AuthRoute = ({ children, ...rest }: any) => {
   const user = useSelector(({ auth }: any) => auth.user);
