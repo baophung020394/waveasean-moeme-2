@@ -213,7 +213,7 @@ function Chat({ tokenNotification }: ChatProps) {
   //     };
   //   }
   // }, [id]);
-
+  
   // if (!currentChannel?.id) {
   //   return <LoadingView message="Loading Chat..." />;
   // }

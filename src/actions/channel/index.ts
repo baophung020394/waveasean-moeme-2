@@ -300,7 +300,17 @@ export const sendChannelMessage2 =
       username: user?.userId || user.displayName,
       id: user?.uid,
     };
-
+    // const hour = 60 * 60 * 1000; //(60seconds * 60minutes * 1000ms, to get the milliseconds)
+    // const hourAgo = Date.now() - hour;
+    // console.log("after 1 hour", hourAgo);
+    // console.log("after 1 hour", parseInt(timestamp));
+    // if (moment(parseInt(timestamp, 10)) > moment(hourAgo)) {
+    //   console.log("dung r");
+    //   return "";
+    // } else {
+    //   console.log("sai r");
+    //   return moment(parseInt(timestamp, 10)).calendar();
+    // }
     return api
       .sendChannelMessage2(newMessage, channelId)
       .then(() => console.log("save mess success"))

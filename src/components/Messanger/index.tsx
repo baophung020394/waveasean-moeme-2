@@ -44,7 +44,6 @@ function Messanger({
   const [ids, setIds] = useState<any>([]);
   const [isOpenEmoj, setIsOpenEmoj] = useState<boolean>(false);
   const textareaRef = useRef<any>(null);
-  const user = JSON.parse(localStorage.getItem("_profile"));
   const userRedux = useSelector(({ auth }) => auth.user);
 
   let myuuid = uuidv4();
@@ -205,7 +204,7 @@ function Messanger({
 
   const dragLeaveHandler = (ev: any) => {
     console.log("File(s) in drop zone left");
-    // textareaRef.current.style.border = "1px solid #e2e2e2";
+    textareaRef.current.style.border = "1px solid #e2e2e2";
     // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
   };

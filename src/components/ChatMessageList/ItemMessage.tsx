@@ -1,10 +1,11 @@
 import ProgressBars from "components/common/ProgressBars";
 import Stocks from "components/Stocks";
+import moment from "moment";
 import React, { useCallback } from "react";
 import { ProgressBar } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { Image } from "semantic-ui-react";
-import { formatTimeAgo } from "utils/time";
+import { formatTimeAgo, formatTimeDate } from "utils/time";
 
 interface ItemMessageProps {
   messages: any;
@@ -26,7 +27,60 @@ function ItemMessage({
   imageLoaded,
 }: ItemMessageProps) {
   const user = useSelector(({ auth }) => auth.user);
-  //   let messagesRef: any = useRef<any>();
+
+  // const renderTimeline = ({ timestamp }: any) => {
+  //   // console.log('Date', Date.now());
+  //   // console.log('parseInt(timestamp)', parseInt(timestamp))
+  //   // if (Date.now() === parseInt(timestamp)) {
+  //   //   console.log("bang");
+  //   // } else {
+  //   //   console.log("ko bang");
+  //   // }
+  //   const hour = 60 * 60 * 1000; //(60seconds * 60minutes * 1000ms, to get the milliseconds)
+  //   const hourAgo = Date.now() - hour;
+  //   // console.log("after 1 hour", hourAgo);
+  //   // console.log("after 1 hour", parseInt(timestamp));
+
+  //   // let time = moment(hour),
+  //   //   beforeTime = moment(timestamp),
+  //   //   afterTime = moment(Date.now());
+
+  //   // if (time.isBetween(beforeTime, afterTime)) {
+  //   //   console.log("is between");
+  //   // } else {
+  //   //   console.log("is not between");
+  //   // }
+  //   // return "";
+
+  //   // console.log({ hour });
+  //   // console.log({ hourAgo });
+  //   // console.log(timestamp)
+  //   // let today: any = new Date();
+  //   // const dd = String(today.getDate()).padStart(2, "0");
+  //   // const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+  //   // const yyyy = today.getFullYear();
+  //   // today = mm + "/" + dd + "/" + yyyy;
+  //   // const todayMoment: any = moment(parseInt(timestamp, 10)).format(
+  //   //   "MM/DD/YYYY"
+  //   // );
+  //   // console.log("today", today);
+  //   // console.log("todayMoment", todayMoment);
+  //   const todayMoment = moment(parseInt(timestamp, 10));
+  //   // console.log("todayMomen", todayMoment);
+
+  //   // console.log(todayMoment.isAfter(moment().subtract(1, "hours")));
+  //   // if (timestamp < hourAgo) {
+  //   //   return todayMoment.calendar();
+  //   // }
+
+  //   if (todayMoment.calendar() && parseInt(timestamp, 10) > hourAgo && user.uid !== message.user.uid) {
+  //     console.log("today");
+  //     return ""
+  //   } else if (todayMoment.subtract(1, "days").calendar()) {
+  //     console.log("yesterday");
+  //     return todayMoment.subtract(1, "days").calendar();
+  //   }
+  // };
 
   const isAuthorOf = useCallback(
     (message: any) => {
@@ -169,6 +223,7 @@ function ItemMessage({
       </div>
 
       {renderContentFiles()}
+      
     </li>
   );
 }
