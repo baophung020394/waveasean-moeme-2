@@ -155,7 +155,6 @@ function ItemMessage({
     }
   };
 
-  console.log(generateItems(messages));
   return (
     <li
       className={`${isAuthorOf(message)} ${renderClassName(message)}`}
