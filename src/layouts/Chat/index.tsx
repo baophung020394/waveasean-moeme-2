@@ -38,8 +38,6 @@ function Chat({ tokenNotification }: ChatProps) {
 
   const sendMessage = useCallback(
     (message) => {
-      console.log("message", message);
-
       dispatch(sendChannelMessage2(message, id));
     },
     [id]
@@ -213,7 +211,7 @@ function Chat({ tokenNotification }: ChatProps) {
   //     };
   //   }
   // }, [id]);
-  
+
   // if (!currentChannel?.id) {
   //   return <LoadingView message="Loading Chat..." />;
   // }

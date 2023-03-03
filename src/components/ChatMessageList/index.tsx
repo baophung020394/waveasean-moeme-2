@@ -106,34 +106,6 @@ function ChatMessageList({
     ev.preventDefault();
   };
 
-  const displayTimeLineChat = (date: any) => {
-    console.log("dateasdasda", date);
-    const REFERENCE = moment(date);
-    const TODAY = REFERENCE.clone().startOf("day");
-    const YESTERDAY = REFERENCE.clone().subtract(1, "days").startOf("day");
-    const A_WEEK_OLD = REFERENCE.clone().subtract(7, "days").startOf("day");
-    console.log("REFERENCE", REFERENCE);
-    console.log("TODAY", TODAY);
-    const todayConver = moment(date).isSame(TODAY, "d");
-    const isYesterday = moment(date).isSame(YESTERDAY, "d");
-    const isWithinAWeek = moment(date).isAfter(A_WEEK_OLD);
-    const isTwoWeeksOrMore = !isWithinAWeek;
-    console.log("todayConver", todayConver);
-    if (todayConver) {
-      return moment(date, "HH DD-MM-YYYY").calendar();
-    }
-    if (isYesterday) {
-      return moment(date, "HH DD-MM-YYYY").calendar();
-    }
-    if (isWithinAWeek) {
-      return moment(date).calendar();
-    }
-
-    if (isTwoWeeksOrMore) {
-      return moment(date).calendar();
-    }
-  };
-
   useEffect(() => {
     messagesRef?.scrollIntoView();
   }, [messages]);
@@ -149,31 +121,15 @@ function ChatMessageList({
       <ul ref={messagesRef} className="chat-box chatContainerScroll">
         {generateItems(messages).map((message: any, idx: number) => {
           if (message?.type === "day") {
-            // console.log(
-            //   "message date",
-            //   moment(message?.date).subtract(3, "days").calendar()
-            // );
             return (
               <div className="chat-date" key={`${message?.id}-${idx}`}>
                 <h1>
-                  {/* {moment(message?.date, "HH DD-MM-YYYY").calendar()} - */}
-                  {/* {new Date(message?.date.split(" ")[1]).setDate(
-                    new Date(message?.date.split(" ")[1]).getDate() + 7
-                  )
-                    ? "sau1 taun"
-                    : "truoc 1 tuan"} - */}
                   {moment(message?.date.split(" ")[1]).isAfter(7)
-                    ? moment(message?.date, "HH DD-MM-YYYY").calendar()
+                    ? moment(parseInt(message.id[0].timestamp)).calendar()
                     : `${moment({ hour: message?.date.split(" ")[0] })
                         .calendar()
                         .replace("Today at", "")} -
                       ${moment(message?.date, "HH DD-MM-YYYY").calendar()}`}
-                  {/* {displayTimeLineChat(message.date)} */}
-                  {/* {moment({ hour: message?.date.split(" ")[0] }).hour()} */}
-                  {/* {moment(
-                    message?.date.split(" ")[1],
-                    "MMM DD YYYY"
-                  ).calendar()} */}
                 </h1>
               </div>
             );
