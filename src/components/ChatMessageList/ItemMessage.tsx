@@ -1,5 +1,6 @@
 import ProgressBars from "components/common/ProgressBars";
 import Stocks from "components/Stocks";
+import TypingChat from "components/TypingChat";
 import moment from "moment";
 import React, { useCallback } from "react";
 import { ProgressBar } from "react-bootstrap";
@@ -170,7 +171,6 @@ function ItemMessage({
       </div>
 
       {renderContentFiles()}
-      {/* {Date.now() - parseInt(message.timestamp) < hourAgo ? " " : ""} */}
     </li>
   );
 }

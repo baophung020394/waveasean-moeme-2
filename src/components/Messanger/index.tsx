@@ -25,6 +25,8 @@ import { MentionsInput, Mention } from "react-mentions";
 import MentionsInputStyle from "./MentionsInputStyle";
 import { Icon } from "semantic-ui-react";
 import MentionStyle from "./MentionStyle";
+import firebase from "db/firestore";
+
 interface MessangerProps {
   joinedUsersState?: any;
   channel: any;
@@ -44,7 +46,10 @@ function Messanger({
   const [ids, setIds] = useState<any>([]);
   const [isOpenEmoj, setIsOpenEmoj] = useState<boolean>(false);
   const textareaRef = useRef<any>(null);
+  const typingTimeoutRef = useRef<any>(null);
   const userRedux = useSelector(({ auth }) => auth.user);
+  const currentChannel = useSelector(({ channel }) => channel.currentChannel);
+  const actionsUserRef = firebase.database().ref("actionsUser");
 
   let myuuid = uuidv4();
 
@@ -128,6 +133,7 @@ function Messanger({
       user: userRedux,
       timestamp: createTimestamp(),
     };
+    actionsUserRef.child(currentChannel?.id).update({ action: 0 });
     onSubmit(messages);
   };
 
@@ -218,6 +224,31 @@ function Messanger({
   //   textareaRef.current.style.height = scrollHeight + "px";
   // }, [value]);
 
+  const handleOnChange = (e: any) => {
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
+    typingTimeoutRef.current = setTimeout(() => {
+      const key = firebase.database().ref("actionsUser").push().key;
+
+      const item = {
+        action: 1,
+        username: userRedux.username,
+        userId: userRedux.uid,
+        id: key,
+      };
+
+      firebase
+        .database()
+        .ref("actionsUser")
+        .child(currentChannel?.id)
+        .set(item)
+        .then(() => console.log("save success"))
+        .catch((err) => console.log({ err }));
+    }, 500);
+  };
+
   return (
     <MessangerStyled
       className={`${
@@ -233,7 +264,10 @@ function Messanger({
         onDragOver={dragOverHandler}
         onDragLeave={dragLeaveHandler}
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e) => {
+          setValue(e.target.value);
+          handleOnChange(e);
+        }}
         className="mentions-input"
         placeholder={`${
           channel?.enableWriteMsg === "0"

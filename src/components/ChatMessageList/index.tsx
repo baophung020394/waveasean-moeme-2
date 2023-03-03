@@ -1,19 +1,12 @@
-import ChatOptions from "components/ChatOptions";
-import Stocks from "components/Stocks";
+import moment from "moment";
 import React, { useCallback, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { formatTimeAgo } from "utils/time";
-import { isEmojisOnly } from "utils/convertString";
-import ProgressBars from "components/common/ProgressBars";
-import ProgressBar from "react-bootstrap/ProgressBar";
-import { v4 as uuidv4 } from "uuid";
+import generateItems from "utils/generateItems";
 import { convertFiles } from "utils/handleFiles";
 import { createTimestamp } from "utils/time";
-import { Image } from "semantic-ui-react";
+import { v4 as uuidv4 } from "uuid";
 import ItemMessage from "./ItemMessage";
-import generateItems from "utils/generateItems";
-import moment from "moment";
 
 interface ChatMessageListProps {
   messages: any;

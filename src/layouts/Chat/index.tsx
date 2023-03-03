@@ -14,6 +14,7 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
 import { createTimestamp } from "utils/time";
+import TypingChat from "components/TypingChat";
 
 interface ChatProps {
   tokenNotification: string;
@@ -24,13 +25,12 @@ function Chat({ tokenNotification }: ChatProps) {
   const dispatch: any = useDispatch();
   const [progressBar, setProgressBar] = useState<any>({});
   const [selectedFile, setSelectedFile] = useState<any>({});
-  const joinedChannels = useSelector(({ channel }) => channel.joined);
   const userRedux = useSelector(({ auth }) => auth.user);
   const userJoinedRef = firebase.database().ref("channels");
+  const actionsUserRef = firebase.database().ref("actionsUser");
   const messageRef = firebase.database().ref("messages");
   const [messagesState, setMessagesState] = useState([]);
   const [searchTermState, setSearchTermState] = useState("");
-  const [sendtMess, setSendtMess] = useState("");
   const [joinedUsersState, setJoinedUsersState] = useState<any>([]);
   const currentChannel = useSelector(({ channel }) => channel?.currentChannel);
 
@@ -38,6 +38,8 @@ function Chat({ tokenNotification }: ChatProps) {
 
   const sendMessage = useCallback(
     (message) => {
+      // actionsUserRef.child().child(message?.user.id).update({ action: 0 });
+
       dispatch(sendChannelMessage2(message, id));
     },
     [id]
@@ -236,11 +238,13 @@ function Chat({ tokenNotification }: ChatProps) {
               searchTermState ? filterMessageBySearchTerm() : messagesState
             }
           />
+          <TypingChat user={userRedux} id={id} />
           <div className="chat--view__content__options">
             {currentChannel?.enableWriteMsg === "1" && (
               <ChatOptions submitStock={sendMessage} />
             )}
           </div>
+
           <Messanger
             joinedUsersState={joinedUsersState}
             messages={messagesState}
