@@ -31,27 +31,28 @@ function TypingChat({ id, user }: TypingChatProps) {
 
   return (
     <TypingChatStyled className="typing-chat">
-      <div className="chat-bubble">
-        <div className="typing">
-          {actionUserState?.length > 0 &&
-            actionUserState
-              ?.filter(
-                (au: any, index: number) =>
-                  actionUserState.findIndex(
-                    (au2: any) => au2.userId === au.userId
-                  ) === index && au?.userId !== user?.uid
-              )
-              .map((au: any) => {
-                console.log("au", au.action);
-                if (parseInt(au?.action) === 1) {
-                  return au?.username;
-                }
-              })}
-          <div className="dot"></div>
-          <div className="dot"></div>
-          <div className="dot"></div>
-        </div>
-      </div>
+      {actionUserState?.length > 0 &&
+        actionUserState
+          ?.filter(
+            (au: any, index: number) =>
+              actionUserState.findIndex(
+                (au2: any) => au2.userId === au.userId
+              ) === index
+          )
+          .map((au: any) => {
+            console.log("au", au.action);
+            if (parseInt(au?.action) === 1) {
+              return (
+                <div className="chat-bubble" key={au?.userId}>
+                  <div className="typing">
+                    <div className="dot"></div>
+                    <div className="dot"></div>
+                    <div className="dot"></div>
+                  </div>
+                </div>
+              );
+            }
+          })}
     </TypingChatStyled>
   );
 }
