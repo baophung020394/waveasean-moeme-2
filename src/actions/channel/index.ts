@@ -126,23 +126,6 @@ export const createChannel =
     // }
   };
 
-export const sendChannelMessage =
-  (message: any, channelId: string) => (dispatch: any, getState: any) => {
-    const newMessage = { ...message };
-
-    const { user } = getState().auth;
-
-    const userRef = db.firestore().doc(`profiles/${user.uid}`);
-    newMessage.author = userRef;
-    newMessage.channelId = channelId;
-
-    // dispatch(sendChannelMessage2(newMessage, channelId));
-
-    return api
-      .sendChannelMessage(newMessage, channelId)
-      .then((_) => dispatch({ type: "CHANNELS_MESSAGE_SENT" }));
-  };
-
 export const registerChannelsJoinedSubscription = (channelSub: any) => ({
   type: "CHANNELS_REGISTER_JOINED_SUB",
   sub: channelSub,

@@ -27,7 +27,6 @@ function Chat({ tokenNotification }: ChatProps) {
   const [selectedFile, setSelectedFile] = useState<any>({});
   const userRedux = useSelector(({ auth }) => auth.user);
   const userJoinedRef = firebase.database().ref("channels");
-  const actionsUserRef = firebase.database().ref("actionsUser");
   const messageRef = firebase.database().ref("messages");
   const [messagesState, setMessagesState] = useState([]);
   const [searchTermState, setSearchTermState] = useState("");

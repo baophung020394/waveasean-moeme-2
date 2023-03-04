@@ -24,13 +24,6 @@ export const fetchUnreads = () =>
 export const fetchChannels = () =>
   db.firestore().collection("channels").get().then(extractSnapshotData);
 
-export const createChannel = (channel: any) =>
-  db
-    .firestore()
-    .collection("channels")
-    .add(channel)
-    .then((docRef) => docRef.id);
-
 export const subscribeToChannel = (channelId: string, onSubsribe: any) =>
   db
     .firestore()
@@ -49,21 +42,9 @@ export const subscribeToProfile = (uid: string, onSubsribe: any) =>
     .onSnapshot((snapshot) => onSubsribe(snapshot.data()));
 
 export const joinChannel = async (user: any, channelId: string) => {
-  // const userRef = db.database().ref(`users/${uid}`);
   const channelRef = db.database().ref(`channels/${channelId}`);
 
-  // await userRef.child("joinedChannels").child(channelId).set(channelId);
   await channelRef.child("joinedUsers").child(user.uid).set(user);
-};
-
-export const sendChannelMessage = (message: any, channelId: any) => {
-  return db
-    .firestore()
-    .collection("channels")
-    .doc(channelId)
-    .collection("messages")
-    .doc(message.timestamp)
-    .set(message);
 };
 
 export const updateUnreadMess = async (notifications: any) => {

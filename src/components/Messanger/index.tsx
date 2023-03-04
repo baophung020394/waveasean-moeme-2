@@ -126,14 +126,17 @@ function Messanger({
    */
   const sendMessage = async () => {
     if (value.trim() === "") return;
-    // console.log({ value });
+
     const messages: any = {
       idMessage: myuuid,
       content: value.trim(),
       user: userRedux,
       timestamp: createTimestamp(),
     };
-    actionsUserRef.child(currentChannel?.id).update({ action: 0 });
+    actionsUserRef
+      .child(currentChannel?.id)
+      .child(userRedux?.uid)
+      .update({ action: 0 });
     onSubmit(messages);
   };
 
@@ -225,28 +228,50 @@ function Messanger({
   // }, [value]);
 
   const handleOnChange = (e: any) => {
+    const item = {
+      action: 1,
+      username: userRedux.username,
+      userId: userRedux.uid,
+      // id: key,
+    };
+
+    actionsUserRef
+      .child(currentChannel?.id)
+      .child(userRedux.uid)
+      .set(item)
+      .then(() => console.log("save success"))
+      .catch((err) => console.log({ err }));
+
+    if (e.target.value.length <= 0) {
+      console.log("e.target.value.length", e.target.value.length);
+      actionsUserRef
+        .child(currentChannel?.id)
+        .child(userRedux?.uid)
+        .update({ action: 0 });
+      return;
+    }
+
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
-
+    // && au?.userId !== user?.uid
     typingTimeoutRef.current = setTimeout(() => {
-      const key = firebase.database().ref("actionsUser").push().key;
+      // const key = firebase.database().ref("actionsUser").push().key;
 
-      const item = {
-        action: 1,
-        username: userRedux.username,
-        userId: userRedux.uid,
-        id: key,
-      };
+      if (e.target.value.length <= 0) {
+        console.log("e.target.value.length", e.target.value.length);
+        actionsUserRef
+          .child(currentChannel?.id)
+          .child(userRedux?.uid)
+          .update({ action: 0 });
+        return;
+      }
 
-      firebase
-        .database()
-        .ref("actionsUser")
+      actionsUserRef
         .child(currentChannel?.id)
-        .set(item)
-        .then(() => console.log("save success"))
-        .catch((err) => console.log({ err }));
-    }, 500);
+        .child(userRedux?.uid)
+        .update({ action: 0 });
+    }, 10000);
   };
 
   return (
