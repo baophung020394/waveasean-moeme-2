@@ -5,8 +5,9 @@ import firebase from "db/firestore";
 interface TypingChatProps {
   id: string;
   user: any;
+  activeMessage: any;
 }
-function TypingChat({ id, user }: TypingChatProps) {
+function TypingChat({ id, user, activeMessage }: TypingChatProps) {
   const actionsUserRef = firebase.database().ref("actionsUser");
   const [actionUserState, setActionUserState] = useState([]);
   const [filterActionUserState, setFilterActionUserState] = useState([]);
@@ -32,8 +33,6 @@ function TypingChat({ id, user }: TypingChatProps) {
         }
 
         setActionUserState((currentState: any) => {
-          console.log("currentState", currentState);
-
           return [
             ...currentState,
             { ...snap.val(), action: snap.val().action },
@@ -115,9 +114,11 @@ function TypingChat({ id, user }: TypingChatProps) {
   }, [actionUserState]);
 
   console.log({ display });
-
+  console.log("filterActionUserState", filterActionUserState);
   return (
-    display && (
+    display &&
+    filterActionUserState?.length > 0 &&
+    filterActionUserState.filter((u: any) => u.userId !== user.uid) && (
       <TypingChatStyled className="typing-chat">
         <div className="chat-bubble">
           <div className="typing">
@@ -134,6 +135,7 @@ function TypingChat({ id, user }: TypingChatProps) {
 
 const TypingChatStyled = styled.div`
   background-color: #ccc;
+  padding: 0 15px;
   .chat-bubble {
     background-color: #e6f8f1;
     padding: 5px 20px;
@@ -146,7 +148,6 @@ const TypingChatStyled = styled.div`
     display: inline-block;
   }
   .typing {
-    padding: 0 15px;
     align-items: center;
     display: flex;
     height: 17px;

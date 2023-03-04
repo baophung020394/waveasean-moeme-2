@@ -33,6 +33,7 @@ interface MessangerProps {
   messages?: any;
   onSubmit: (message: any) => void;
   uploadFileProp?: (data: any) => void;
+  setActiveMessage: any;
 }
 
 function Messanger({
@@ -41,6 +42,7 @@ function Messanger({
   channel,
   messages,
   uploadFileProp,
+  setActiveMessage,
 }: MessangerProps) {
   const [value, setValue] = useState<any>("");
   const [ids, setIds] = useState<any>([]);
@@ -234,7 +236,7 @@ function Messanger({
       userId: userRedux.uid,
       // id: key,
     };
-
+    setActiveMessage(item);
     actionsUserRef
       .child(currentChannel?.id)
       .child(userRedux.uid)
