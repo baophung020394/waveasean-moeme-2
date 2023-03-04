@@ -10,7 +10,7 @@ function TypingChat({ id, user }: TypingChatProps) {
   const actionsUserRef = firebase.database().ref("actionsUser");
   const [actionUserState, setActionUserState] = useState([]);
   const [filterActionUserState, setFilterActionUserState] = useState([]);
-  const [filterMainUser, setFilterMainUser] = useState(null);
+  const [usersAction, setUsersAction] = useState(null);
   const [display, setDisplay] = useState(false);
 
   /**
@@ -20,14 +20,20 @@ function TypingChat({ id, user }: TypingChatProps) {
     if (id) {
       actionsUserRef.child(id).on("child_added", (snap) => {
         console.log("added", snap.val());
-      });
-
-      actionsUserRef.child(id).on("child_changed", (snap) => {
         if (snap.val().action === 1) {
           setDisplay(true);
         }
+      });
+
+      actionsUserRef.child(id).on("child_changed", (snap) => {
+        console.log("snap", snap.val());
+        if (snap.val().action === 1) {
+          setDisplay(true);
+        }
+
         setActionUserState((currentState: any) => {
           console.log("currentState", currentState);
+
           return [
             ...currentState,
             { ...snap.val(), action: snap.val().action },
@@ -68,20 +74,10 @@ function TypingChat({ id, user }: TypingChatProps) {
   };
 
   const displayUsersAction = () => {
-    console.log("filterActionUserState", filterActionUserState);
     if (filterActionUserState?.length > 0) {
-      checkUserMain(filterActionUserState, user);
-      console.log("", checkUserMain(filterActionUserState, user));
       const filteredUser = filterActionUserState.filter(
         (auf: any) => auf?.userId !== user?.uid
       );
-      // setFilterMainUser(filteredUser);
-      // console.log("filteredUser", filteredUser);
-      // if (filteredUser.length > 0) {
-      //   setDisplay(true);
-      // } else if (filteredUser.length <= 0) {
-      //   setDisplay(false);
-      // }
       if (id && filteredUser?.length > 0) {
         return filteredUser.map((au: any, idx: number) => {
           if (parseInt(au.action) === 1) {
@@ -94,6 +90,22 @@ function TypingChat({ id, user }: TypingChatProps) {
 
   useEffect(() => {
     const newArr: any = getUniqueListBy(actionUserState, "userId");
+
+    // const test1 = newArr.reduce((acc, cur) => {
+    //   if (!newArr.includes(acc.userId) && user.uid !== cur.userId) {
+    //     acc.push(cur.userId);
+    //   }
+    //   return acc;
+    // }, []);
+
+    // setUsersAction(test1);
+
+    // if (test1.includes(user.uid)) {
+    //   console.log("user co trong nha");
+    // } else {
+    //   console.log("user co k?");
+    // }
+    // console.log({ test1 });
     const result = actionCounter(newArr);
     if (result === newArr.length) {
       setDisplay(false);
@@ -105,8 +117,7 @@ function TypingChat({ id, user }: TypingChatProps) {
   console.log({ display });
 
   return (
-    display &&
-    checkUserMain(filterActionUserState, user) && (
+    display && (
       <TypingChatStyled className="typing-chat">
         <div className="chat-bubble">
           <div className="typing">
