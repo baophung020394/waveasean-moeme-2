@@ -21,6 +21,8 @@ function Navbar() {
     console.log({ data });
   };
 
+  const handleCloseCreateChannel = () => setIsOpen(false);
+
   return (
     <NavbarStyled className="navbar-left">
       <ul>
@@ -86,20 +88,10 @@ function Navbar() {
         <Modal.Header>Channel Talk</Modal.Header>
         <Modal.Content scrolling>
           <Modal.Description>
-            <SendToMultipleChannel />
+            <SendToMultipleChannel onClose={handleCloseCreateChannel}/>
           </Modal.Description>
         </Modal.Content>
       </Modal>
-
-      {/* <CustomModal
-        title="Channel Talk"
-        componentName="send-to-multiple-channel-modal"
-        open={isOpen}
-        // onClick={() => setOpen(!open)}
-        // submitForm={() => {}}
-      >
-        <SendToMultipleChannel />
-      </CustomModal> */}
     </NavbarStyled>
   );
 }

@@ -19,7 +19,9 @@ import { styled } from "utils/styled-component";
 import { createTimestamp } from "utils/time";
 import { v4 as uuidv4 } from "uuid";
 
-interface SendToMultipleChannelProps {}
+interface SendToMultipleChannelProps {
+  onClose: () => void;
+}
 
 /**
  * Register Emoji for toolbar
@@ -77,7 +79,7 @@ const CustomToolbar = () => (
   </div>
 );
 
-function SendToMultipleChannel({}: SendToMultipleChannelProps) {
+function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
   const userRedux = useSelector(({ auth }) => auth.user);
   const [value, setValue] = useState<any>("");
   const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
@@ -127,7 +129,7 @@ function SendToMultipleChannel({}: SendToMultipleChannelProps) {
       type: 2,
     };
 
-    const newPost = {...message};
+    const newPost = { ...message };
     if (listIdsChannel?.length > 0) {
       listIdsChannel.forEach((chnl: any) => {
         message.channelId = chnl?.id;
@@ -137,6 +139,7 @@ function SendToMultipleChannel({}: SendToMultipleChannelProps) {
       });
     }
     setValue("");
+    onClose();
   };
 
   const modules = {
@@ -215,7 +218,7 @@ function SendToMultipleChannel({}: SendToMultipleChannelProps) {
         </div>
       </div>
       <Modal.Actions>
-        <Button color="black" onClick={() => {}}>
+        <Button color="black" onClick={() => onClose()}>
           Cancel
         </Button>
         <Button
