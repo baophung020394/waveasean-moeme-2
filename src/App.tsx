@@ -2,13 +2,14 @@ import { listenToConnectionChanges } from "actions/app";
 import { listenToAuthChanges } from "actions/auth";
 import PrivateChat from "components/PrivateChat";
 import LoadingView from "components/Spinner/LoadingView";
-import RegisterView from "layouts/Register";
+import firebase, { requestForToken } from "db/firestore";
 import ChannelView from "layouts/Channel";
 import ChatView from "layouts/Chat";
 import HomeView from "layouts/Home";
 import LoginView from "layouts/Login";
 import PrivateView from "layouts/Private";
 import ProfileView from "layouts/Profile";
+import RegisterView from "layouts/Register";
 import SettingsView from "layouts/Settings";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,11 +20,7 @@ import {
   Switch,
 } from "react-router-dom";
 import StoreProvider from "store/StoreProvider";
-import styled from "styled-components";
 import Header from "./components/common/Header";
-import { requestForToken } from "db/firestore";
-import firebase from "db/firestore";
-import axios from "axios";
 
 export const AuthRoute = ({ children, ...rest }: any) => {
   const user = useSelector(({ auth }: any) => auth.user);
@@ -31,15 +28,34 @@ export const AuthRoute = ({ children, ...rest }: any) => {
 
   // console.log({ user });
   return (
+    // <Route
+    //   {...rest}
+    //   render={(props: any) => {
+    //     return user ? (
+    //       React.cloneElement(onlyChild, { ...rest, ...props })
+    //     ) : (
+    //       <Redirect to="/login" />
+    //     );
+    //   }}
+    // />
     <Route
       {...rest}
-      render={(props: any) => {
+      render={(props) => {
+        // if (
+        //   props?.match.params.id &&
+        //   localStorage.getItem("urlCopy")?.length > 0
+        // ) {
+        //   console.log({ props });
+        //   console.log("co");
+        //   return React.cloneElement(onlyChild, { ...rest, ...props });
+        // } else {
         return user ? (
           React.cloneElement(onlyChild, { ...rest, ...props })
         ) : (
           <Redirect to="/login" />
         );
       }}
+      // }
     />
   );
 };
@@ -138,11 +154,7 @@ function MoeMe() {
             <ChatView tokenNotification={tokenNotification} />
           </AuthRoute>
           <AuthRoute path="/private">
-            <PrivateView
-              usersRef={usersRef}
-              connectedRef={connectedRef}
-              statusRef={statusRef}
-            />
+            <PrivateView usersRef={usersRef} statusRef={statusRef} />
           </AuthRoute>
           <AuthRoute path="/private-detail/:id">
             <PrivateChat />
@@ -167,9 +179,3 @@ export default function App() {
     </StoreProvider>
   );
 }
-
-const ContentWrapperCSS = styled.div`
-  width: 100%;
-  height: 100%;
-  padding-top: 56px;
-`;

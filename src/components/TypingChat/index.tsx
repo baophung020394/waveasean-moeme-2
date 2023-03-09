@@ -5,7 +5,7 @@ import firebase from "db/firestore";
 interface TypingChatProps {
   id: string;
   user: any;
-  activeMessage: any;
+  activeMessage?: any;
 }
 function TypingChat({ id, user, activeMessage }: TypingChatProps) {
   const actionsUserRef = firebase.database().ref("actionsUser");
@@ -30,6 +30,7 @@ function TypingChat({ id, user, activeMessage }: TypingChatProps) {
         console.log("snap", snap.val());
         if (snap.val().action === 1) {
           setDisplay(true);
+          setUsersAction(snap.val());
         }
 
         setActionUserState((currentState: any) => {
@@ -115,10 +116,12 @@ function TypingChat({ id, user, activeMessage }: TypingChatProps) {
 
   console.log({ display });
   console.log("filterActionUserState", filterActionUserState);
+  const filtered = filterActionUserState?.filter(
+    (u: any) => u.username === "bao2"
+  );
+  // console.log("filtered", filtered);
   return (
-    display &&
-    filterActionUserState?.length > 0 &&
-    filterActionUserState.filter((u: any) => u.userId !== user.uid) && (
+    display && (
       <TypingChatStyled className="typing-chat">
         <div className="chat-bubble">
           <div className="typing">

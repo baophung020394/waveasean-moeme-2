@@ -32,13 +32,11 @@ function Chat({ tokenNotification }: ChatProps) {
   const [searchTermState, setSearchTermState] = useState("");
   const [joinedUsersState, setJoinedUsersState] = useState<any>([]);
   const currentChannel = useSelector(({ channel }) => channel?.currentChannel);
-  const [activeMessage, setActiveMessage] = useState({});
+
   let myuuid = uuidv4();
 
   const sendMessage = useCallback(
     (message) => {
-      // actionsUserRef.child().child(message?.user.id).update({ action: 0 });
-      setActiveMessage(message);
       dispatch(sendChannelMessage2(message, id));
     },
     [id]
@@ -237,7 +235,9 @@ function Chat({ tokenNotification }: ChatProps) {
               searchTermState ? filterMessageBySearchTerm() : messagesState
             }
           />
-          <TypingChat user={userRedux} id={id} activeMessage={activeMessage} />
+
+          {id && <TypingChat user={userRedux} id={id} />}
+
           <div className="chat--view__content__options">
             {currentChannel?.enableWriteMsg === "1" && (
               <ChatOptions submitStock={sendMessage} />
@@ -250,7 +250,6 @@ function Chat({ tokenNotification }: ChatProps) {
             onSubmit={sendMessage}
             channel={currentChannel}
             uploadFileProp={uploadImage}
-            setActiveMessage={setActiveMessage}
           />
         </div>
       </div>

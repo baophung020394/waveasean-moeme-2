@@ -1,15 +1,52 @@
 import Navbar from "components/Navbar";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "utils/styled-component";
 import { withBaseLayout } from "layouts/Base";
+import Posts from "components/Posts";
+import firebase from "db/firestore";
+import { Grid } from "semantic-ui-react";
+import { useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setCurrentChannel } from "actions/channel";
 
 interface HomeProps {}
 
 function Home() {
+  const postsRef = firebase.database().ref("posts");
+  const [posts, setPosts] = useState<any>([]);
+  const dispatch: any = useDispatch();
+  const history = useHistory();
+
+  useEffect(() => {
+    postsRef.on("child_added", (snap) =>
+      setPosts((currentState: any) => {
+        let updateState = [...currentState];
+        updateState.push(snap.val());
+        return updateState;
+      })
+    );
+  }, []);
+
+  console.log(posts);
   return (
     <HomeStyled className="home-container">
-      <h1>Home page</h1>
-      <h4>Comming soon</h4>
+      <Grid columns={4}>
+        <Grid.Row>
+          {posts?.length > 0 &&
+            posts.map((post: any) => (
+              <Grid.Column
+                key={post?.id}
+                onClick={() => {
+                  console.log(post?.channel.id);
+                  history.push(`/channel-detail/${post?.channel.id}`);
+                  dispatch(setCurrentChannel(post?.channel, false));
+                }}
+              >
+                <Posts post={post} />
+              </Grid.Column>
+            ))}
+        </Grid.Row>
+      </Grid>
     </HomeStyled>
   );
 }
@@ -17,7 +54,7 @@ function Home() {
 const HomeStyled = styled.div`
   width: 100%;
   height: 100%;
-  padding: 20px;
+  padding: 30px 40px;
 `;
 
 export default withBaseLayout(Home);

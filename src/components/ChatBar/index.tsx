@@ -39,7 +39,7 @@ function ChatBar({ channel, uniqueuUsers, searchTermChange }: ChatBarProps) {
                 {channel?.device === "web" ? (
                   <img
                     className="image-chat"
-                    src={JSON.parse(channel?.room_profile_image)}
+                    src={channel?.room_profile_image}
                     alt="Thumb"
                   />
                 ) : (

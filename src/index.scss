@@ -217,3 +217,45 @@ Css for Modals
 /**
 * Css border for upload file
 */
+
+/**
+* Channel talk modal
+*/
+.create-channel-talk-modal {
+  // width: 100% !important;
+  .send-to-multiple-channel {
+    margin: 30px 0;
+  }
+
+  .content.scrolling {
+    max-height: 100vh !important;
+    padding-bottom: 100px;
+  }
+
+  .actions {
+    button {
+      margin-left: 0 !important;
+      margin-right: 16px;
+    }
+  }
+}
+
+.channel-talk-detail-modal {
+  max-width: 40%;
+  .content.scrolling {
+    max-height: 100vh !important;
+    padding-bottom: 100px;
+    p {
+      img {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.send-channel-fail-modal {
+  height: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

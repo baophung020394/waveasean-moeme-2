@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import Form from "react-bootstrap/Form";
 import { Checkbox } from "semantic-ui-react";
+import firebase from "db/firestore";
 
 interface CreateChannelProps {
   submitForm?: (data: any) => void;
@@ -26,6 +27,7 @@ function CreateChannel({
   submitForm,
 }: CreateChannelProps) {
   const [selectedImage, setSelectedImage] = useState<any>("");
+  const storageRef = firebase.storage().ref();
   const { register, handleSubmit } = useForm();
   const user = useSelector(({ auth }) => auth.user);
   let myuuid = uuidv4();
@@ -53,13 +55,28 @@ function CreateChannel({
 
       const image = e.target.files[0];
 
-      const reader = new FileReader();
+      // const reader = new FileReader();
 
-      reader.readAsDataURL(image);
+      // reader.readAsDataURL(image);
 
-      reader.onload = () => {
-        setSelectedImage(JSON.stringify(reader?.result));
-      };
+      // reader.onload = () => {
+      //   setSelectedImage(reader?.result);
+      //   // setSelectedImage(JSON.stringify(reader?.result));
+      // };
+
+      const filePath = `chat/images/${myuuid}.jpg`;
+      storageRef
+        .child(filePath)
+        .put(image, { contentType: image?.type })
+        .then((data) => {
+          data.ref
+            .getDownloadURL()
+            .then((url) => {
+              setSelectedImage(url);
+            })
+            .catch((err) => console.log(err));
+        })
+        .catch((err) => console.log(err));
     }
   };
 

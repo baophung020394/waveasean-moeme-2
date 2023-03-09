@@ -3,6 +3,7 @@ import ChatBar from "components/ChatBar";
 import ChatMessageList from "components/ChatMessageList";
 import Messanger from "components/Messanger";
 import LoadingView from "components/Spinner/LoadingView";
+import TypingChat from "components/TypingChat";
 import firebase from "db/firestore";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -146,6 +147,9 @@ function PrivateChat({ user }: PrivateChatProps) {
               searchTermState ? filterMessageBySearchTerm() : messagesState
             }
           />
+
+          {currentChannel?.id && <TypingChat user={userRedux} id={currentChannel?.id} />}
+
           <Messanger
             joinedUsersState={joinedUsersState}
             messages={messagesState}

@@ -33,7 +33,6 @@ interface MessangerProps {
   messages?: any;
   onSubmit: (message: any) => void;
   uploadFileProp?: (data: any) => void;
-  setActiveMessage: any;
 }
 
 function Messanger({
@@ -42,7 +41,6 @@ function Messanger({
   channel,
   messages,
   uploadFileProp,
-  setActiveMessage,
 }: MessangerProps) {
   const [value, setValue] = useState<any>("");
   const [ids, setIds] = useState<any>([]);
@@ -88,6 +86,7 @@ function Messanger({
           username: userRedux?.userId || userRedux.displayName,
           id: userRedux?.uid,
         },
+        type: 1,
       };
       uploadFileProp(newMessage);
       // const reader = new FileReader();
@@ -134,7 +133,9 @@ function Messanger({
       content: value.trim(),
       user: userRedux,
       timestamp: createTimestamp(),
+      type: 0,
     };
+
     actionsUserRef
       .child(currentChannel?.id)
       .child(userRedux?.uid)
@@ -191,7 +192,10 @@ function Messanger({
             timestamp: createTimestamp(),
             fileType: file.type,
             metadata: convertFiles(file),
+            type: 1,
           };
+
+          console.log("newMessage file", newMessage);
 
           uploadFileProp(newMessage);
           textareaRef.current.style.border = "1px dashed #e2e2e2";
@@ -229,6 +233,11 @@ function Messanger({
   //   textareaRef.current.style.height = scrollHeight + "px";
   // }, [value]);
 
+  /**
+   * Check user action typing
+   * @param e
+   * @returns
+   */
   const handleOnChange = (e: any) => {
     const item = {
       action: 1,
@@ -236,7 +245,7 @@ function Messanger({
       userId: userRedux.uid,
       // id: key,
     };
-    setActiveMessage(item);
+
     actionsUserRef
       .child(currentChannel?.id)
       .child(userRedux.uid)
@@ -275,6 +284,12 @@ function Messanger({
         .update({ action: 0 });
     }, 10000);
   };
+
+  useEffect(() => {
+    return () => {
+      setValue("");
+    };
+  }, []);
 
   return (
     <MessangerStyled
@@ -325,8 +340,6 @@ function Messanger({
                 <span className="icon24 img-show">
                   <Icon name="file" size="large" color="grey" />
                 </span>
-                {/* <img className="icon24 img-show" src={IconFileGrey} alt="" />
-                <img className="icon24 img-hover" src={IconFileHover} alt="" /> */}
               </label>
               <input
                 className="file-input"
@@ -426,15 +439,6 @@ const MessangerStyled = styled.div`
       width: 100%;
       z-index: 99;
     }
-
-    // .mentions-input {
-    //   textarea {
-    //     &::placeholder {
-    //       color: #ccc;
-    //       font-size: 14px;
-    //     }
-    //   }
-    // }
   }
 
   .mentions-input {
@@ -445,39 +449,7 @@ const MessangerStyled = styled.div`
     strong.mention-name {
       background-color: #cee4e5;
     }
-    // .mentions-input__highlighter__substring {
-    //   background-color: #cee4e5;
-    //   visibility: visible !important;
-    // }
   }
-
-  // .mentions-input {
-  //   border-top-left-radius: 8px;
-  //   border-top-right-radius: 8px;
-  //   max-height: 350px;
-  //   height: auto;
-  //   border: none;
-  //   border-bottom: 1px solid #e2e2e2;
-  //   border-bottom-left-radius: 0;
-  //   border-bottom-right-radius: 0;
-  //   overflow: auto;
-  //   min-height: 60px;
-  //   overflow-y: hidden !important;
-
-  // &::placeholder {
-  //   color: #e2e2e2;
-  // }
-
-  //     &:focus {
-  //       border-bottom: 1px solid #e2e2e2;
-  //       box-shadow: none;
-  //     }
-
-  //     &::-webkit-scrollbar {
-  //       // display: none;
-  //     }
-  //   }
-  // }
 
   .chat-input__options {
     padding: 16px;

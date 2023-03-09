@@ -97,8 +97,7 @@ export const sendChannelMessage2 = (message: any, channelId: any) => {
   const messagesRef = db.database().ref("messages");
   return messagesRef.child(channelId).push().set(message);
 };
-export const updateMessage = (message: any, channelId: any) => {
-  // return db.database().ref("messages").child(channelId).child().update({
-  //   image: "",
-  // });
-};
+
+export const getListPostsHome = () => {
+  
+}

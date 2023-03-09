@@ -18,7 +18,6 @@ interface ChatOptions {
 function ChatOptions({ submitStock }: ChatOptions) {
   const [isOpenStock, setIsOpenStock] = useState(false);
   const user = useSelector(({ auth }) => auth.user);
-  const _messages = JSON.parse(localStorage.getItem("_messages"));
   let myuuid = uuidv4();
 
   const onSubmit = (data: any) => {
@@ -28,6 +27,7 @@ function ChatOptions({ submitStock }: ChatOptions) {
       user,
       stocks: data,
       timestamp: createTimestamp(),
+      type: 3,
     };
 
     // localStorage.setItem("_messages", JSON.stringify(newMessage));

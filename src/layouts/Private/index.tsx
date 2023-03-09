@@ -12,9 +12,8 @@ import { createTimestamp } from "utils/time";
 interface PrivateProps {
   usersRef: any;
   statusRef: any;
-  connectedRef: any;
 }
-function Private({ usersRef, statusRef, connectedRef }: PrivateProps) {
+function Private({ usersRef, statusRef }: PrivateProps) {
   const [usersState, setUsersState] = useState([]);
   const [userState, setUserState] = useState({});
   const [connectedUserState, setConnectedUserState] = useState([]);

@@ -64,6 +64,7 @@ function ChatMessageList({
             timestamp: createTimestamp(),
             fileType: file.type,
             metadata: convertFiles(file),
+            type: 1,
           };
 
           uploadFileProp(newMessage);
@@ -191,7 +192,7 @@ const ChatMessageListStyled = styled.div`
   ul {
     li {
       &:last-child {
-        margin-bottom: 0;
+        // margin-bottom: 0;
       }
 
       &.other-file {

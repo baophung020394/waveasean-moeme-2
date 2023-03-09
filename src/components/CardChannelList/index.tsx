@@ -128,7 +128,7 @@ function CardChannelList({
               channel?.room_profile_image !== "" ? (
                 <img
                   className="image-chat"
-                  src={JSON.parse(channel?.room_profile_image)}
+                  src={channel?.room_profile_image}
                   alt="Thumb"
                 />
               ) : (

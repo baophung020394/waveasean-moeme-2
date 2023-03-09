@@ -283,28 +283,11 @@ export const sendChannelMessage2 =
       username: user?.userId || user.displayName,
       id: user?.uid,
     };
-    // const hour = 60 * 60 * 1000; //(60seconds * 60minutes * 1000ms, to get the milliseconds)
-    // const hourAgo = Date.now() - hour;
-    // console.log("after 1 hour", hourAgo);
-    // console.log("after 1 hour", parseInt(timestamp));
-    // if (moment(parseInt(timestamp, 10)) > moment(hourAgo)) {
-    //   console.log("dung r");
-    //   return "";
-    // } else {
-    //   console.log("sai r");
-    //   return moment(parseInt(timestamp, 10)).calendar();
-    // }
+
     return api
       .sendChannelMessage2(newMessage, channelId)
       .then(() => console.log("save mess success"))
       .catch((err) => console.log("err", err));
-  };
-
-export const updateMessage =
-  (message: any, channelId: string) => (dispatch: any, getState: any) => {
-    const newMessage = { ...message };
-
-    return api.updateMessage(newMessage, channelId);
   };
 
 export const uploadFiles =
@@ -312,6 +295,7 @@ export const uploadFiles =
   (dispatch: any) => {
     const storageRef = db.storage().ref();
     let newData = { ...data };
+    console.log("newData file", newData);
     let perCentUpload: any;
     const filePath = `chat/files/${newData.idMessage}.${newData.metadata.type}`;
 
@@ -374,19 +358,4 @@ export const uploadFiles =
           }
         }
       );
-    // .then((data) => {
-    //   console.log("data", data);
-    // const percentUpload = Math.round(
-    //   (data.bytesTransferred / data.totalBytes) * 100
-    // );
-    //   console.log("perCentUpload", percentUpload);
-    //   perCentUploadFunc(percentUpload);
-
-    //   data.ref.getDownloadURL().then((url: string) => {
-    //     console.log("url", url);
-    //     newData.image = url;
-    //     dispatch(sendChannelMessage2(newData, idChannel));
-    //   });
-    // })
-    // .catch((err) => console.log("err", err));
   };
