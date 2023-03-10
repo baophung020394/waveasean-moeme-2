@@ -105,7 +105,8 @@ function MoeMe() {
           console.log("snap.val()", snap.val());
           if (snap.val()?.id) {
             console.log("co id");
-            window.location.href = `/#${snap.val().url}`;
+            window.location.href = `/waveasean-moeme-2/#${snap.val().url}`;
+            // https://baophung020394.github.io/waveasean-moeme-2/#/channel-detail/-NQ8L82ow2YFNh0tAz7P
           } else {
             console.log("k co id");
             // window.location.href = `/#/`;
