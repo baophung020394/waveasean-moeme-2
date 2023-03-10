@@ -24,14 +24,14 @@ function Login({}: LoginProps) {
     dispatch(login(data));
   };
 
-  // useEffect(() => {
-  //   copyRef.on("child_added", (snap: any) => {
-  //     if (snap.val().isLogin === 0 && snap.val().id) {
-  //       console.log("redirect to page #");
-  //       history.push("/request-login");
-  //     }
-  //   });
-  // }, []);
+  useEffect(() => {
+    copyRef.on("child_added", (snap: any) => {
+      if (snap.val().isLogin === 0 && snap.val().id) {
+        console.log("redirect to page #");
+        history.push("/request-login");
+      }
+    });
+  }, []);
 
   if (isChecking) {
     return <LoadingView />;
