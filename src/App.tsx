@@ -102,7 +102,7 @@ function MoeMe() {
     connectedRef.on("value", (snap) => {
       if (user && user?.uid && snap.val()) {
         copyRef.on("child_added", (snap: any) => {
-          console.log('snap.val()',snap.val())
+          console.log("snap.val()", snap.val());
           // window.location.href = `/#${snap.val().url}`;
         });
 
@@ -144,11 +144,12 @@ function MoeMe() {
       <Header />
       <ContentWrapper>
         <Switch>
-          {/* <Route path="/request-login">
-            <RequestLogin />
-          </Route> */}
           <Route path="/login">
             <LoginView />
+          </Route>
+         
+          <Route path="/request-login">
+            <RequestLogin />
           </Route>
 
           <Route path="/register">
