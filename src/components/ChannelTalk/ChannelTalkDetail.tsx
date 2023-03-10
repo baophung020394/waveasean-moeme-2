@@ -19,7 +19,9 @@ function ChannelTalkDetail({ message }: ChannelTalkDetailProps) {
       <div
         className="chat-channel-content text"
         dangerouslySetInnerHTML={{
-          __html: message.content.replace(/<img .*?>/g, ""),
+          __html: message.content
+            .replace(/<img .*?>/g, "")
+            .replaceAll("<p><br></p>", ""),
         }}
       />
 

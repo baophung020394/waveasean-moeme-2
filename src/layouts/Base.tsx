@@ -4,7 +4,7 @@ import { styled } from "utils/styled-component";
 
 export const withBaseLayout = (Component: any) => (props: any) => {
   return (
-    <BaseLayoutStyled>
+    <BaseLayoutStyled className="main-container">
       <Navbar />
       <Component {...props} />
     </BaseLayoutStyled>

@@ -91,7 +91,6 @@ function ChannelList({}: ChannelListProps) {
                 <CardChannelList
                   channel={channel}
                   key={`${channel?.room_name}-${index}`}
-                  setChannel={setChannel}
                 />
               );
             })}

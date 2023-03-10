@@ -102,7 +102,8 @@ const NavbarStyled = styled.div`
   text-align: center;
   box-sizing: border-box;
   border-right: 1px solid #e6ecf3;
-
+  height: calc(100vw - 37%);
+  
   ul {
     li {
       cursor: pointer;

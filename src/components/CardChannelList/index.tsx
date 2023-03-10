@@ -1,34 +1,24 @@
-import {
-  clearNotifications,
-  joinChannel,
-  setCurrentChannel,
-} from "actions/channel";
+import { joinChannel, setCurrentChannel } from "actions/channel";
 import ORGIcon from "assets/images/icon/ORG.png";
 import PERIcon from "assets/images/icon/PER.png";
 import SPLIcon from "assets/images/icon/SPL.png";
 import STOIcon from "assets/images/icon/STO.png";
 import { Notification } from "components/Notifications";
+import firebase from "db/firestore";
 import { currencyFormat } from "hooks/useFormatNumber";
 import { Channel } from "models/channel";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import styled from "styled-components";
-import firebase from "db/firestore";
-import { createTimestamp } from "utils/time";
 import { Image } from "semantic-ui-react";
+import styled from "styled-components";
+import { createTimestamp } from "utils/time";
 
 interface CardChannelListProps {
   channel: Channel;
-  onClick?: (data: any) => void;
-  setChannel: (channel: any) => void;
 }
 
-function CardChannelList({
-  channel,
-  onClick,
-  setChannel,
-}: CardChannelListProps) {
+function CardChannelList({ channel }: CardChannelListProps) {
   const dispatch: any = useDispatch();
   const history = useHistory();
   const user = useSelector(({ auth }) => auth.user);
@@ -155,18 +145,6 @@ function CardChannelList({
         <div className="card--bottom">
           <div className="card--bottom__person">
             <Image src={`${channel?.createdBy.photoURL}`} avatar />
-            {/* <object
-              className="icon24 avatar"
-              data={`http://moa.aveapp.com:21405/file/api/down_proc.jsp?type=12&userid=${channel?.ownerId}&roomid=${channel?.roomId}`}
-              type="image/png"
-            >
-              <img
-                src="https://cdn-icons-png.flaticon.com/512/147/147144.png"
-                alt="avatar"
-                className="icon24 avatar"
-              />
-            </object> */}
-
             <span className="card--bottom__person__name">
               {channel?.owner_name}
             </span>
