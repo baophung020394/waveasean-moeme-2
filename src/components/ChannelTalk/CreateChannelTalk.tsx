@@ -1,20 +1,10 @@
 import firebase from "db/firestore";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import quillEmoji from "react-quill-emoji";
 import "react-quill-emoji/dist/quill-emoji.css";
 import { useSelector } from "react-redux";
-import {
-  Button,
-  Checkbox,
-  Form,
-  Grid,
-  Header,
-  Icon,
-  Modal,
-  Popup,
-} from "semantic-ui-react";
-import { convertFiles } from "utils/handleFiles";
+import { Button, Checkbox, Header, Icon, Modal } from "semantic-ui-react";
 import { styled } from "utils/styled-component";
 import { createTimestamp } from "utils/time";
 import { v4 as uuidv4 } from "uuid";
@@ -36,6 +26,10 @@ Quill.register(
   true
 );
 
+function getUrlImage(url: string = "") {
+  console.log("ngoai url", url);
+  return url;
+}
 /*
  * Event handler to be attached using Quill toolbar module
  * http://quilljs.com/docs/modules/toolbar/
@@ -44,6 +38,55 @@ function insertStar() {
   const cursorPosition = this.quill.getSelection().index;
   this.quill.insertText(cursorPosition, "★");
   this.quill.setSelection(cursorPosition + 1);
+}
+
+function imageHandler() {
+  const count = Math.round(Math.random() * 999999);
+  const storageRef = firebase.storage().ref();
+  const input = document.createElement("input");
+
+  input.setAttribute("type", "file");
+  input.setAttribute("accept", "image/*");
+  input.click();
+  const cursorPosition = this.quill.getSelection().index;
+  // this.quill.insertText(cursorPosition, "★");
+  // this.quill.setSelection(cursorPosition + 1);
+  input.onchange = async () => {
+    var file: any = input && input.files ? input.files[0] : null;
+    // var formData = new FormData();
+    // formData.append("file", file);
+    // let quillObj = quillRef.current.getEditor();
+    // const range = quillObj.getSelection();
+    const filePath = `chat/images/${count}.jpg`;
+    storageRef
+      .child(filePath)
+      .put(file, { contentType: file?.type })
+      .then((data) => {
+        data.ref
+          .getDownloadURL()
+          .then((url) => {
+            this.quill.insertEmbed(cursorPosition, "image", url);
+          })
+          .catch((err) => console.log(err));
+      })
+      .catch((err) => console.log(err));
+
+    // quillObj.editor.insertEmbed(
+    //   1,
+    //   "image",
+    //   "https://curingtonhomes.com/wp-content/uploads/Country-Style-Home-Curington-Homes-Ocala-Florida-Home-Builders-scaled.jpg"
+    // );
+    // await UploadService.uploadFile(formData)
+    //     .then((res) => {
+    //         let data = get(res, "data.data.url");
+    //         const range = quillObj.getSelection();
+    //         quillObj.editor.insertEmbed(range.index, 'image', data);
+    //     })
+    //     .catch((err) => {
+    //         message.error("This is an error message");
+    //         return false;
+    //     });
+  };
 }
 
 /*
@@ -89,7 +132,7 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
   const channelsRef = firebase.database().ref("channels");
   const messagesRef = firebase.database().ref("messages");
   const postsRef = firebase.database().ref("posts");
-
+  let quillRef: any = useRef();
   let myuuid = uuidv4();
 
   const handleChangeValue = (e: any, data: any, chnl: any) => {
@@ -97,7 +140,6 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
       setListIdsChannel((currentState: any) => {
         let updateState = [...currentState];
         updateState.push(chnl);
-        // updateState.push(data.value);
         return updateState;
       });
     } else {
@@ -142,15 +184,63 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
     onClose();
   };
 
+  // const imageHandler = () => {
+  //   const input = document.createElement("input");
+
+  //   input.setAttribute("type", "file");
+  //   input.setAttribute("accept", "image/*");
+  //   input.click();
+  //   input.onchange = async () => {
+  //     var file: any = input && input.files ? input.files[0] : null;
+  //     var formData = new FormData();
+  //     formData.append("file", file);
+  //     let quillObj = quillRef.current.getEditor();
+  //     const range = quillObj.getSelection();
+  //     quillObj.editor.insertEmbed(
+  //       1,
+  //       "image",
+  //       "https://curingtonhomes.com/wp-content/uploads/Country-Style-Home-Curington-Homes-Ocala-Florida-Home-Builders-scaled.jpg"
+  //     );
+  //     // await UploadService.uploadFile(formData)
+  //     //     .then((res) => {
+  //     //         let data = get(res, "data.data.url");
+  //     //         const range = quillObj.getSelection();
+  //     //         quillObj.editor.insertEmbed(range.index, 'image', data);
+  //     //     })
+  //     //     .catch((err) => {
+  //     //         message.error("This is an error message");
+  //     //         return false;
+  //     //     });
+  //   };
+  // };
+
+  const uploadFiles = (file, fileName, quillObj) => {
+    console.log("file", file);
+    console.log("fileName", fileName);
+    console.log("quillObj", quillObj);
+    // const filePath = `chat/images/${myuuid}.jpg`;
+    //   storageRef
+    //     .child(filePath)
+    //     .put(image, { contentType: image?.type })
+    //     .then((data) => {
+    //       data.ref
+    //         .getDownloadURL()
+    //         .then((url) => {
+    //           setSelectedImage(url);
+    //         })
+    //         .catch((err) => console.log(err));
+    //     })
+    //     .catch((err) => console.log(err));
+  };
   const modules = {
     toolbar: {
       container: "#toolbar",
       handlers: {
-        // emoji: () => console.log("emoji"),
-        // insertStar: insertStar,
-        // image: insertImage,
+        insertStar: insertStar,
+        image: imageHandler,
       },
     },
+
     "emoji-toolbar": true,
     "emoji-textarea": true,
     "emoji-shortname": true,
@@ -170,8 +260,8 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
     return () => channelsRef.off();
   }, []);
 
-  console.log("listIdsChannel", listIdsChannel);
-  console.log("listIdsChannel length", listIdsChannel.length);
+  console.log("quillObj", quillRef);
+  // console.log("listIdsChannel length", listIdsChannel.length);
 
   return (
     <SendToMultipleChannelStyled>
@@ -180,19 +270,40 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
       </div>
 
       <ReactQuill
-        id="text-area"
+        // readOnly={true}
+        ref={quillRef}
+        // id="text-area"
+        // readOnly={true}
         theme="snow"
         value={value}
+        modules={modules}
+        // onChange={setValue}
         onChange={(content, delta, source, editor) => {
+          // quillObj.current.getEditor().insertEmbed(null, "image", "cocaiconcac");
+          // console.log("quillObjRef", quillObj.getSelection());
+          // console.log("delta", delta);
+          // quillObj.insertText()
+          // console.log(quillRef?.current.getSelection())
+          // let range = quillRef?.current.getEditor().getSelection();
+          // let position = range ? range.index : 0;
+          // console.log("position", position);
+          // // quillRef.current.getEditor().insertEmbed(position, "image", "https://curingtonhomes.com/wp-content/uploads/Country-Style-Home-Curington-Homes-Ocala-Florida-Home-Builders-scaled.jpg")
+          // quillRef.current.getEditor().insertText(position, "Hello, World! ");
+          console.log("delta", delta);
+          console.log("editor.getContents()", editor.getContents());
+          console.log("editor", editor.getText());
+          console.log("editor", editor.getText());
+
           setValue(content);
           setSelectedFile(
             editor.getContents()?.ops.filter((op) => op?.insert?.image)[0]
               ?.insert.image
           );
         }}
-        modules={modules}
-        formats={formats}
+
+        // formats={formats}
       />
+      {/* <Button onClick={}>Add Text</Button> */}
       <div className="send-to-multiple-channel">
         <Header>Send to multiple channels</Header>
         <div className="send-to-multiple-channel__channels">

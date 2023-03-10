@@ -122,6 +122,8 @@ const PostsStyled = styled.div`
         max-height: 82px;
         object-fit: cover;
         border-radius: 10px;
+        width: 100% !important;
+        min-height: 82px;
       }
     }
   }

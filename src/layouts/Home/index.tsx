@@ -8,6 +8,7 @@ import { Grid } from "semantic-ui-react";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCurrentChannel } from "actions/channel";
+import Page404 from "components/404";
 
 interface HomeProps {}
 
@@ -47,6 +48,7 @@ function Home() {
             ))}
         </Grid.Row>
       </Grid>
+      {posts?.length <= 0 && <Page404 content="Not found post!" />}
     </HomeStyled>
   );
 }

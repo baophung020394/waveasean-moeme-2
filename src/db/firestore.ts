@@ -6,13 +6,13 @@ import "firebase/compat/auth";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBORxYGcGfL8wWyZAK7x1zhve5vjL8jgDM",
-  authDomain: "moeme-chat-3.firebaseapp.com",
-  projectId: "moeme-chat-3",
-  storageBucket: "moeme-chat-3.appspot.com",
-  messagingSenderId: "625080630868",
-  appId: "1:625080630868:web:e4c7dc2c2b049477e077c1",
-  measurementId: "G-GEMLJE9GBV",
+  apiKey: "AIzaSyBGUCjQm0xIt86znY82ejJDfVu09lXy5vg",
+  authDomain: "moeme-chat-4.firebaseapp.com",
+  projectId: "moeme-chat-4",
+  storageBucket: "moeme-chat-4.appspot.com",
+  messagingSenderId: "967464628472",
+  appId: "1:967464628472:web:ec01242febd5bd0d9dcb0d",
+  measurementId: "G-T9RJJ156KR",
 };
 
 // export const database = firebase;
@@ -23,7 +23,7 @@ const messaging = getMessaging();
 
 export const requestForToken = () => {
   return getToken(messaging, {
-    vapidKey: `BHQ0O7j9_SRP-uAwDv6p1_B0o-Thwt5SMhMD74sAbbVsfYmeCFZNzfhV6GikSsXhDacUz7arpskzaAqNRteoyJM`,
+    vapidKey: `BDhud74MhuCm-Vnq_13dPig9zebt8HBE1fioTj9JcQP97D_VNz1ONBSpwT7Tzgg7f10EuTuRrrR_wfhiA7Z5TM8`,
   });
   // .then((currentToken) => {
   //   if (currentToken) {
