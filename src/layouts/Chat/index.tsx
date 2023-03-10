@@ -93,6 +93,10 @@ function Chat({ tokenNotification }: ChatProps) {
   };
 
   useEffect(() => {
+    localStorage.setItem("urlCopy", "");
+  }, []);
+
+  useEffect(() => {
     if (id) {
       setMessagesState([]);
       messageRef.child(id).on("child_added", (snap) => {
@@ -226,6 +230,7 @@ function Chat({ tokenNotification }: ChatProps) {
           uniqueuUsers={uniqueuUsersCount()}
           searchTermChange={searchTermChange}
         />
+
         <div className="chat--view__content__chat">
           <ChatMessageList
             selectedFile={selectedFile}

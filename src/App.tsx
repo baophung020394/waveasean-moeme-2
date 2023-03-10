@@ -26,7 +26,7 @@ export const AuthRoute = ({ children, ...rest }: any) => {
   const user = useSelector(({ auth }: any) => auth.user);
   const onlyChild = React.Children.only(children);
 
-  // console.log({ user });
+  console.log('user ne', user);
   return (
     <Route
       {...rest}
@@ -100,6 +100,7 @@ function MoeMe() {
     connectedRef.on("value", (snap) => {
       if (user && user?.uid && snap.val()) {
         console.log("user.uid", user.id);
+        window.location.href = localStorage.getItem("urlCopy");
         const userStatusRef = statusRef.child(user?.uid);
         userStatusRef.set(true);
 
