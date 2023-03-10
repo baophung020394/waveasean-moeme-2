@@ -104,8 +104,10 @@ function MoeMe() {
         copyRef.on("child_added", (snap: any) => {
           console.log("snap.val()", snap.val());
           if (snap.val()?.id) {
+            console.log("co id");
             window.location.href = `/#${snap.val().url}`;
           } else {
+            console.log("k co id");
             window.location.href = `/#/`;
           }
         });
