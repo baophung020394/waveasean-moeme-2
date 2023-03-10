@@ -15,13 +15,22 @@ function Posts({ post }: PostsProps) {
             {formatTimeAgo(post?.timestamp)}
           </span>
           <div className="posts-top__content">
-            <p
+            <div
               dangerouslySetInnerHTML={{
-                __html: post?.content.replace(/<img .*?>/g, ""),
+                __html: post?.content
+                  .replace(/<img .*?>/g, "")
+                  .replaceAll("<p><br></p>", ""),
               }}
             />
 
-            <Image src={post?.files} size="medium" />
+            <Image
+              src={
+                post?.files
+                  ? post?.files
+                  : "http://www2.aveapp.com/wp-content/uploads/2021/05/w2560.jpg"
+              }
+              size="medium"
+            />
           </div>
         </div>
         <div className="posts-bottom">
@@ -108,7 +117,7 @@ const PostsStyled = styled.div`
     &__content {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       max-height: 100px;
       overflow: hidden;
 

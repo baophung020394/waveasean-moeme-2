@@ -31,11 +31,14 @@ function Home() {
   console.log(posts);
   return (
     <HomeStyled className="home-container">
-      <Grid columns={4}>
+      <Grid>
         <Grid.Row>
           {posts?.length > 0 &&
             posts.map((post: any) => (
               <Grid.Column
+                mobile={16}
+                tablet={8}
+                computer={4}
                 key={post?.id}
                 onClick={() => {
                   console.log(post?.channel.id);
