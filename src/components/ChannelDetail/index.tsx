@@ -69,19 +69,19 @@ function ChannelDetail({
   };
   // console.log("local", location);
 
-  useEffect(() => {
-    if (channel?.id) {
-      copyRef.on("child_added", (snap: any) => {
-        // console.log('snap.val()')
-        if (snap.val().url === location.pathname) {
-          copyRef.child("copyUrl").set("/");
-          delete snap.val().url;
-          dispatch(setCurrentChannel(snap.val(), false));
-        } else {
-        }
-      });
-    }
-  }, [channel?.id]);
+  // useEffect(() => {
+  //   if (channel?.id) {
+  //     copyRef.on("child_added", (snap: any) => {
+  //       // console.log('snap.val()')
+  //       if (snap.val().url === location.pathname) {
+  //         copyRef.child("copyUrl").set("/");
+  //         delete snap.val().url;
+  //         dispatch(setCurrentChannel(snap.val(), false));
+  //       } else {
+  //       }
+  //     });
+  //   }
+  // }, [channel?.id]);
 
   useEffect(() => {
     if (isCopied?.length > 0) {
