@@ -108,7 +108,7 @@ function MoeMe() {
             window.location.href = `/#${snap.val().url}`;
           } else {
             console.log("k co id");
-            window.location.href = `/#/`;
+            // window.location.href = `/#/`;
           }
         });
 
