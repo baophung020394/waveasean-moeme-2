@@ -26,10 +26,6 @@ Quill.register(
   true
 );
 
-function getUrlImage(url: string = "") {
-  console.log("ngoai url", url);
-  return url;
-}
 /*
  * Event handler to be attached using Quill toolbar module
  * http://quilljs.com/docs/modules/toolbar/
@@ -41,6 +37,7 @@ function insertStar() {
 }
 
 function imageHandler() {
+  console.log("this.quill", this.quill);
   const count = Math.round(Math.random() * 999999);
   const storageRef = firebase.storage().ref();
   const input = document.createElement("input");
@@ -48,6 +45,7 @@ function imageHandler() {
   input.setAttribute("type", "file");
   input.setAttribute("accept", "image/*");
   input.click();
+
   const cursorPosition = this.quill.getSelection().index;
   // this.quill.insertText(cursorPosition, "★");
   // this.quill.setSelection(cursorPosition + 1);
@@ -70,22 +68,6 @@ function imageHandler() {
           .catch((err) => console.log(err));
       })
       .catch((err) => console.log(err));
-
-    // quillObj.editor.insertEmbed(
-    //   1,
-    //   "image",
-    //   "https://curingtonhomes.com/wp-content/uploads/Country-Style-Home-Curington-Homes-Ocala-Florida-Home-Builders-scaled.jpg"
-    // );
-    // await UploadService.uploadFile(formData)
-    //     .then((res) => {
-    //         let data = get(res, "data.data.url");
-    //         const range = quillObj.getSelection();
-    //         quillObj.editor.insertEmbed(range.index, 'image', data);
-    //     })
-    //     .catch((err) => {
-    //         message.error("This is an error message");
-    //         return false;
-    //     });
   };
 }
 
@@ -129,6 +111,7 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
   const [channelsState, setChannelsState] = useState([]);
   const [listIdsChannel, setListIdsChannel] = useState<any>([]);
   const [selectedFile, setSelectedFile] = useState<any>(null);
+  const [length, setLength] = useState<number>(1);
   const channelsRef = firebase.database().ref("channels");
   const messagesRef = firebase.database().ref("messages");
   const postsRef = firebase.database().ref("posts");
@@ -184,54 +167,12 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
     onClose();
   };
 
-  // const imageHandler = () => {
-  //   const input = document.createElement("input");
-
-  //   input.setAttribute("type", "file");
-  //   input.setAttribute("accept", "image/*");
-  //   input.click();
-  //   input.onchange = async () => {
-  //     var file: any = input && input.files ? input.files[0] : null;
-  //     var formData = new FormData();
-  //     formData.append("file", file);
-  //     let quillObj = quillRef.current.getEditor();
-  //     const range = quillObj.getSelection();
-  //     quillObj.editor.insertEmbed(
-  //       1,
-  //       "image",
-  //       "https://curingtonhomes.com/wp-content/uploads/Country-Style-Home-Curington-Homes-Ocala-Florida-Home-Builders-scaled.jpg"
-  //     );
-  //     // await UploadService.uploadFile(formData)
-  //     //     .then((res) => {
-  //     //         let data = get(res, "data.data.url");
-  //     //         const range = quillObj.getSelection();
-  //     //         quillObj.editor.insertEmbed(range.index, 'image', data);
-  //     //     })
-  //     //     .catch((err) => {
-  //     //         message.error("This is an error message");
-  //     //         return false;
-  //     //     });
-  //   };
-  // };
-
   const uploadFiles = (file, fileName, quillObj) => {
     console.log("file", file);
     console.log("fileName", fileName);
     console.log("quillObj", quillObj);
-    // const filePath = `chat/images/${myuuid}.jpg`;
-    //   storageRef
-    //     .child(filePath)
-    //     .put(image, { contentType: image?.type })
-    //     .then((data) => {
-    //       data.ref
-    //         .getDownloadURL()
-    //         .then((url) => {
-    //           setSelectedImage(url);
-    //         })
-    //         .catch((err) => console.log(err));
-    //     })
-    //     .catch((err) => console.log(err));
   };
+
   const modules = {
     toolbar: {
       container: "#toolbar",
@@ -260,9 +201,16 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
     return () => channelsRef.off();
   }, []);
 
-  console.log("quillObj", quillRef);
+  // console.log("quillObj", quillRef);
   // console.log("listIdsChannel length", listIdsChannel.length);
 
+  useEffect(() => {
+    if (length >= 5) {
+      console.log("getContents", quillRef.current.editor.getContents());
+      // quillRef.current.editor.setContents([{ insert: "Hello /" }]);
+      // quillRef.current.editor.insertText(1, "chim truc mup vl")
+    }
+  }, [length]);
   return (
     <SendToMultipleChannelStyled>
       <div className="toolbar-options">
@@ -277,33 +225,36 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
         theme="snow"
         value={value}
         modules={modules}
-        // onChange={setValue}
         onChange={(content, delta, source, editor) => {
-          // quillObj.current.getEditor().insertEmbed(null, "image", "cocaiconcac");
-          // console.log("quillObjRef", quillObj.getSelection());
           // console.log("delta", delta);
-          // quillObj.insertText()
-          // console.log(quillRef?.current.getSelection())
-          // let range = quillRef?.current.getEditor().getSelection();
-          // let position = range ? range.index : 0;
-          // console.log("position", position);
-          // // quillRef.current.getEditor().insertEmbed(position, "image", "https://curingtonhomes.com/wp-content/uploads/Country-Style-Home-Curington-Homes-Ocala-Florida-Home-Builders-scaled.jpg")
-          // quillRef.current.getEditor().insertText(position, "Hello, World! ");
+          console.log("quillRef current", quillRef.current);
+          // this.quill.insertText(cursorPosition, "★");
           console.log("delta", delta);
+          console.log("content", content.length);
           console.log("editor.getContents()", editor.getContents());
-          console.log("editor", editor.getText());
-          console.log("editor", editor.getText());
+          console.log("editor getText", editor.getText());
+          console.log("editor getLength", editor.getLength());
+          console.log(
+            "this.quill.getLines",
+            quillRef.current.getEditor().getLines()
+          );
+
+          if (quillRef?.current?.getEditor()?.getLines().length <= 15) {
+            setLength(quillRef?.current?.getEditor()?.getLines().length);
+          }
 
           setValue(content);
+
           setSelectedFile(
             editor.getContents()?.ops.filter((op) => op?.insert?.image)[0]
               ?.insert.image
           );
         }}
-
         // formats={formats}
       />
-      {/* <Button onClick={}>Add Text</Button> */}
+
+      <p>{length}/15</p>
+
       <div className="send-to-multiple-channel">
         <Header>Send to multiple channels</Header>
         <div className="send-to-multiple-channel__channels">

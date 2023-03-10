@@ -1,39 +1,38 @@
+import { setCurrentChannel } from "actions/channel";
 import CustomModal from "components/CustomModal";
+import firebase from "db/firestore";
 import React, { useEffect, useState } from "react";
 import { Button, Carousel, Modal } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
 import {
   FacebookIcon,
-  TwitterIcon,
-  TelegramIcon,
-  WhatsappIcon,
-  LinkedinIcon,
-  VKIcon,
-  OKIcon,
-  RedditIcon,
-  TumblrIcon,
-  LivejournalIcon,
-  MailruIcon,
-  ViberIcon,
-  WorkplaceIcon,
-  EmailIcon,
   FacebookShareButton,
-  LinkedinShareButton,
-  ViberShareButton,
-  TwitterShareButton,
-  HatenaShareButton,
   HatenaIcon,
+  HatenaShareButton,
   InstapaperIcon,
   InstapaperShareButton,
-  LineShareButton,
   LineIcon,
+  LineShareButton,
+  LinkedinIcon,
+  LinkedinShareButton,
+  LivejournalIcon,
   LivejournalShareButton,
+  MailruIcon,
   MailruShareButton,
+  OKIcon,
   OKShareButton,
-  WhatsappShareButton,
+  TelegramIcon,
   TelegramShareButton,
+  TumblrIcon,
   TumblrShareButton,
+  TwitterIcon,
+  TwitterShareButton,
+  ViberIcon,
+  ViberShareButton,
+  WhatsappIcon,
+  WhatsappShareButton,
 } from "react-share";
-
 import { styled } from "utils/styled-component";
 
 interface ChannelChannelDetailProps {
@@ -49,16 +48,39 @@ function ChannelDetail({
 }: ChannelChannelDetailProps) {
   const [isOpenShare, setIsOpenShare] = useState(false);
   const [isCopied, setIsCopied] = useState("");
+  const copyRef = firebase.database().ref("copyUrls");
+  const dispatch: any = useDispatch();
+
+  let location = useLocation();
 
   const handleCloseShare = () => setIsOpenShare(false);
   const handleOpenShare = () => setIsOpenShare(true);
 
   const handleCopyClipborad = () => {
     navigator.clipboard.writeText(window.location.href);
-    localStorage.setItem("urlCopy", window.location.href);
-    localStorage.setItem("selectedChannel", JSON.stringify(channel));
+
+    copyRef.child("copyUrl").set({
+      ...channel,
+      url: location.pathname,
+    });
+
     setIsCopied("Copied to Clipboard");
   };
+  // console.log("local", location);
+
+  useEffect(() => {
+    if (channel?.id) {
+      copyRef.on("child_added", (snap: any) => {
+        // console.log('snap.val()')
+        if (snap.val().url === location.pathname) {
+          copyRef.child("copyUrl").set("/");
+          delete snap.val().url;
+          dispatch(setCurrentChannel(snap.val(), false));
+        } else {
+        }
+      });
+    }
+  }, [channel?.id]);
 
   useEffect(() => {
     if (isCopied?.length > 0) {

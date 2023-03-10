@@ -13,7 +13,6 @@ import RegisterView from "layouts/Register";
 import SettingsView from "layouts/Settings";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 import {
   HashRouter as Router,
   Redirect,
@@ -74,10 +73,8 @@ function MoeMe() {
   const statusRef = firebase.database().ref("status");
   const connectedRef = firebase.database().ref(".info/connected");
   const [tokenNotification, setTokenNotification] = useState("");
-  const history = useHistory();
-  // const [urlCopy] = useState<string>(() => {
+  const copyRef = firebase.database().ref("copyUrls");
 
-  // })
   useEffect(() => {
     const tokenmess = requestForToken();
 
@@ -103,16 +100,9 @@ function MoeMe() {
   useEffect(() => {
     connectedRef.on("value", (snap) => {
       if (user && user?.uid && snap.val()) {
-        console.log("user.uid", user.id);
-        const urlCopy = localStorage.getItem("urlCopy");
-        console.log("urlCopy len", urlCopy.length);
-        console.log("urlCopy len", urlCopy);
-        window.location.href = urlCopy;
-        // if (urlCopy?.length > 0) {
-        //   // window.location.href = urlCopy;
-        // } else {
-        //   // window.location.href = "/";
-        // }
+        copyRef.on("child_added", (snap: any) => {
+          window.location.href = `/#${snap.val().url}`;
+        });
 
         const userStatusRef = statusRef.child(user?.uid);
         userStatusRef.set(true);
