@@ -94,6 +94,7 @@ function Chat({ tokenNotification }: ChatProps) {
 
   useEffect(() => {
     localStorage.removeItem("urlCopy");
+    // localStorage.setItem("urlCopy", "/channel");
   }, []);
 
   useEffect(() => {

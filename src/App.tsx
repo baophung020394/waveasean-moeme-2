@@ -13,6 +13,7 @@ import RegisterView from "layouts/Register";
 import SettingsView from "layouts/Settings";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import {
   HashRouter as Router,
   Redirect,
@@ -73,6 +74,7 @@ function MoeMe() {
   const statusRef = firebase.database().ref("status");
   const connectedRef = firebase.database().ref(".info/connected");
   const [tokenNotification, setTokenNotification] = useState("");
+  const history = useHistory();
   // const [urlCopy] = useState<string>(() => {
 
   // })
@@ -103,13 +105,13 @@ function MoeMe() {
       if (user && user?.uid && snap.val()) {
         console.log("user.uid", user.id);
         const urlCopy = localStorage.getItem("urlCopy");
-        console.log("urlCopy len", urlCopy?.length);
+        console.log("urlCopy len", urlCopy.length);
         console.log("urlCopy len", urlCopy);
-
-        // if (urlCopy?.length !== undefined) {
-        //   window.location.href = urlCopy;
+        window.location.href = urlCopy;
+        // if (urlCopy?.length > 0) {
+        //   // window.location.href = urlCopy;
         // } else {
-        //   window.location.href = "/";
+        //   // window.location.href = "/";
         // }
 
         const userStatusRef = statusRef.child(user?.uid);
