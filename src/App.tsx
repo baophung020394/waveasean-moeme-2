@@ -17,7 +17,7 @@ import {
   HashRouter as Router,
   Redirect,
   Route,
-  Switch,
+  Switch
 } from "react-router-dom";
 import StoreProvider from "store/StoreProvider";
 import Header from "./components/common/Header";
@@ -28,35 +28,35 @@ export const AuthRoute = ({ children, ...rest }: any) => {
 
   // console.log({ user });
   return (
-    // <Route
-    //   {...rest}
-    //   render={(props: any) => {
-    //     return user ? (
-    //       React.cloneElement(onlyChild, { ...rest, ...props })
-    //     ) : (
-    //       <Redirect to="/login" />
-    //     );
-    //   }}
-    // />
     <Route
       {...rest}
-      render={(props) => {
-        // if (
-        //   props?.match.params.id &&
-        //   localStorage.getItem("urlCopy")?.length > 0
-        // ) {
-        //   console.log({ props });
-        //   console.log("co");
-        //   return React.cloneElement(onlyChild, { ...rest, ...props });
-        // } else {
+      render={(props: any) => {
         return user ? (
           React.cloneElement(onlyChild, { ...rest, ...props })
         ) : (
           <Redirect to="/login" />
         );
       }}
-      // }
     />
+    // <Route
+    //   {...rest}
+    //   render={(props) => {
+    //     if (
+    //       props?.match.params.id &&
+    //       localStorage.getItem("urlCopy")?.length > 0
+    //     ) {
+    //       console.log({ props });
+    //       console.log("co");
+    //       return React.cloneElement(onlyChild, { ...rest, ...props });
+    //     } else {
+    //       return user ? (
+    //         React.cloneElement(onlyChild, { ...rest, ...props })
+    //       ) : (
+    //         <Redirect to="/login" />
+    //       );
+    //     }
+    //   }}
+    // />
   );
 };
 
@@ -100,7 +100,7 @@ function MoeMe() {
     connectedRef.on("value", (snap) => {
       if (user && user?.uid && snap.val()) {
         console.log("user.uid", user.id);
-        const userStatusRef = statusRef.child(user.uid);
+        const userStatusRef = statusRef.child(user?.uid);
         userStatusRef.set(true);
 
         userStatusRef.onDisconnect().remove();
