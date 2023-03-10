@@ -17,7 +17,7 @@ import {
   HashRouter as Router,
   Redirect,
   Route,
-  Switch
+  Switch,
 } from "react-router-dom";
 import StoreProvider from "store/StoreProvider";
 import Header from "./components/common/Header";
@@ -26,7 +26,7 @@ export const AuthRoute = ({ children, ...rest }: any) => {
   const user = useSelector(({ auth }: any) => auth.user);
   const onlyChild = React.Children.only(children);
 
-  console.log('user ne', user);
+  console.log("user ne", user);
   return (
     <Route
       {...rest}
@@ -73,7 +73,9 @@ function MoeMe() {
   const statusRef = firebase.database().ref("status");
   const connectedRef = firebase.database().ref(".info/connected");
   const [tokenNotification, setTokenNotification] = useState("");
+  // const [urlCopy] = useState<string>(() => {
 
+  // })
   useEffect(() => {
     const tokenmess = requestForToken();
 
@@ -100,7 +102,16 @@ function MoeMe() {
     connectedRef.on("value", (snap) => {
       if (user && user?.uid && snap.val()) {
         console.log("user.uid", user.id);
-        window.location.href = localStorage.getItem("urlCopy");
+        const urlCopy = localStorage.getItem("urlCopy");
+        console.log("urlCopy len", urlCopy?.length);
+        console.log("urlCopy len", urlCopy);
+
+        // if (urlCopy?.length !== undefined) {
+        //   window.location.href = urlCopy;
+        // } else {
+        //   window.location.href = "/";
+        // }
+
         const userStatusRef = statusRef.child(user?.uid);
         userStatusRef.set(true);
 

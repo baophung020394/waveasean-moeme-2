@@ -93,7 +93,7 @@ function Chat({ tokenNotification }: ChatProps) {
   };
 
   useEffect(() => {
-    localStorage.setItem("urlCopy", "");
+    localStorage.removeItem("urlCopy");
   }, []);
 
   useEffect(() => {
