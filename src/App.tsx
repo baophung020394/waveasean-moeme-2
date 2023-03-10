@@ -144,9 +144,9 @@ function MoeMe() {
       <Header />
       <ContentWrapper>
         <Switch>
-          <Route path="/request-login">
+          {/* <Route path="/request-login">
             <RequestLogin />
-          </Route>
+          </Route> */}
           <Route path="/login">
             <LoginView />
           </Route>
