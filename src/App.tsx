@@ -102,7 +102,8 @@ function MoeMe() {
     connectedRef.on("value", (snap) => {
       if (user && user?.uid && snap.val()) {
         copyRef.on("child_added", (snap: any) => {
-          window.location.href = `/#${snap.val().url}`;
+          console.log('snap.val()',snap.val())
+          // window.location.href = `/#${snap.val().url}`;
         });
 
         const userStatusRef = statusRef.child(user?.uid);
