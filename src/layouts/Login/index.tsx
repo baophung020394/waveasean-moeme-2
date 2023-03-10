@@ -1,14 +1,14 @@
-import React, { useEffect } from "react";
-import styled from "styled-components";
-import { useForm } from "react-hook-form";
-import { Link, Redirect, useHistory } from "react-router-dom";
-import LogoWave from "assets/images/logo/logo_aveapp.png";
-import { useDispatch, useSelector } from "react-redux";
 import { login } from "actions/auth";
-import { Auth } from "models/auth";
-import LoadingView from "components/Spinner/LoadingView";
+import LogoWave from "assets/images/logo/logo_aveapp.png";
 import Button from "components/common/Header/Button";
-import { createChannel } from "actions/channel";
+import LoadingView from "components/Spinner/LoadingView";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, Redirect } from "react-router-dom";
+import styled from "styled-components";
+import firebase, { requestForToken } from "db/firestore";
+import { useHistory } from "react-router-dom";
 
 interface LoginProps {}
 
@@ -18,10 +18,20 @@ function Login({}: LoginProps) {
   const error = useSelector(({ auth }) => auth.login.error);
   const isChecking = useSelector(({ auth }) => auth.login.isChecking);
   const user = useSelector(({ auth }) => auth.user);
-
+  const copyRef = firebase.database().ref("copyUrls");
+  const history = useHistory();
   const obSubmit = (data: any) => {
     dispatch(login(data));
   };
+
+  useEffect(() => {
+    copyRef.on("child_added", (snap: any) => {
+      if (snap.val().isLogin === 0 && snap.val().id) {
+        console.log("redirect to page #");
+        history.push("/request-login");
+      }
+    });
+  }, []);
 
   if (isChecking) {
     return <LoadingView />;

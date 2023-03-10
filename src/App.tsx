@@ -3,6 +3,7 @@ import { listenToAuthChanges } from "actions/auth";
 import PrivateChat from "components/PrivateChat";
 import LoadingView from "components/Spinner/LoadingView";
 import firebase, { requestForToken } from "db/firestore";
+import RequestLogin from "layouts/RequestLogin";
 import ChannelView from "layouts/Channel";
 import ChatView from "layouts/Chat";
 import HomeView from "layouts/Home";
@@ -142,9 +143,13 @@ function MoeMe() {
       <Header />
       <ContentWrapper>
         <Switch>
+          <Route path="/request-login">
+            <RequestLogin />
+          </Route>
           <Route path="/login">
             <LoginView />
           </Route>
+
           <Route path="/register">
             <RegisterView />
           </Route>

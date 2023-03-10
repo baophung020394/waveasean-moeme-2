@@ -62,6 +62,7 @@ function ChannelDetail({
     copyRef.child("copyUrl").set({
       ...channel,
       url: location.pathname,
+      isLogin: 0,
     });
 
     setIsCopied("Copied to Clipboard");
