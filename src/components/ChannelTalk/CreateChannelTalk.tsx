@@ -4,7 +4,15 @@ import ReactQuill, { Quill } from "react-quill";
 import quillEmoji from "react-quill-emoji";
 import "react-quill-emoji/dist/quill-emoji.css";
 import { useSelector } from "react-redux";
-import { Button, Checkbox, Header, Icon, Modal } from "semantic-ui-react";
+import {
+  Button,
+  Checkbox,
+  Header,
+  Icon,
+  Label,
+  Modal,
+  Segment,
+} from "semantic-ui-react";
 import { styled } from "utils/styled-component";
 import { createTimestamp } from "utils/time";
 import { v4 as uuidv4 } from "uuid";
@@ -37,7 +45,7 @@ function insertStar() {
 }
 
 function imageHandler() {
-  console.log("this.quill", this.quill);
+  // console.log("this.quill", this.quill);
   const count = Math.round(Math.random() * 999999);
   const storageRef = firebase.storage().ref();
   const input = document.createElement("input");
@@ -106,15 +114,20 @@ const CustomToolbar = () => (
 
 function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
   const userRedux = useSelector(({ auth }) => auth.user);
-  const [value, setValue] = useState<any>("");
+  const [value, setValue] = useState<any>();
+  const [isSent, setIsSent] = useState<any>(false);
   const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
   const [channelsState, setChannelsState] = useState([]);
   const [listIdsChannel, setListIdsChannel] = useState<any>([]);
   const [selectedFile, setSelectedFile] = useState<any>(null);
-  const [length, setLength] = useState<number>(1);
+  const [indexInput, setIndexInpiut] = useState(0);
+  const [lengthContent, setLengthContent] = useState<any>();
+  const [contentLong, setContentLong] = useState<any>([]);
+  const [ops, setOps] = useState<any>([]);
   const channelsRef = firebase.database().ref("channels");
   const messagesRef = firebase.database().ref("messages");
   const postsRef = firebase.database().ref("posts");
+
   let quillRef: any = useRef();
   let myuuid = uuidv4();
 
@@ -138,12 +151,30 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
    */
   const sendMessage = async () => {
     if (value.trim() === "") return;
+    if (value.replaceAll("<p><br></p>", "").length === 0) {
+      getNewIndexAndRender("-1");
+      setIsSent(true);
+      return;
+    }
     if (listIdsChannel?.length <= 0) {
       setIsOpenPopup(true);
     }
+
+    const newFilterContentLong = contentLong.filter(
+      (f, idx) => contentLong.findIndex((fi) => fi === f) === idx
+    );
+
+    let longValue = "";
+    if (indexInput > 0) {
+      longValue = "".concat(...newFilterContentLong);
+    }
+
+    // console.log("longValue", longValue);
+    // console.log("index", indexInput);
+
     const message: any = {
       idMessage: myuuid,
-      content: value,
+      content: indexInput > 0 ? longValue : value,
       user: userRedux,
       timestamp: createTimestamp(),
       files: selectedFile ? selectedFile : "",
@@ -167,12 +198,9 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
     onClose();
   };
 
-  const uploadFiles = (file, fileName, quillObj) => {
-    console.log("file", file);
-    console.log("fileName", fileName);
-    console.log("quillObj", quillObj);
-  };
-
+  /**
+   * Config mudules to render toolbar
+   */
   const modules = {
     toolbar: {
       container: "#toolbar",
@@ -181,7 +209,6 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
         image: imageHandler,
       },
     },
-
     "emoji-toolbar": true,
     "emoji-textarea": true,
     "emoji-shortname": true,
@@ -189,6 +216,9 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
 
   const formats = ["link", "image", "emoji"];
 
+  /**
+   * Get list channels
+   */
   useEffect(() => {
     channelsRef.on("child_added", (snap) => {
       setChannelsState((currentState) => {
@@ -201,16 +231,110 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
     return () => channelsRef.off();
   }, []);
 
-  // console.log("quillObj", quillRef);
-  // console.log("listIdsChannel length", listIdsChannel.length);
+  /**
+   * Return current index
+   * @param idx
+   * @param length
+   * @param direction
+   * @returns
+   */
+  const getNextIdx = (idx = -1, length, direction) => {
+    // console.log("idx getNextIdx", idx);
+    // console.log("idx length", length);
+    switch (direction) {
+      case "1": {
+        console.log("1");
+        return (idx + 1) % length;
+        ``;
+      }
+      case "-1": {
+        console.log("-1");
+        return (idx === 0 && length - 1) || idx - 1;
+      }
+      default: {
+        // console.log("idx default", idx);
+        return idx;
+      }
+    }
+  };
+
+  /**
+   * Get index and move next/prev page
+   * @param direction
+   */
+  const getNewIndexAndRender = (direction) => {
+    let newNexIndex = getNextIdx(indexInput, lengthContent, direction);
+    let newOps = [...ops];
+    newOps.push({
+      insert: "",
+    });
+
+    // console.log("newFilter getNewIndexAndRender chua", newOps);
+
+    const newFilter = newOps.filter(
+      (f, idx) => newOps.findIndex((fi) => fi.insert === f.insert) === idx
+    );
+    // console.log("newFilter getNewIndexAndRender roi", newFilter);
+
+    // console.log("newOps", newOps);
+    quillRef.current.editor.setContents([newFilter[newNexIndex]]);
+    setIndexInpiut(newNexIndex);
+  };
+
+  // console.log({ ops });
+
+  /**
+   * Hanlde render data when break line 15
+   * @param lineNumber
+   * @param content
+   */
+  const handleBreakLine = (lineNumber, content) => {
+    if (lineNumber > 15) {
+      setOps((currentState: any) => {
+        let updateState = [...currentState];
+        updateState.push({
+          insert:
+            !content?.insert.image && !content?.insert.emoji
+              ? content.insert.replace("\n\n", "")
+              : content?.insert,
+        });
+        return updateState;
+      });
+
+      setContentLong((currentState: any) => {
+        let updateState = [...currentState];
+        updateState.push(value.replaceAll("<p><br></p>", ""));
+        return updateState;
+      });
+    }
+  };
 
   useEffect(() => {
-    if (length >= 5) {
-      console.log("getContents", quillRef.current.editor.getContents());
-      // quillRef.current.editor.setContents([{ insert: "Hello /" }]);
-      // quillRef.current.editor.insertText(1, "chim truc mup vl")
+    if (ops.length > 0) {
+      let newOps = [...ops];
+      newOps.push({
+        insert: "",
+      });
+      const newFilter = newOps.filter(
+        (f, idx) => newOps.findIndex((fi) => fi.insert === f.insert) === idx
+      );
+
+      setLengthContent(newFilter.length);
     }
-  }, [length]);
+  }, [ops.length]);
+
+  useEffect(() => {
+    if (lengthContent > 0) {
+      getNewIndexAndRender("1");
+    }
+  }, [lengthContent]);
+
+  useEffect(() => {
+    if (value?.length >= 42 && isSent) {
+      sendMessage();
+    }
+  }, [value, isSent]);
+
   return (
     <SendToMultipleChannelStyled>
       <div className="toolbar-options">
@@ -226,24 +350,26 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
         value={value}
         modules={modules}
         onChange={(content, delta, source, editor) => {
+          // console.log("content", content);
+          // console.log("editor", editor.getHTML());
           // console.log("delta", delta);
-          console.log("quillRef current", quillRef.current);
-          // this.quill.insertText(cursorPosition, "★");
-          console.log("delta", delta);
-          console.log("content", content.length);
-          console.log("editor.getContents()", editor.getContents());
-          console.log("editor getText", editor.getText());
-          console.log("editor getLength", editor.getLength());
-          console.log(
-            "this.quill.getLines",
-            quillRef.current.getEditor().getLines()
-          );
 
-          if (quillRef?.current?.getEditor()?.getLines().length <= 15) {
-            setLength(quillRef?.current?.getEditor()?.getLines().length);
+          // quillRef?.current
+          //   ?.getEditor()
+          //   .on("text-change", (delta, old, source) => {
+          //     console.log("change");
+          //   });
+
+          if (quillRef?.current?.getEditor()?.getLines().length === 5) {
+            // setValue2(quillRef?.current.editor.getContents().ops);
           }
 
-          setValue(content);
+          handleBreakLine(
+            quillRef?.current?.getEditor()?.getLines().length,
+            editor.getContents()?.ops[0]
+          );
+
+          setValue(content?.length > 42 ? content : content);
 
           setSelectedFile(
             editor.getContents()?.ops.filter((op) => op?.insert?.image)[0]
@@ -253,7 +379,51 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
         // formats={formats}
       />
 
-      <p>{length}/15</p>
+      {ops?.length > 0 && (
+        <Segment>
+          <Button
+            content="Prev"
+            icon="left arrow"
+            labelPosition="left"
+            id="prev"
+            onClick={() => {
+              getNewIndexAndRender("-1");
+            }}
+          />
+          <input
+            onChange={(e: any) => {
+              setIndexInpiut(e.target.value);
+            }}
+            value={indexInput + 1}
+            type="text"
+            id="pageNumber"
+            className="page-number"
+            disabled
+            // style={{ display: "none" }}
+          />
+
+          <Button
+            content="Next"
+            icon="right arrow"
+            labelPosition="right"
+            id="next"
+            onClick={() => {
+              getNewIndexAndRender("1");
+            }}
+          />
+          <Button
+            content="Clear"
+            icon="trash"
+            labelPosition="right"
+            id="next"
+            onClick={() => {
+              setOps([]);
+              quillRef.current.editor.setContents({ insert: "" });
+              setLengthContent(0);
+            }}
+          />
+        </Segment>
+      )}
 
       <div className="send-to-multiple-channel">
         <Header>Send to multiple channels</Header>
@@ -288,6 +458,7 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
           labelPosition="right"
           icon="checkmark"
           onClick={() => {
+            // getNewIndexAndRender("-1");
             sendMessage();
           }}
           positive
@@ -330,6 +501,17 @@ const SendToMultipleChannelStyled = styled.div`
         justify-content: space-between;
       }
     }
+  }
+
+  .page-number {
+    border: none;
+    text-align: center;
+    height: 100%;
+    min-height: 35px;
+    border-radius: 4px;
+    background: #e0e1e2;
+    margin-right: 4px;
+    max-width: 35px;
   }
 
   .chat-input__options {
@@ -391,6 +573,7 @@ const SendToMultipleChannelStyled = styled.div`
 
   .quill {
     .ql-editor {
+      min-height: 302px;
       img {
         max-width: 200px;
       }
