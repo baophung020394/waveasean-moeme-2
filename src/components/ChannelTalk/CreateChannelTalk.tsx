@@ -33,7 +33,10 @@ Quill.register(
   },
   true
 );
-
+let idxImage = {
+  index: 0,
+  image: "",
+};
 /*
  * Event handler to be attached using Quill toolbar module
  * http://quilljs.com/docs/modules/toolbar/
@@ -47,6 +50,7 @@ function insertStar() {
 function returnIndexImage(index = 0) {
   return index;
 }
+
 function imageHandler() {
   // console.log("this.quill", this.quill);
   const count = Math.round(Math.random() * 999999);
@@ -58,15 +62,10 @@ function imageHandler() {
   input.click();
 
   const cursorPosition = this.quill.getSelection().index;
-  // returnIndexImage(cursorPosition);
-  // this.quill.insertText(cursorPosition, "★");
+
   // this.quill.setSelection(cursorPosition + 1);
   input.onchange = async () => {
     var file: any = input && input.files ? input.files[0] : null;
-    // var formData = new FormData();
-    // formData.append("file", file);
-    // let quillObj = quillRef.current.getEditor();
-    // const range = quillObj.getSelection();
     const filePath = `chat/images/${count}.jpg`;
     storageRef
       .child(filePath)
@@ -76,6 +75,10 @@ function imageHandler() {
           .getDownloadURL()
           .then((url) => {
             this.quill.insertEmbed(cursorPosition, "image", url);
+            idxImage = {
+              image: url,
+              index: cursorPosition,
+            };
           })
           .catch((err) => console.log(err));
       })
@@ -285,98 +288,53 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
     let newNextIndex = getNextIdx(indexInput, lengthContent, direction);
     let newOps = [...ops];
 
-    newOps.push([
-      {
-        insert: "",
-        index: 0,
-      },
-    ]);
-
-    // console.log("newFilter getNewIndexAndRender chua", newOps);
-    // console.log("newFilter getNewIndexAndRender newOps", newOps);
-    // const newFilter = newOps.filter(
-    //   (f, idx) => newOps.findIndex((fi) => fi?.insert === f?.insert) === idx
-    // );
-    // console.log("newFilter getNewIndexAndRender newFilter", newFilter);
-
-    // console.log("newNextIndex", newNextIndex);
-    // console.log("selectedFile", selectedFile);
-
-    newOps[newNextIndex].forEach((op: any) => {
-      quillRef.current.editor.setContents([
+    if ((direction = "1")) {
+      newOps.push([
         {
-          insert: !op?.insert?.image
-            ? op?.insert?.replace("\n\n", "")
-            : op?.insert,
+          insert: "",
+          index: 0,
         },
       ]);
-      let filterImage = newOps[newNextIndex].filter((x) => {
-        return x?.insert?.image;
-      });
-      // console.log("filterImage", filterImage);
-      // console.log("op?.insert?.image", op?.insert?.image);
-      // console.log('indexImage',indexImage)
-      if (filterImage?.length > 0) {
-        quillRef.current.editor.insertEmbed(
-          indexImage,
-          "image",
-          filterImage[0].insert.image
-        );
+    }
+
+    // console.log("newFilter getNewIndexAndRender chua", newOps);
+    console.log("newFilter getNewIndexAndRender newOps", newOps);
+
+    console.log("newNextIndex", newNextIndex);
+    let mergeString = "";
+    let mergeImage = "";
+    let arrayString = [];
+    let arrayImage = [];
+    let filterImage = newOps[newNextIndex].filter((x) => {
+      if (x?.insert.image) {
+        arrayImage.push(x?.insert.image);
+        mergeImage = "".concat(...arrayImage);
+      }
+      return x?.insert?.image;
+    });
+    let filterString = newOps[newNextIndex].filter((x) => {
+      if (!x?.insert.image) {
+        arrayString.push(x?.insert);
+        mergeString = "".concat(...arrayString);
+      }
+      return !x?.insert?.image;
+    });
+
+    newOps[newNextIndex].forEach((op: any) => {
+      console.log("newOps foreach", op);
+      if (filterString?.length > 0) {
+        quillRef.current.editor.setText(mergeString.trim());
       }
 
-      // quillRef.current.editor.insertEmbed( 1, "image", "https://firebasestorage.googleapis.com/v0/b/moeme-chat-4.appspot.com/o/chat%2Ffiles%2F2ed887f9-bba5-4694-a7f3-24940e6aa0af.png?alt=media&token=e35f64d0-6c3d-4a84-a1ac-aa5a1756afdd");
+      if (filterImage?.length > 0) {
+        console.log("op?.insert?.image", op?.insert?.image);
+        quillRef.current.editor.insertEmbed(op?.index, "image", mergeImage);
+      }
     });
-    // console.log("newFilter[newNextIndex]", newFilter[newNextIndex]);
-    // console.log('quillRef.current.editor.getSelection() ',quillRef.current.editor.getSelection())
-    // quillRef.current.editor.setContents([{ insert: "" }]);
-    // if (direction === "-1") {
-    //   newOps[newNextIndex].forEach((op: any) => {
-    //     console.log("op them chim Truc mup ghe -1", op);
-    //     quillRef.current.editor.setContents([{ insert: op.insert }]);
-    //   });
-    // } else if(direction === "1"){
-    //   newOps[newNextIndex].forEach((op: any) => {
-    //     console.log("op them chim Truc mup ghe 1", op);
-    //     quillRef.current.editor.setContents([{ insert: op.insert }]);
-    //   });
-    // }
-    // if (newNextIndex < newOps.length - 1) {
-    //   console.log("newNextIndex-1", newNextIndex - 1);
-    //   newOps[newNextIndex - 1 < 0 ? 0 : newNextIndex].forEach((op: any) => {
-    //     console.log("op ne", op);
-    //     console.log("cc", op.insert.hasOwnProperty("image"));
-    //     // quillRef.current.editor.insertEmbed(op.index, "image", op?.insert?.image);
-    //     // quillRef.current.editor.insertText(op.index, op?.insert);
-    //     // if (op.insert.hasOwnProperty("image")) {
-    //     //   console.log('op?.insert?.image',op?.insert?.image)
-    //     //   quillRef.current.editor.insertEmbed(0, "image", "https://firebasestorage.googleapis.com/v0/b/moeme-chat-4.appspot.com/o/chat%2Ffiles%2F2ed887f9-bba5-4694-a7f3-24940e6aa0af.png?alt=media&token=e35f64d0-6c3d-4a84-a1ac-aa5a1756afdd");
-    //     //   // quillRef.current.editor.insertEmbed(
-    //     //   //   0,
-    //     //   //   "image",
-    //     //   //   "https://firebasestorage.googleapis.com/v0/b/moeme-chat-4.appspot.com/o/chat%2Ffiles%2F2ed887f9-bba5-4694-a7f3-24940e6aa0af.png?alt=media&token=e35f64d0-6c3d-4a84-a1ac-aa5a1756afdd"
-    //     //   // );
-    //     // } else {
-    //     //   console.log("settext");
-    //     //   quillRef.current.editor.setText(op?.insert.replace("\n\n", ""));
-    //     //   // quillRef.current.editor.setContents([
-    //     //   //   { insert: op.insert.replace("\n\n", "") },
-    //     //   // ]);
-    //     // }
-    //     // quillRef.current.editor.setContents([
-    //     //   { insert: op.insert.replace("\n\n", "") },
-    //     // ]);
-    //   });
-    // }
-
-    // if (newNextIndex === newOps.length - 1) {
-    //   console.log("chi co di");
-    //   quillRef.current.editor.setContents(newOps[newOps.length - 1]);
-    //   quillRef.current.editor.insertEmbed(0, "image", "https://firebasestorage.googleapis.com/v0/b/moeme-chat-4.appspot.com/o/chat%2Ffiles%2F2ed887f9-bba5-4694-a7f3-24940e6aa0af.png?alt=media&token=e35f64d0-6c3d-4a84-a1ac-aa5a1756afdd");
-    // }
-
-    // quillRef.current.editor.setContents(ops[newNextIndex]);
 
     setIndexInpiut(newNextIndex);
+    filterImage = [];
+    filterString = [];
   };
 
   // console.log("ops chim", ops);
@@ -467,46 +425,8 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
     // console.log("hot le Trucs", e.key);
     if (e.key === "Enter") {
       e.preventDefault();
-      // let mapGetContents = quillRef.current.editor
-      //   .getContents()
-      //   .ops.map((op: any) => {
-      //     return { ...op, index: quillRef.current.editor.getSelection().index };
-      //   });
-
-      // return mapGetContents;
-
-      // let cloneMapGetContents = [...mapGetContents];
-      // cloneMapGetContents.push([{insert: "", index:0}])
-      // setOps(quillRef.current.editor.getContents().ops);
-      // console.log("enter content", quillRef.current.editor.getContents());
-      // console.log("enter index", quillRef.current.editor.getSelection());
-
-      // quillRef.current.editor.getContents()?.ops.forEach((op: any) => {
-      //   console.log("m cuts me m di kien", op);
-      //   // if(op?.insert.image) {
-      //   //   console.log('co image');
-      //   //   updateState.push({
-      //   //     ...op?.insert,
-      //   //     index: quillRef.current.editor.getSelection(),
-      //   //   });
-      //   // } else {
-      //   //   console.log('k co image')
-      //   // }
-      //   setOps2((currentState: any) => {
-      //     let updateState = [...currentState];
-
-      // updateState.push({
-      //   insert: op.insert,
-      //   index: quillRef.current.editor.getSelection(),
-      // });
-      //     console.log("uoc gi dc liem chim Truc", updateState);
-      //     return updateState;
-      //   });
-      // });
     }
   };
-
-  const [indexImage, setIndexImage] = useState(0);
 
   // console.log("valueChange", value);
   // console.log("ops2", ops2);
@@ -528,6 +448,8 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
         onChange={(content, delta, source, editor) => {
           // console.log("content", content);
           // console.log("editor getContents", editor.getContents());
+          // console.log("editor getContents", editor.getSelection());
+          // console.log("idxImage", idxImage);
           // console.log("editor getHTML", editor.getHTML());
           // console.log("editor getLength", editor.getLength());
 
@@ -535,29 +457,15 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
 
           // console.log("editor getText", editor.getText());
           // console.log("delta", delta);
-          // let [line, offset] = quillRef.current.editor.getLines();
-          if (editor.getContents().ops[0].insert.image) {
-            // console.log("editor getSelection", editor.getSelection());
-            setIndexImage(editor.getSelection().index);
-          }
-          // console.log("cursorPosition", returnIndexImage());
-          // let [line] = quillRef.current.editor.getLine(10);
-          // let index = quillRef.current.editor.getIndex(line);
-          // console.log("line index", index);
-          // console.log("offset index", index);
+          let cloneOps = [];
+
+          cloneOps = editor.getContents().ops.map((op: any) => {
+            return { ...op, index: idxImage.index };
+          });
+
           quillRef?.current
             ?.getEditor()
             .on("text-change", (delta, old, source) => {
-              // console.log("delta cua t", delta?.ops);
-              // console.log("source text-change", source);
-              // console.log('editor.getSelection()?.index ',editor.getSelection()?.index )
-              // console.log("old cua t", old);
-              // let newArr2 = [];
-              // if (!newArr2.includes(delta?.ops[1]?.insert)) {
-              //   newArr2.push(delta?.ops[1]?.insert);
-              // }
-              // console.log({newArr2})
-              // setValueEditChange(valueEditChange.concat(...newArr2));
               setDelta(delta.ops);
               // if (editor.getLength() === 1 && delta?.ops[0]?.delete > 0) {
               //   // console.log("moi ne");
@@ -570,25 +478,14 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
               // }
             });
 
-          if (quillRef?.current?.getEditor()?.getLines().length === 5) {
-            // setValue2(quillRef?.current.editor.getContents().ops);
-          }
-
           handleBreakLine(
             quillRef?.current?.getEditor()?.getLines().length,
-            quillRef?.current.editor.getContents().ops
+            cloneOps
           );
 
-          // if(editor?.getContents().ops[0].insert !== "\n") {
-          //   setValue(content);
-          // }
           setValue(content);
-          // setValue(content?.length > 42 ? content : content);
 
-          setSelectedFile(
-            editor.getContents()?.ops.filter((op) => op?.insert?.image)[0]
-              ?.insert.image
-          );
+          setSelectedFile(idxImage?.image);
         }}
         // formats={formats}
       />
@@ -670,19 +567,34 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
         </Segment>
       )}
 
-      {/* <Button
+      <Button
         content="Show"
         icon="trash"
         labelPosition="right"
         id="next"
         onClick={() => {
+          //   [
+          //     {
+          //         "insert": "7\n8\n"
+          //     },
+          //     {
+          //         "insert": {
+          //             "image": "https://firebasestorage.googleapis.com/v0/b/moeme-chat-4.appspot.com/o/chat%2Fimages%2F716289.jpg?alt=media&token=79a9e3cc-a5d5-4955-bf32-3e8ef884f243"
+          //         }
+          //     },
+          //     {
+          //         "insert": "\n9\n10\n11\n\n"
+          //     }
+          // ]
+          // quillRef.current.editor.setText("1\n2\n3\n");
+          quillRef.current.editor.setText("1\n2\n3\n4\n5\n6\n");
           quillRef.current.editor.insertEmbed(
-            0,
+            6,
             "image",
-            "https://firebasestorage.googleapis.com/v0/b/moeme-chat-4.appspot.com/o/chat%2Ffiles%2F2ed887f9-bba5-4694-a7f3-24940e6aa0af.png?alt=media&token=e35f64d0-6c3d-4a84-a1ac-aa5a1756afdd"
+            "https://firebasestorage.googleapis.com/v0/b/moeme-chat-4.appspot.com/o/chat%2Fimages%2F716289.jpg?alt=media&token=79a9e3cc-a5d5-4955-bf32-3e8ef884f243"
           );
         }}
-      /> */}
+      />
 
       <div className="send-to-multiple-channel">
         <Header>Send to multiple channels</Header>
