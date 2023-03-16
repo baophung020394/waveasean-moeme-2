@@ -21,6 +21,7 @@ function groupedDays(messages: any) {
 
 function generateItems(messages: any) {
   const days = groupedDays(messages);
+
   const sortedDays = Object.keys(days).sort(
     (x, y) =>
       moment(x, "HH:mm DD-MM-YYYY").unix() -

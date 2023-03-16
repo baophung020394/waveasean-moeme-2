@@ -115,15 +115,18 @@ function ChatMessageList({
       <ul ref={messagesRef} className="chat-box chatContainerScroll">
         {generateItems(messages).map((message: any, idx: number) => {
           if (message?.type === "day") {
+            let convertDate = moment(parseInt(message.id[0].timestamp)).format(
+              "HH:mm DD-MM-YYYY"
+            );
             return (
               <div className="chat-date" key={`${message?.id}-${idx}`}>
                 <h1>
                   {moment(message?.date.split(" ")[1]).isAfter(7)
-                    ? moment(parseInt(message.id[0].timestamp)).calendar()
-                    : `${moment({ hour: message?.date.split(" ")[0] })
-                        .calendar()
-                        .replace("Today at", "")} -
-                      ${moment(message?.date, "HH DD-MM-YYYY").calendar()}`}
+                    ? moment(parseInt(message.id[0].timestamp)).format(
+                        "HH:mm DD-MM-YYYY"
+                      )
+                    : `
+                      ${moment(convertDate, "HH:mm DD-MM-YYYY").calendar()}`}
                 </h1>
               </div>
             );

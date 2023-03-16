@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Redirect, useHistory } from "react-router-dom";
 import { styled } from "utils/styled-component";
 import firebase from "db/firestore";
+import { Card, Image } from "semantic-ui-react";
+import FacebookLogin from "react-facebook-login";
 
 function Settings() {
   const dispatch: any = useDispatch();
@@ -16,6 +18,23 @@ function Settings() {
   const connectedRef = firebase.database().ref(".info/connected");
   const usersRef = firebase.database().ref("users");
   const statusRef = firebase.database().ref("status");
+  const [login, setLogin] = useState(false);
+  const [data, setData] = useState({
+    name: "",
+    email: "",
+  });
+  const [picture, setPicture] = useState("");
+
+  const responseFacebook = (response) => {
+    console.log(response);
+    setData(response);
+    setPicture(response.picture.data.url);
+    if (response.accessToken) {
+      setLogin(true);
+    } else {
+      setLogin(false);
+    }
+  };
 
   const handleLogout = () => {
     connectedRef.on("value", (snap) => {
@@ -40,7 +59,6 @@ function Settings() {
     dispatch(logout());
     history.push("/login");
   };
-  
 
   // useEffect(() => {
   //   usersRef.on("child_added", (snap) => {
@@ -81,6 +99,28 @@ function Settings() {
         inputColor="primary"
         onClick={() => handleLogout()}
       ></Button>
+
+      {/* <Card style={{ width: "600px" }}>
+        <Card.Header>
+          {!login && (
+            <FacebookLogin
+              appId="1243691742899004"
+              autoLoad={true}
+              fields="name,email,picture"
+              scope="public_profile,user_friends"
+              callback={responseFacebook}
+              icon="fa-facebook"
+            />
+          )}
+          {login && <Image src={picture} roundedCircle />}
+        </Card.Header>
+        {login && (
+          <>
+            {data.name}
+            {data.email}
+          </>
+        )}
+      </Card> */}
     </SettingsStyled>
   );
 }
