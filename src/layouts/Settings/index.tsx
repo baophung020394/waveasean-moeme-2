@@ -100,7 +100,7 @@ function Settings() {
         onClick={() => handleLogout()}
       ></Button>
 
-      {/* <Card style={{ width: "600px" }}>
+      <Card style={{ width: "600px" }}>
         <Card.Header>
           {!login && (
             <FacebookLogin
@@ -120,7 +120,7 @@ function Settings() {
             {data.email}
           </>
         )}
-      </Card> */}
+      </Card>
     </SettingsStyled>
   );
 }
