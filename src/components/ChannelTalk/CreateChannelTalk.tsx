@@ -482,9 +482,8 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
             quillRef?.current?.getEditor()?.getLines().length,
             cloneOps
           );
-
+          
           setValue(content);
-
           setSelectedFile(idxImage?.image);
         }}
         // formats={formats}
