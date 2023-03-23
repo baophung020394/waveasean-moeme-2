@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import generateItems from "utils/generateItems";
@@ -9,10 +9,13 @@ import { v4 as uuidv4 } from "uuid";
 import ItemMessage from "./ItemMessage";
 
 interface ChatMessageListProps {
+  scrollBottom: boolean;
   messages: any;
   progressBar?: any;
   selectedFile?: any;
   uploadFileProp?: (data: any) => void;
+  onScroll?: (e: any) => void;
+  setNewMessage?: (data: number) => void;
 }
 
 function ChatMessageList({
@@ -20,6 +23,9 @@ function ChatMessageList({
   progressBar,
   selectedFile,
   uploadFileProp,
+  scrollBottom,
+  onScroll,
+  setNewMessage,
 }: ChatMessageListProps) {
   let myuuid = uuidv4();
   const user = useSelector(({ auth }) => auth.user);
@@ -100,9 +106,23 @@ function ChatMessageList({
     ev.preventDefault();
   };
 
+  /**
+   *
+   * @param e
+   */
+  const handleScroll = (e: any) => {
+    onScroll(e.target);
+  };
+
+  /**
+   * Scroll to bottom
+   */
   useEffect(() => {
-    messagesRef?.scrollIntoView();
-  }, [messages]);
+    if (messages && scrollBottom) {
+      messagesRef?.scrollIntoView();
+      setNewMessage(0);
+    }
+  }, [messages, scrollBottom]);
 
   return (
     <ChatMessageListStyled
@@ -111,6 +131,7 @@ function ChatMessageList({
       onDragOver={dragOverHandler}
       onDragLeave={dragLeaveHandler}
       ref={boxMessagesRef}
+      onScroll={handleScroll}
     >
       <ul ref={messagesRef} className="chat-box chatContainerScroll">
         {generateItems(messages).map((message: any, idx: number) => {
@@ -143,6 +164,7 @@ function ChatMessageList({
             />
           );
         })}
+
         <div ref={(currentEl) => (messagesRef = currentEl)}></div>
       </ul>
     </ChatMessageListStyled>
@@ -150,6 +172,7 @@ function ChatMessageList({
 }
 
 const ChatMessageListStyled = styled.div`
+  position: relative;
   padding: 16px;
   background-color: #ccc;
   overflow: auto;
@@ -186,7 +209,7 @@ const ChatMessageListStyled = styled.div`
       border-radius: 20px;
       background: #9a9a9a;
       padding: 3px 10px;
-      font-size: 16px;
+      font-size: 14px;
       color: #fff;
       display: inline-block;
     }

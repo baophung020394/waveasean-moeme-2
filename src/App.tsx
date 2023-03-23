@@ -3,7 +3,6 @@ import { listenToAuthChanges } from "actions/auth";
 import PrivateChat from "components/PrivateChat";
 import LoadingView from "components/Spinner/LoadingView";
 import firebase, { requestForToken } from "db/firestore";
-import RequestLogin from "layouts/RequestLogin";
 import ChannelView from "layouts/Channel";
 import ChatView from "layouts/Chat";
 import HomeView from "layouts/Home";
@@ -11,8 +10,9 @@ import LoginView from "layouts/Login";
 import PrivateView from "layouts/Private";
 import ProfileView from "layouts/Profile";
 import RegisterView from "layouts/Register";
+import RequestLogin from "layouts/RequestLogin";
 import SettingsView from "layouts/Settings";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   HashRouter as Router,
@@ -20,9 +20,9 @@ import {
   Route,
   Switch,
 } from "react-router-dom";
+import { io } from "socket.io-client";
 import StoreProvider from "store/StoreProvider";
 import Header from "./components/common/Header";
-import { io } from "socket.io-client";
 
 const socket = io("wss://moeme-web-dev.aveapp.com");
 
@@ -59,7 +59,6 @@ function MoeMe() {
   const connectedRef = firebase.database().ref(".info/connected");
   const [tokenNotification, setTokenNotification] = useState("");
   const copyRef = firebase.database().ref("copyUrls");
-  
 
   useEffect(() => {
     const tokenmess = requestForToken();

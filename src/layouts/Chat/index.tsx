@@ -33,6 +33,9 @@ function Chat({ tokenNotification }: ChatProps) {
   const [searchTermState, setSearchTermState] = useState("");
   const [joinedUsersState, setJoinedUsersState] = useState<any>([]);
   const currentChannel = useSelector(({ channel }) => channel?.currentChannel);
+  const [scroll, setScroll] = useState<boolean>(true);
+  const [newMessage, setNewMessage] = useState(0);
+  
   let myuuid = uuidv4();
 
   // const {
@@ -107,6 +110,9 @@ function Chat({ tokenNotification }: ChatProps) {
     dispatch(uploadFiles(data, id, messagesState, perCentUploadSuccess));
   };
 
+  /**
+   * Check new message
+   */
   useEffect(() => {
     if (id) {
       setMessagesState([]);
@@ -138,9 +144,17 @@ function Chat({ tokenNotification }: ChatProps) {
           updateState.push(snap.val());
           return updateState;
         });
+        setNewMessage(1);
+        // setScroll(false);
       });
+
+      messageRef.child(id).on("child_changed", (snap) => {
+        console.log("child_change");
+        // setScroll(true);
+      });
+
       messageRef.child(id).on("child_removed", (snap) => {
-        console.log('child_removed')
+        console.log("child_removed");
         setMessagesState([]);
       });
 
@@ -169,6 +183,10 @@ function Chat({ tokenNotification }: ChatProps) {
     setSearchTermState(searchTerm);
   };
 
+  /**
+   * Search message
+   * @returns
+   */
   const filterMessageBySearchTerm = () => {
     // const regex = "/^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/";
     // const regex = new RegExp(searchTermState, "gi");
@@ -191,6 +209,15 @@ function Chat({ tokenNotification }: ChatProps) {
     // }, []);
 
     return messages;
+  };
+
+  /**
+   * Check scroll up
+   * @param e
+   */
+  const handleScroll = (e: any) => {
+    const bottom = e.scrollHeight - e.scrollTop === e.clientHeight;
+    setScroll(bottom);
   };
 
   useEffect(() => {
@@ -248,6 +275,9 @@ function Chat({ tokenNotification }: ChatProps) {
 
         <div className="chat--view__content__chat">
           <ChatMessageList
+            setNewMessage={setNewMessage}
+            onScroll={handleScroll}
+            scrollBottom={scroll}
             selectedFile={selectedFile}
             progressBar={progressBar}
             uploadFileProp={uploadImage}
@@ -272,6 +302,17 @@ function Chat({ tokenNotification }: ChatProps) {
             uploadFileProp={uploadImage}
           />
         </div>
+        {!scroll && newMessage === 1 && (
+          <div
+            className="new-message-parent"
+            onClick={() => {
+              setScroll(true);
+              setNewMessage(0);
+            }}
+          >
+            <span className="new-message">New message</span>
+          </div>
+        )}
       </div>
     </ChatStyled>
   );
@@ -283,6 +324,21 @@ const ChatStyled = styled.div`
   display: flex;
   flex-direction: row;
 
+  .new-message-parent {
+    position: absolute;
+    bottom: 180px;
+    left: 50%;
+    transform: translateX(-50%);
+    .new-message {
+      cursor: pointer;
+      border-radius: 20px;
+      padding: 3px 20px;
+      background-color: blue;
+      color: #fff;
+      font-size: 14px;
+      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+    }
+  }
   .chat--view {
     &__channels {
       width: 33%;
@@ -294,7 +350,7 @@ const ChatStyled = styled.div`
       height: 100%;
       width: 100%;
       padding-bottom: 56px;
-
+      position: relative;
       &__chat {
         height: calc(100% - 61px);
         display: flex;

@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { Carousel } from "react-bootstrap";
 import { Button, Comment, Icon, Image, Modal } from "semantic-ui-react";
 import { styled } from "utils/styled-component";
 import { formatTimeAgo } from "utils/time";
@@ -52,7 +53,7 @@ function ChannelTalkDetail({ message }: ChannelTalkDetailProps) {
     if (messages.length <= 0) {
       return (
         <div
-        style={{marginTop: 30}}
+          style={{ marginTop: 30 }}
           className="chat-channel-content text"
           dangerouslySetInnerHTML={{
             __html: message?.contentLong && message?.contentLong[0],
@@ -62,7 +63,7 @@ function ChannelTalkDetail({ message }: ChannelTalkDetailProps) {
     } else {
       return (
         <div
-        style={{marginTop: 30}}
+          style={{ marginTop: 30 }}
           className="chat-channel-content text"
           dangerouslySetInnerHTML={{
             __html: messages,
@@ -71,7 +72,12 @@ function ChannelTalkDetail({ message }: ChannelTalkDetailProps) {
       );
     }
   };
-
+  console.log("lengthContent", lengthContent);
+  console.log("indexInput", indexInput);
+  console.log(
+    "message?.contentLong[indexInput].length",
+    message?.contentLong[indexInput].length
+  );
   return (
     <ChannelTalkDetailStyled>
       <span className="tag-icon">
@@ -125,6 +131,7 @@ function ChannelTalkDetail({ message }: ChannelTalkDetailProps) {
         <Modal.Content scrolling>
           <Modal.Description>
             <Button
+              disabled={indexInput === 0}
               content="Prev"
               icon="left arrow"
               labelPosition="left"
@@ -134,6 +141,10 @@ function ChannelTalkDetail({ message }: ChannelTalkDetailProps) {
               }}
             />
             <Button
+              disabled={
+                message?.contentLong[message?.contentLong.length - 1] ===
+                message?.contentLong[indexInput].length
+              }
               content="Next"
               icon="right arrow"
               labelPosition="right"
@@ -143,6 +154,11 @@ function ChannelTalkDetail({ message }: ChannelTalkDetailProps) {
               }}
             />
             {renderHTML()}
+            {/* <Carousel>
+              {message?.contentLong.map((item: any) => (
+                <div dangerouslySetInnerHTML={{ __html: item }} />
+              ))}
+            </Carousel> */}
             {/* <div dangerouslySetInnerHTML={{ __html: message?.content }} /> */}
           </Modal.Description>
         </Modal.Content>

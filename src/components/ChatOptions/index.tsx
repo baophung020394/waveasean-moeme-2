@@ -56,7 +56,7 @@ function ChatOptions({ submitStock }: ChatOptions) {
             <img className="icon24 img-show" src={IconTrash} alt="" />
             <img className="icon24 img-hover" src={IconTrash} alt="" />
           </button>
-          <button className="btn-hover">
+          {/* <button className="btn-hover">
             <img className="icon24 img-show" src={IconSpeaker} alt="" />
             <img className="icon24 img-hover" src={IconSpeaker} alt="" />
           </button>
@@ -67,7 +67,7 @@ function ChatOptions({ submitStock }: ChatOptions) {
           <button className="btn-hover">
             <img className="icon24 img-show" src={IconMic} alt="" />
             <img className="icon24 img-hover" src={IconMic} alt="" />
-          </button>
+          </button>*/}
         </div>
         <div className="chat--options__right">
           <button className="btn-hover">

@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Card, Feed, Grid, Image } from "semantic-ui-react";
 import { formatTimeAgo } from "utils/time";
 import { styled } from "utils/styled-component";
-
+import { useScrollDirection } from "hooks/userScroll";
 interface PostsProps {
   post: any;
 }

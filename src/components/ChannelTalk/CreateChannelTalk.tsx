@@ -132,10 +132,10 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
   const [indexInput, setIndexInpiut] = useState(0);
   const [lengthContent, setLengthContent] = useState<any>();
   const [contentLong, setContentLong] = useState<any>([]);
-  // const [ops, setOps] = useState<any>([{ insert: "Hello World!" }]);
   const [ops, setOps] = useState<any>([]);
   const [ops2, setOps2] = useState<any>([]);
   const [delta, setDelta] = useState<any>([]);
+  const [errors, setErrors] = useState<string>("");
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isClick, setIsClick] = useState<boolean>(false);
   const channelsRef = firebase.database().ref("channels");
@@ -295,6 +295,7 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
           index: 0,
         },
       ]);
+      setErrors("");
     }
 
     // console.log("newFilter getNewIndexAndRender chua", newOps);
@@ -347,7 +348,7 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
    */
   const handleBreakLine = (lineNumber, content) => {
     if (lineNumber > 6) {
-      // console.log()
+      console.log("lineNumber", lineNumber);
       setOps((currentState: any) => {
         let updateState = [...currentState];
         updateState.push(content);
@@ -359,27 +360,12 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
         updateState.push(value.replaceAll("<p><br></p>", ""));
         return updateState;
       });
-
-      // quillRef.current.editor.getContents()?.ops.forEach((op: any) => {
-      //   console.log("m cuts me m di kien", op);
-
-      //   setOps2((currentState: any) => {
-      //     let updateState = [...currentState];
-
-      //     console.log("uoc gi dc liem chim Truc", updateState);
-      //     return updateState;
-      //   });
-      // });
     }
   };
 
   useEffect(() => {
     if (ops.length > 0) {
       let newOps = [...ops];
-      // newOps.push([{ insert: "", index: 0 }]);
-      const newFilter = newOps.filter(
-        (f, idx) => newOps.findIndex((fi) => fi.insert === f.insert) === idx
-      );
 
       setLengthContent(newOps.length + 1);
     }
@@ -473,6 +459,12 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
         modules={modules}
         onKeyDown={handleKeyPress}
         onChange={(content, delta, source, editor) => {
+          if (quillRef?.current?.getEditor()?.getLines().length > 6 && isEdit) {
+            console.log("het r");
+            setErrors("Please go next page!");
+            // setIsEdit(false);
+            return;
+          }
           // console.log("content", content);
           console.log("editor getContents", editor.getContents());
           // console.log("editor getContents", editor.getSelection());
@@ -512,7 +504,11 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
         }}
         // formats={formats}
       />
-
+      {errors?.length > 0 && (
+        <Header as="h4" color="red">
+          {errors}
+        </Header>
+      )}
       {ops?.length > 0 && (
         <Segment>
           <Button
