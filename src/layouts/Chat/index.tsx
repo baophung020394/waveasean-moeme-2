@@ -1,20 +1,21 @@
 import { sendChannelMessage2, uploadFiles } from "actions/channel";
-import axios from "axios";
 import ChannelList from "components/ChannelList";
 import ChatBar from "components/ChatBar";
 import ChatMessageList from "components/ChatMessageList";
 import ChatOptions from "components/ChatOptions";
 import Messanger from "components/Messanger";
-import firebase, { onMessageListener, requestForToken } from "db/firestore";
-import { getMessaging, onMessage } from "firebase/messaging";
+import TypingChat from "components/TypingChat";
+import firebase, { onMessageListener } from "db/firestore";
 import { withBaseLayout } from "layouts/Base";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
-import { createTimestamp } from "utils/time";
-import TypingChat from "components/TypingChat";
+// import useWebSocket from "react-use-websocket";
+
+// "undefined" means the URL will be computed from the `window.location` object
+const URL = "wss://moeme-web-dev.aveapp.com";
 
 interface ChatProps {
   tokenNotification: string;
@@ -32,10 +33,24 @@ function Chat({ tokenNotification }: ChatProps) {
   const [searchTermState, setSearchTermState] = useState("");
   const [joinedUsersState, setJoinedUsersState] = useState<any>([]);
   const currentChannel = useSelector(({ channel }) => channel?.currentChannel);
-
   let myuuid = uuidv4();
 
-  const sendMessage = useCallback(
+  // const {
+  //   sendMessage,
+  //   sendJsonMessage,
+  //   lastMessage,
+  //   lastJsonMessage,
+  //   readyState,
+  //   getWebSocket,
+  // } = useWebSocket("wss://moeme-web-dev.aveapp.com", {
+  //   onOpen: () => console.log("opened"),
+  //   onMessage: (data) => {
+  //     console.log("data", JSON.parse(data.data));
+  //   },
+  //   shouldReconnect: (closeEvent) => true,
+  // });
+
+  const sendMessages = useCallback(
     (message) => {
       dispatch(sendChannelMessage2(message, id));
     },
@@ -93,11 +108,6 @@ function Chat({ tokenNotification }: ChatProps) {
   };
 
   useEffect(() => {
-    // localStorage.removeItem("urlCopy");
-    // localStorage.setItem("urlCopy", "/channel");
-  }, []);
-
-  useEffect(() => {
     if (id) {
       setMessagesState([]);
       messageRef.child(id).on("child_added", (snap) => {
@@ -128,6 +138,10 @@ function Chat({ tokenNotification }: ChatProps) {
           updateState.push(snap.val());
           return updateState;
         });
+      });
+      messageRef.child(id).on("child_removed", (snap) => {
+        console.log('child_removed')
+        setMessagesState([]);
       });
 
       return () => {
@@ -246,14 +260,14 @@ function Chat({ tokenNotification }: ChatProps) {
 
           <div className="chat--view__content__options">
             {currentChannel?.enableWriteMsg === "1" && (
-              <ChatOptions submitStock={sendMessage} />
+              <ChatOptions submitStock={sendMessages} />
             )}
           </div>
 
           <Messanger
             joinedUsersState={joinedUsersState}
             messages={messagesState}
-            onSubmit={sendMessage}
+            onSubmit={sendMessages}
             channel={currentChannel}
             uploadFileProp={uploadImage}
           />

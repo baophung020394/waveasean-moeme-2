@@ -80,7 +80,7 @@ function CardChannel({
   };
 
   const onChooseChannel = async (channel: any) => {
-    dispatch(setCurrentChannel(channel));
+    // dispatch(setCurrentChannel(channel));
 
     switch (isGoChannel) {
       case "GO_CHANNEL": {

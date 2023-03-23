@@ -12,6 +12,8 @@ import {
   Label,
   Modal,
   Segment,
+  Loader,
+  Dimmer,
 } from "semantic-ui-react";
 import { styled } from "utils/styled-component";
 import { createTimestamp } from "utils/time";
@@ -47,10 +49,6 @@ function insertStar() {
   this.quill.setSelection(cursorPosition + 1);
 }
 
-function returnIndexImage(index = 0) {
-  return index;
-}
-
 function imageHandler() {
   // console.log("this.quill", this.quill);
   const count = Math.round(Math.random() * 999999);
@@ -67,6 +65,8 @@ function imageHandler() {
   input.onchange = async () => {
     var file: any = input && input.files ? input.files[0] : null;
     const filePath = `chat/images/${count}.jpg`;
+
+    // this.quill.insertEmbed(cursorPosition, "image", "https://media3.giphy.com/media/3oEjI6SIIHBdRxXI40/200w.gif?cid=6c09b952e4c4d7dqrhufcljmf9ztr59v3rdr1i7s9qs7yzzq&rid=200w.gif&ct=g" );
     storageRef
       .child(filePath)
       .put(file, { contentType: file?.type })
@@ -79,6 +79,7 @@ function imageHandler() {
               image: url,
               index: cursorPosition,
             };
+            this.quill.insertText(cursorPosition, " ");
           })
           .catch((err) => console.log(err));
       })
@@ -169,8 +170,10 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
       setIsSent(true);
       return;
     }
+
     if (listIdsChannel?.length <= 0) {
       setIsOpenPopup(true);
+      return;
     }
 
     let cloneCententLong = [...contentLong];
@@ -183,14 +186,10 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
     );
 
     let longValue = "";
+
     if (indexInput > 0) {
       longValue = "".concat(...newFilterContentLong);
     }
-
-    // console.log("newFilterContentLong", newFilterContentLong);
-    // console.log("longValue", longValue);
-    // console.log("value", value);
-    // console.log("index", indexInput);
 
     const message: any = {
       idMessage: myuuid,
@@ -203,6 +202,7 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
         id: userRedux?.uid,
       },
       type: 2,
+      contentLong,
     };
 
     const newPost = { ...message };
@@ -327,12 +327,13 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
       }
 
       if (filterImage?.length > 0) {
-        console.log("op?.insert?.image", op?.insert?.image);
+        // console.log("op?.insert?.image", op?.insert?.image);
         quillRef.current.editor.insertEmbed(op?.index, "image", mergeImage);
       }
     });
 
     setIndexInpiut(newNextIndex);
+    // setIsEdit(false);
     filterImage = [];
     filterString = [];
   };
@@ -396,30 +397,56 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
     }
   }, [value, isSent]);
 
-  // useEffect(() => {
-  //   console.log("isClick", isClick);
-  //   if (isEdit && isClick) {
-  //     let newArray = [...ops];
+  useEffect(() => {
+    console.log("isClick", isClick);
+    console.log("isEdit", isEdit);
+    if (isEdit && isClick) {
+      let cloneOps = [];
 
-  //     quillRef.current.editor.updateContents([
-  //       { delete: quillRef.current.editor.getLength() },
-  //       { insert: quillRef.current.editor.getContents().ops[0].insert },
-  //     ]);
-  //     // console.log("newArray insert", newArray);
-  //     newArray[indexInput].insert =
-  //       quillRef.current.editor.getContents().ops[0].insert;
-  //     setOps(newArray);
-  //     setContentLong((currentState: any) => {
-  //       let updateState = [...currentState];
-  //       updateState.push(value.replaceAll("<p><br></p>", ""));
-  //       return updateState;
-  //     });
+      let newArray = [...ops];
 
-  //     setIsEdit(false);
-  //     setIsClick(false);
-  //     getNewIndexAndRender("1");
-  //   }
-  // }, [isEdit, isClick]);
+      newArray[indexInput] = quillRef.current.editor.getContents().ops;
+      console.log("chage newArray", newArray[indexInput]);
+      cloneOps = newArray[indexInput].map((op: any) => {
+        return { ...op, index: idxImage.index };
+      });
+
+      let mergeString = "";
+      let mergeImage = "";
+      let arrayString = [];
+      let arrayImage = [];
+      let filterImage = cloneOps.filter((x) => {
+        if (x?.insert.image) {
+          arrayImage.push(x?.insert.image);
+          mergeImage = "".concat(...arrayImage);
+        }
+        return x?.insert?.image;
+      });
+
+      let filterString = cloneOps.filter((x) => {
+        if (!x?.insert.image) {
+          arrayString.push(x?.insert);
+          mergeString = "".concat(...arrayString);
+        }
+        return !x?.insert?.image;
+      });
+
+      cloneOps.forEach((op: any) => {
+        if (filterString?.length > 0) {
+          quillRef.current.editor.setText(mergeString.trim());
+        }
+
+        if (filterImage?.length > 0) {
+          quillRef.current.editor.insertEmbed(op?.index, "image", mergeImage);
+        }
+      });
+
+      newArray[indexInput] = cloneOps;
+      setOps(newArray);
+
+      setIsEdit(false);
+    }
+  }, [isEdit, isClick]);
 
   const handleKeyPress = (e) => {
     // console.log("hot le Trucs", e.key);
@@ -447,7 +474,7 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
         onKeyDown={handleKeyPress}
         onChange={(content, delta, source, editor) => {
           // console.log("content", content);
-          // console.log("editor getContents", editor.getContents());
+          console.log("editor getContents", editor.getContents());
           // console.log("editor getContents", editor.getSelection());
           // console.log("idxImage", idxImage);
           // console.log("editor getHTML", editor.getHTML());
@@ -457,9 +484,11 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
 
           // console.log("editor getText", editor.getText());
           // console.log("delta", delta);
+
           let cloneOps = [];
 
           cloneOps = editor.getContents().ops.map((op: any) => {
+            // console.log("change", idxImage);
             return { ...op, index: idxImage.index };
           });
 
@@ -467,22 +496,17 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
             ?.getEditor()
             .on("text-change", (delta, old, source) => {
               setDelta(delta.ops);
-              // if (editor.getLength() === 1 && delta?.ops[0]?.delete > 0) {
-              //   // console.log("moi ne");
-              // } else if (
-              //   delta?.ops[1]?.delete > 0 &&
-              //   delta?.ops[0]?.retain > 0
-              // ) {
-              //   setIsEdit(true);
-              //   setIsClick(false);
-              // }
+              if (delta?.ops[1]?.delete > 0 && delta?.ops[0]?.retain > 0) {
+                setIsEdit(true);
+                setIsClick(false);
+              }
             });
 
           handleBreakLine(
             quillRef?.current?.getEditor()?.getLines().length,
             cloneOps
           );
-          
+
           setValue(content);
           setSelectedFile(idxImage?.image);
         }}
@@ -565,35 +589,6 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
           )} */}
         </Segment>
       )}
-
-      <Button
-        content="Show"
-        icon="trash"
-        labelPosition="right"
-        id="next"
-        onClick={() => {
-          //   [
-          //     {
-          //         "insert": "7\n8\n"
-          //     },
-          //     {
-          //         "insert": {
-          //             "image": "https://firebasestorage.googleapis.com/v0/b/moeme-chat-4.appspot.com/o/chat%2Fimages%2F716289.jpg?alt=media&token=79a9e3cc-a5d5-4955-bf32-3e8ef884f243"
-          //         }
-          //     },
-          //     {
-          //         "insert": "\n9\n10\n11\n\n"
-          //     }
-          // ]
-          // quillRef.current.editor.setText("1\n2\n3\n");
-          quillRef.current.editor.setText("1\n2\n3\n4\n5\n6\n");
-          quillRef.current.editor.insertEmbed(
-            6,
-            "image",
-            "https://firebasestorage.googleapis.com/v0/b/moeme-chat-4.appspot.com/o/chat%2Fimages%2F716289.jpg?alt=media&token=79a9e3cc-a5d5-4955-bf32-3e8ef884f243"
-          );
-        }}
-      />
 
       <div className="send-to-multiple-channel">
         <Header>Send to multiple channels</Header>

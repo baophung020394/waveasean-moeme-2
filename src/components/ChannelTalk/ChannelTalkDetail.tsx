@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Comment, Header, Icon, Image, Modal } from "semantic-ui-react";
+import React, { useRef, useState } from "react";
+import { Button, Comment, Icon, Image, Modal } from "semantic-ui-react";
 import { styled } from "utils/styled-component";
 import { formatTimeAgo } from "utils/time";
 
@@ -8,8 +8,70 @@ interface ChannelTalkDetailProps {
 }
 function ChannelTalkDetail({ message }: ChannelTalkDetailProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [indexInput, setIndexInpiut] = useState(0);
+  const [lengthContent] = useState<any>(message?.contentLong?.length);
+  const [messages, setMessages] = useState("");
+  const contentRef = useRef();
+
   //   console.log("first", message.content.replace(/<img .*?>/g, ""));
   //   console.log("first", message.content.replace(/(<([^>]+)>)/ig, ""))
+  /**
+   * Return current index
+   * @param idx
+   * @param length
+   * @param direction
+   * @returns
+   */
+  const getNextIdx = (idx = -1, length, direction) => {
+    // console.log("idx getNextIdx", idx);
+    // console.log("idx length", length);
+    switch (direction) {
+      case "1": {
+        console.log("1");
+        return (idx + 1) % length;
+        ``;
+      }
+      case "-1": {
+        console.log("-1");
+        return (idx === 0 && length - 1) || idx - 1;
+      }
+      default: {
+        // console.log("idx default", idx);
+        return idx;
+      }
+    }
+  };
+
+  const getNewIndexAndRender = (direction) => {
+    let newNextIndex = getNextIdx(indexInput, lengthContent, direction);
+    setIndexInpiut(newNextIndex);
+    setMessages(message.contentLong[newNextIndex]);
+  };
+
+  const renderHTML = () => {
+    if (messages.length <= 0) {
+      return (
+        <div
+        style={{marginTop: 30}}
+          className="chat-channel-content text"
+          dangerouslySetInnerHTML={{
+            __html: message?.contentLong && message?.contentLong[0],
+          }}
+        />
+      );
+    } else {
+      return (
+        <div
+        style={{marginTop: 30}}
+          className="chat-channel-content text"
+          dangerouslySetInnerHTML={{
+            __html: messages,
+          }}
+        />
+      );
+    }
+  };
+
   return (
     <ChannelTalkDetailStyled>
       <span className="tag-icon">
@@ -62,7 +124,26 @@ function ChannelTalkDetail({ message }: ChannelTalkDetailProps) {
         <Modal.Header>Read all</Modal.Header>
         <Modal.Content scrolling>
           <Modal.Description>
-            <div dangerouslySetInnerHTML={{ __html: message?.content }} />
+            <Button
+              content="Prev"
+              icon="left arrow"
+              labelPosition="left"
+              id="prev"
+              onClick={() => {
+                getNewIndexAndRender("-1");
+              }}
+            />
+            <Button
+              content="Next"
+              icon="right arrow"
+              labelPosition="right"
+              id="next"
+              onClick={() => {
+                getNewIndexAndRender("1");
+              }}
+            />
+            {renderHTML()}
+            {/* <div dangerouslySetInnerHTML={{ __html: message?.content }} /> */}
           </Modal.Description>
         </Modal.Content>
       </Modal>

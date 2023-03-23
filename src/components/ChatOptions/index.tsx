@@ -10,6 +10,8 @@ import CreateStock from "components/CreateStock";
 import { v4 as uuidv4 } from "uuid";
 import { createTimestamp } from "utils/time";
 import { useSelector } from "react-redux";
+import firebase from "db/firestore";
+import { Button, Header, Icon, Modal } from "semantic-ui-react";
 
 interface ChatOptions {
   submitStock: (data: any) => void;
@@ -17,6 +19,8 @@ interface ChatOptions {
 
 function ChatOptions({ submitStock }: ChatOptions) {
   const [isOpenStock, setIsOpenStock] = useState(false);
+  const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
+  const currentChannel = useSelector(({ channel }) => channel.currentChannel);
   const user = useSelector(({ auth }) => auth.user);
   let myuuid = uuidv4();
 
@@ -35,11 +39,20 @@ function ChatOptions({ submitStock }: ChatOptions) {
     setIsOpenStock(false);
   };
 
+  const handleRemoveMessages = () => {
+    const messagesRef = firebase
+      .database()
+      .ref("messages")
+      .child(currentChannel.id);
+    setIsOpenPopup(false);
+    return messagesRef.remove();
+  };
+
   return (
     <ChatOptionsStyled>
       <div className="chat--options">
         <div className="chat--options__left">
-          <button className="btn-hover">
+          <button className="btn-hover" onClick={() => setIsOpenPopup(true)}>
             <img className="icon24 img-show" src={IconTrash} alt="" />
             <img className="icon24 img-hover" src={IconTrash} alt="" />
           </button>
@@ -75,6 +88,28 @@ function ChatOptions({ submitStock }: ChatOptions) {
           </div>
         </div>
       </div>
+
+      <Modal
+        centered={true}
+        onClose={() => setIsOpenPopup(false)}
+        onOpen={() => setIsOpenPopup(true)}
+        open={isOpenPopup}
+        size="small"
+        className="send-channel-fail-modal"
+      >
+        <Header>Do you want to delete all messages?</Header>
+        {/* <Modal.Content>
+          <p>Please choose at least a channel</p>
+        </Modal.Content> */}
+        <Modal.Actions>
+          <Button color="red" inverted onClick={() => setIsOpenPopup(false)}>
+            <Icon name="checkmark" /> No
+          </Button>
+          <Button color="green" inverted onClick={handleRemoveMessages}>
+            <Icon name="checkmark" /> Yes
+          </Button>
+        </Modal.Actions>
+      </Modal>
     </ChatOptionsStyled>
   );
 }

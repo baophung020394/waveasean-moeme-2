@@ -12,7 +12,7 @@ import PrivateView from "layouts/Private";
 import ProfileView from "layouts/Profile";
 import RegisterView from "layouts/Register";
 import SettingsView from "layouts/Settings";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   HashRouter as Router,
@@ -22,6 +22,9 @@ import {
 } from "react-router-dom";
 import StoreProvider from "store/StoreProvider";
 import Header from "./components/common/Header";
+import { io } from "socket.io-client";
+
+const socket = io("wss://moeme-web-dev.aveapp.com");
 
 export const AuthRoute = ({ children, ...rest }: any) => {
   const user = useSelector(({ auth }: any) => auth.user);
@@ -39,25 +42,6 @@ export const AuthRoute = ({ children, ...rest }: any) => {
         );
       }}
     />
-    // <Route
-    //   {...rest}
-    //   render={(props) => {
-    //     if (
-    //       props?.match.params.id &&
-    //       localStorage.getItem("urlCopy")?.length > 0
-    //     ) {
-    //       console.log({ props });
-    //       console.log("co");
-    //       return React.cloneElement(onlyChild, { ...rest, ...props });
-    //     } else {
-    //       return user ? (
-    //         React.cloneElement(onlyChild, { ...rest, ...props })
-    //       ) : (
-    //         <Redirect to="/login" />
-    //       );
-    //     }
-    //   }}
-    // />
   );
 };
 
@@ -75,6 +59,7 @@ function MoeMe() {
   const connectedRef = firebase.database().ref(".info/connected");
   const [tokenNotification, setTokenNotification] = useState("");
   const copyRef = firebase.database().ref("copyUrls");
+  
 
   useEffect(() => {
     const tokenmess = requestForToken();
