@@ -30,7 +30,6 @@ export const AuthRoute = ({ children, ...rest }: any) => {
   const user = useSelector(({ auth }: any) => auth.user);
   const onlyChild = React.Children.only(children);
 
-  console.log("user ne", user);
   return (
     <Route
       {...rest}
@@ -86,13 +85,10 @@ function MoeMe() {
     connectedRef.on("value", (snap) => {
       if (user && user?.uid && snap.val()) {
         copyRef.on("child_added", (snap: any) => {
-          console.log("snap.val()", snap.val());
           if (snap.val()?.id) {
-            console.log("co id");
             window.location.href = `/#${snap.val().url}`;
             // https://baophung020394.github.io/waveasean-moeme-2/#/channel-detail/-NQ8L82ow2YFNh0tAz7P
           } else {
-            console.log("k co id");
             // window.location.href = `/#/`;
           }
         });

@@ -140,6 +140,9 @@ function PrivateChat({ user }: PrivateChatProps) {
         />
         <div className="chat--view__content__chat">
           <ChatMessageList
+            setNewMessage={() => {}}
+            onScroll={() => {}}
+            scrollBottom={false}
             selectedFile={selectedFile}
             progressBar={progressBar}
             uploadFileProp={uploadImage}
@@ -148,7 +151,9 @@ function PrivateChat({ user }: PrivateChatProps) {
             }
           />
 
-          {currentChannel?.id && <TypingChat user={userRedux} id={currentChannel?.id} />}
+          {currentChannel?.id && (
+            <TypingChat user={userRedux} id={currentChannel?.id} />
+          )}
 
           <Messanger
             joinedUsersState={joinedUsersState}

@@ -1,6 +1,6 @@
+import firebase from "db/firestore";
 import React, { useEffect, useState } from "react";
 import { styled } from "utils/styled-component";
-import firebase from "db/firestore";
 
 interface TypingChatProps {
   id: string;
@@ -20,7 +20,6 @@ function TypingChat({ id, user, activeMessage }: TypingChatProps) {
   useEffect(() => {
     if (id) {
       actionsUserRef.child(id).on("child_added", (snap) => {
-        console.log("added", snap.val());
         if (snap.val().action === 1) {
           setDisplay(true);
         }
@@ -69,10 +68,6 @@ function TypingChat({ id, user, activeMessage }: TypingChatProps) {
     return counter;
   };
 
-  const checkUserMain = (users: any, val: any) => {
-    return users.some((arrVal) => val.uid === arrVal.userId);
-  };
-
   const displayUsersAction = () => {
     if (filterActionUserState?.length > 0) {
       const filteredUser = filterActionUserState.filter(
@@ -90,22 +85,6 @@ function TypingChat({ id, user, activeMessage }: TypingChatProps) {
 
   useEffect(() => {
     const newArr: any = getUniqueListBy(actionUserState, "userId");
-
-    // const test1 = newArr.reduce((acc, cur) => {
-    //   if (!newArr.includes(acc.userId) && user.uid !== cur.userId) {
-    //     acc.push(cur.userId);
-    //   }
-    //   return acc;
-    // }, []);
-
-    // setUsersAction(test1);
-
-    // if (test1.includes(user.uid)) {
-    //   console.log("user co trong nha");
-    // } else {
-    //   console.log("user co k?");
-    // }
-    // console.log({ test1 });
     const result = actionCounter(newArr);
     if (result === newArr.length) {
       setDisplay(false);
@@ -114,12 +93,6 @@ function TypingChat({ id, user, activeMessage }: TypingChatProps) {
     setFilterActionUserState(newArr);
   }, [actionUserState]);
 
-  console.log({ display });
-  console.log("filterActionUserState", filterActionUserState);
-  const filtered = filterActionUserState?.filter(
-    (u: any) => u.username === "bao2"
-  );
-  // console.log("filtered", filtered);
   return (
     display && (
       <TypingChatStyled className="typing-chat">

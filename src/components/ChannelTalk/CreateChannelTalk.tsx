@@ -123,7 +123,7 @@ const CustomToolbar = () => (
 function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
   const userRedux = useSelector(({ auth }) => auth.user);
   const [value, setValue] = useState<any>();
-  const [valueEditChange, setValueEditChange] = useState<any>();
+  const [step, setStep] = useState<any>("next");
   const [isSent, setIsSent] = useState<any>(false);
   const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
   const [channelsState, setChannelsState] = useState([]);
@@ -165,6 +165,7 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
    */
   const sendMessage = async () => {
     if (value.trim() === "") return;
+
     if (value.replaceAll("<p><br></p>", "").length === 0) {
       getNewIndexAndRender("-1");
       setIsSent(true);
@@ -285,7 +286,6 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
    */
   const getNewIndexAndRender = (direction) => {
     if (ops?.length <= 0) return;
-    // console.log("lengthContent", lengthContent);
     let newNextIndex = getNextIdx(indexInput, lengthContent, direction);
     let newOps = [...ops];
 
@@ -296,46 +296,42 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
           index: 0,
         },
       ]);
-      setErrors("");
     }
 
     // console.log("newFilter getNewIndexAndRender chua", newOps);
-    console.log("newFilter getNewIndexAndRender newOps", newOps);
+    // console.log("newFilter getNewIndexAndRender newOps", newOps);
 
-    console.log("newNextIndex", newNextIndex);
+    // console.log("newNextIndex", newNextIndex);
     let mergeString = "";
     let mergeImage = "";
     let arrayString = [];
     let arrayImage = [];
-    let filterImage = newOps[newNextIndex].filter((x) => {
+    let filterImage = newOps[newNextIndex]?.filter((x) => {
       if (x?.insert.image) {
         arrayImage.push(x?.insert.image);
         mergeImage = "".concat(...arrayImage);
       }
       return x?.insert?.image;
     });
-    let filterString = newOps[newNextIndex].filter((x) => {
+    let filterString = newOps[newNextIndex]?.filter((x) => {
       if (!x?.insert.image) {
-        arrayString.push(x?.insert);
+        arrayString.push(x?.insert.replace("\n\n", "\n"));
         mergeString = "".concat(...arrayString);
       }
       return !x?.insert?.image;
     });
 
-    newOps[newNextIndex].forEach((op: any) => {
-      console.log("newOps foreach", op);
+    newOps[newNextIndex]?.forEach((op: any) => {
       if (filterString?.length > 0) {
         quillRef.current.editor.setText(mergeString.trim());
       }
 
       if (filterImage?.length > 0) {
-        // console.log("op?.insert?.image", op?.insert?.image);
         quillRef.current.editor.insertEmbed(op?.index, "image", mergeImage);
       }
     });
 
     setIndexInpiut(newNextIndex);
-    // setIsEdit(false);
     filterImage = [];
     filterString = [];
   };
@@ -345,11 +341,19 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
    * @param lineNumber
    * @param content
    */
+  // console.log("indexInput", ops);
+  // console.log("indexInput", ops[indexInput]);
+  // console.log("indexInput", indexInput);
+  // console.log("step", step);
   const handleBreakLine = (lineNumber, content) => {
     if (lineNumber > 6) {
-      console.log("lineNumber", lineNumber);
       setOps((currentState: any) => {
         let updateState = [...currentState];
+        if (step === "back") {
+          updateState.splice(indexInput, 1);
+          setIsEdit(false);
+          getNewIndexAndRender("1");
+        }
         updateState.push(content);
         return updateState;
       });
@@ -458,16 +462,6 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
         modules={modules}
         onKeyDown={handleKeyPress}
         onChange={(content, delta, source, editor) => {
-          if (
-            quillRef?.current?.getEditor()?.getLines().length === 6 &&
-            isEdit
-          ) {
-            console.log("het r");
-            setErrors("Please go next page!");
-            // setIsEdit(false);
-            return;
-          }
-          // console.log("content", content);
           console.log("editor getContents", editor.getContents());
           // console.log("editor getContents", editor.getSelection());
           // console.log("idxImage", idxImage);
@@ -504,8 +498,8 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
           setValue(content);
           setSelectedFile(idxImage?.image);
         }}
-        // formats={formats}
       />
+
       {errors?.length > 0 && (
         <Header as="h4" color="red">
           {errors}
@@ -519,6 +513,7 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
             labelPosition="left"
             id="prev"
             onClick={() => {
+              setStep("back");
               setIsClick(true);
               if (!isEdit) {
                 getNewIndexAndRender("-1");
@@ -544,6 +539,7 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
             id="next"
             onClick={() => {
               setIsClick(true);
+              setStep("next");
               if (!isEdit) {
                 getNewIndexAndRender("1");
               }

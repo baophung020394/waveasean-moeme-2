@@ -6,8 +6,6 @@ export const getAccessToken = () => {
 };
 
 export const setUser = (user: any) => {
-  console.log("user ne may be", user);
-
   const accessToken = user?.atk;
   const refreshToken = user?.rtk;
   const userId = user?.uid;

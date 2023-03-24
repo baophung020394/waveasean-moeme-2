@@ -35,7 +35,7 @@ function Chat({ tokenNotification }: ChatProps) {
   const currentChannel = useSelector(({ channel }) => channel?.currentChannel);
   const [scroll, setScroll] = useState<boolean>(true);
   const [newMessage, setNewMessage] = useState(0);
-  
+  const [currentMessage, setCurrentMessage] = useState<any>({});
   let myuuid = uuidv4();
 
   // const {
@@ -55,6 +55,7 @@ function Chat({ tokenNotification }: ChatProps) {
 
   const sendMessages = useCallback(
     (message) => {
+      setCurrentMessage(message);
       dispatch(sendChannelMessage2(message, id));
     },
     [id]
@@ -227,7 +228,6 @@ function Chat({ tokenNotification }: ChatProps) {
         .child(id)
         .child("joinedUsers")
         .on("child_added", (snap) => {
-          console.log("snap.val()", snap.val());
           list.push(snap.val());
         });
       setJoinedUsersState(list);
@@ -302,17 +302,19 @@ function Chat({ tokenNotification }: ChatProps) {
             uploadFileProp={uploadImage}
           />
         </div>
-        {!scroll && newMessage === 1 && (
-          <div
-            className="new-message-parent"
-            onClick={() => {
-              setScroll(true);
-              setNewMessage(0);
-            }}
-          >
-            <span className="new-message">New message</span>
-          </div>
-        )}
+        {userRedux?.uid !== currentMessage?.author?.id &&
+          !scroll &&
+          newMessage === 1 && (
+            <div
+              className="new-message-parent"
+              onClick={() => {
+                setScroll(true);
+                setNewMessage(0);
+              }}
+            >
+              <span className="new-message">New message</span>
+            </div>
+          )}
       </div>
     </ChatStyled>
   );

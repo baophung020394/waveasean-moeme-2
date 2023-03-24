@@ -42,7 +42,7 @@ function SamplePrevArrow(props) {
     // />
     <div
       className={className}
-      style={{ ...style,display: "block"}}
+      style={{ ...style, display: "block" }}
       onClick={onClick}
     />
   );
@@ -122,6 +122,7 @@ function ChannelTalkDetail({ message }: ChannelTalkDetailProps) {
               {message?.contentLong &&
                 message?.contentLong.map((mess: any, i: number) => (
                   <div
+                    key={i}
                     className="chat-channel-content text"
                     dangerouslySetInnerHTML={{
                       __html: mess,

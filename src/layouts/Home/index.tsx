@@ -34,19 +34,19 @@ function Home() {
       <Grid>
         <Grid.Row>
           {posts?.length > 0 &&
-            posts.map((post: any) => (
+            posts.map((post: any, i:number) => (
               <Grid.Column
                 mobile={16}
                 tablet={8}
                 computer={4}
-                key={post?.id}
+                key={i}
                 onClick={() => {
                   console.log(post?.channel.id);
                   history.push(`/channel-detail/${post?.channel.id}`);
                   dispatch(setCurrentChannel(post?.channel, false));
                 }}
               >
-                <Posts post={post} />
+                <Posts post={post}/>
               </Grid.Column>
             ))}
         </Grid.Row>
