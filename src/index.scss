@@ -254,6 +254,30 @@ Css for Modals
     p {
       img {
         width: 100%;
+        max-height: 300px;
+        object-fit: contain;
+      }
+    }
+  }
+  .slick-slider {
+    /* the slides */
+   
+    .slick-arrow {
+      &.slick-next {
+        right: -20px;
+        &::before {
+          // content: none;
+          color: #49ff00;
+        }
+      }
+    }
+    .slick-arrow {
+      &.slick-prev {
+        left: -20px;
+        &::before {
+          // content: none;
+          color: #49ff00;
+        }
       }
     }
   }

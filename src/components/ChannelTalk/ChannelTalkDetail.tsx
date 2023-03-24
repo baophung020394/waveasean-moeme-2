@@ -3,81 +3,69 @@ import { Carousel } from "react-bootstrap";
 import { Button, Comment, Icon, Image, Modal } from "semantic-ui-react";
 import { styled } from "utils/styled-component";
 import { formatTimeAgo } from "utils/time";
+import Slider from "react-slick";
 
 interface ChannelTalkDetailProps {
   message: any;
 }
+function SampleNextArrow(props) {
+  const { className, style, onClick } = props;
+  return (
+    // <Button
+    //   className={className}
+    //   content=""
+    //   icon="arrow right"
+    //   labelPosition="right"
+    //   id="next"
+    //   onClick={onClick}
+    //   style={{ ...style }}
+    // />
+    <div
+      className={className}
+      style={{ ...style, display: "block" }}
+      onClick={onClick}
+    />
+  );
+}
+
+function SamplePrevArrow(props) {
+  const { className, style, onClick } = props;
+  return (
+    // <Button
+    //   className={className}
+    //   content=""
+    //   icon="arrow left"
+    //   labelPosition="left"
+    //   id="prev"
+    //   onClick={onClick}
+    //   style={{ ...style }}
+    // />
+    <div
+      className={className}
+      style={{ ...style,display: "block"}}
+      onClick={onClick}
+    />
+  );
+}
+
 function ChannelTalkDetail({ message }: ChannelTalkDetailProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [indexInput, setIndexInpiut] = useState(0);
   const [lengthContent] = useState<any>(message?.contentLong?.length);
   const [messages, setMessages] = useState("");
   const contentRef = useRef();
-
+  const settings = {
+    dots: true,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    nextArrow: <SampleNextArrow />,
+    prevArrow: <SamplePrevArrow />,
+  };
   //   console.log("first", message.content.replace(/<img .*?>/g, ""));
   //   console.log("first", message.content.replace(/(<([^>]+)>)/ig, ""))
-  /**
-   * Return current index
-   * @param idx
-   * @param length
-   * @param direction
-   * @returns
-   */
-  const getNextIdx = (idx = -1, length, direction) => {
-    // console.log("idx getNextIdx", idx);
-    // console.log("idx length", length);
-    switch (direction) {
-      case "1": {
-        console.log("1");
-        return (idx + 1) % length;
-        ``;
-      }
-      case "-1": {
-        console.log("-1");
-        return (idx === 0 && length - 1) || idx - 1;
-      }
-      default: {
-        // console.log("idx default", idx);
-        return idx;
-      }
-    }
-  };
 
-  const getNewIndexAndRender = (direction) => {
-    let newNextIndex = getNextIdx(indexInput, lengthContent, direction);
-    setIndexInpiut(newNextIndex);
-    setMessages(message.contentLong[newNextIndex]);
-  };
-
-  const renderHTML = () => {
-    if (messages.length <= 0) {
-      return (
-        <div
-          style={{ marginTop: 30 }}
-          className="chat-channel-content text"
-          dangerouslySetInnerHTML={{
-            __html: message?.contentLong && message?.contentLong[0],
-          }}
-        />
-      );
-    } else {
-      return (
-        <div
-          style={{ marginTop: 30 }}
-          className="chat-channel-content text"
-          dangerouslySetInnerHTML={{
-            __html: messages,
-          }}
-        />
-      );
-    }
-  };
-  console.log("lengthContent", lengthContent);
-  console.log("indexInput", indexInput);
-  console.log(
-    "message?.contentLong[indexInput].length",
-    message?.contentLong[indexInput].length
-  );
   return (
     <ChannelTalkDetailStyled>
       <span className="tag-icon">
@@ -130,36 +118,17 @@ function ChannelTalkDetail({ message }: ChannelTalkDetailProps) {
         <Modal.Header>Read all</Modal.Header>
         <Modal.Content scrolling>
           <Modal.Description>
-            <Button
-              disabled={indexInput === 0}
-              content="Prev"
-              icon="left arrow"
-              labelPosition="left"
-              id="prev"
-              onClick={() => {
-                getNewIndexAndRender("-1");
-              }}
-            />
-            <Button
-              disabled={
-                message?.contentLong[message?.contentLong.length - 1] ===
-                message?.contentLong[indexInput].length
-              }
-              content="Next"
-              icon="right arrow"
-              labelPosition="right"
-              id="next"
-              onClick={() => {
-                getNewIndexAndRender("1");
-              }}
-            />
-            {renderHTML()}
-            {/* <Carousel>
-              {message?.contentLong.map((item: any) => (
-                <div dangerouslySetInnerHTML={{ __html: item }} />
-              ))}
-            </Carousel> */}
-            {/* <div dangerouslySetInnerHTML={{ __html: message?.content }} /> */}
+            <Slider {...settings}>
+              {message?.contentLong &&
+                message?.contentLong.map((mess: any, i: number) => (
+                  <div
+                    className="chat-channel-content text"
+                    dangerouslySetInnerHTML={{
+                      __html: mess,
+                    }}
+                  />
+                ))}
+            </Slider>
           </Modal.Description>
         </Modal.Content>
       </Modal>

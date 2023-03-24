@@ -191,6 +191,7 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
       longValue = "".concat(...newFilterContentLong);
     }
 
+    console.log("longValue", longValue);
     const message: any = {
       idMessage: myuuid,
       content: indexInput > 0 ? longValue : value,
@@ -202,7 +203,7 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
         id: userRedux?.uid,
       },
       type: 2,
-      contentLong,
+      contentLong: newFilterContentLong,
     };
 
     const newPost = { ...message };
@@ -339,8 +340,6 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
     filterString = [];
   };
 
-  // console.log("ops chim", ops);
-
   /**
    * Hanlde render data when break line 15
    * @param lineNumber
@@ -459,7 +458,10 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
         modules={modules}
         onKeyDown={handleKeyPress}
         onChange={(content, delta, source, editor) => {
-          if (quillRef?.current?.getEditor()?.getLines().length > 6 && isEdit) {
+          if (
+            quillRef?.current?.getEditor()?.getLines().length === 6 &&
+            isEdit
+          ) {
             console.log("het r");
             setErrors("Please go next page!");
             // setIsEdit(false);
@@ -610,6 +612,7 @@ function SendToMultipleChannel({ onClose }: SendToMultipleChannelProps) {
           </ul>
         </div>
       </div>
+
       <Modal.Actions>
         <Button color="black" onClick={() => onClose()}>
           Cancel
