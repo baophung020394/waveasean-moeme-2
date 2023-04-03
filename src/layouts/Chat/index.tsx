@@ -36,6 +36,7 @@ function Chat({ tokenNotification }: ChatProps) {
   const [scroll, setScroll] = useState<boolean>(true);
   const [newMessage, setNewMessage] = useState(0);
   const [currentMessage, setCurrentMessage] = useState<any>({});
+  
   let myuuid = uuidv4();
 
   // const {
